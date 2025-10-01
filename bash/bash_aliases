@@ -1,0 +1,366 @@
+# Michael's handy aliases
+# sourced from many people.....
+#
+
+# setup editors
+export VISUAL=vim
+export EDITOR=vim
+
+# Directory listings and navigation
+
+alias home='cd $HOME'
+alias cd..='cd ..'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+#alias ls='exa -@ --group-directories-first '
+#alias ls='eza -@ --group-directories-first '
+#alias d='ls --color=always -lFh'
+alias d='ls --color=always -lh'
+alias dh='change_dir_history'      # allow viewing and navigating history of directories
+alias c='cat'
+alias l='less -R'
+alias dg='d -G'
+alias dir='d'
+alias la='d -A'
+alias lag='d -AG'
+alias lsg='d -la | grep'
+alias ll='d -alF'
+alias dl='d | less -R'
+alias dal='d -a | l'
+alias lslad='d -lad .*'
+alias ka='k -Ah'
+# command to get size of directory
+alias dush="du -sh"
+
+# show file annotations if exist
+alias da='/home/doc/bin/list_with_attrs.py'
+# Fool proofing
+
+alias cpi='cp -iv'	# interactive and verbose
+alias copy='cp -iv'	# interactive and verbose
+alias mvi='mv -iv'	# interactive and verbose
+alias rmi='rm -i'	# interactive
+alias rmdir='rm -R'	# remove all stuff in directory
+alias rmidir='rmdir -iv' # interactive and verbose rmdirectory
+alias duplicate='cp -R' # duplicate source dest
+alias pcp='rsync -ah --progress' # show progress while copying
+
+# Utilities
+
+alias mc='mc -x'				#start mc with mouse enabled
+#alias edit='vim'
+#alias edit='nvim'
+alias edit='$EDITOR'
+alias e=edit
+alias :e=edit
+alias :q=exit
+#alias ";e"=:e
+alias :e.='edit $PWD'
+alias e.=:e.
+alias lal='source $HOME/.bash_aliases'		# Load aliases
+alias eal=':e $HOME/.bash_aliases ; lal'		# Edit aliases
+alias lessal='less $HOME/.bash_aliases'		# List aliases in source file
+alias pwd='echo $PWD'				# Echo present working directory
+alias vw=':e $HOME/Documents/vimwiki/index.md'   # open VimWiki home page
+alias wiki=':e /media/doc/T32/wiki/index.md'    # open my Wiki
+# alias :eu=':e $HOME/.vim/snips/all.snippets'
+alias eu=':e $HOME/dotfiles/vim/my_snippets/all.snippets'
+alias eupy=':e $HOME/dotfiles/vim/UltiSnips/python.snippet'
+alias evimrc=':e $HOME/dotfiles/vim/vimrc'
+alias ifconfig='ip a'
+alias lsif='ip a'
+
+# Downloading a whole Calibre library with wget (add host at end of command http://69.181.100.99:8080/ etc  )
+#alias hoover='wget -e robots=off -r --level=0 -nc -np --reject index.html '
+# New version 08.2025
+alias hoover='wget -e robots=off -r -np -nc -nd --reject "index.html*" -A pdf --content-disposition'
+
+# Setting tap on left contrôle to ESC
+alias cesc="xcape -e 'Control_L=Escape'"
+
+#alias :q=exit
+
+# translate using google translate
+alias translate='gawk -f <(curl -Ls git.io/translate) -- -shell'
+
+alias saget='sudo apt-get' 			# shorthand for sudo apt-get
+alias sageti='saget install'			# shorthand for apt-get install
+alias aget='sageti'				# shorthand for apt-get install
+alias asearch='sudo apt-cache search'		# shorthand
+
+alias top='htop'				# replace 'top' with 'htop'  (has to be installed first via apt-get)
+alias free="$HOME/bin/free.sh"
+
+# Disk reporting
+
+alias df="df -h -x squashfs -x tmpfs -x devtmpfs"
+alias dful='df -h | grep /dev/sd | sort'	# Disk usage on Ubuntu systems
+alias dfum='df -h | grep /dev/Disk | sort'	# Disk usage on MacOSX systems
+alias mdm="echo 'Memory Usage' ; free ; echo ; echo 'Disk Usage' ; dfum"				# Memory and Disk Usage MacOSX systems
+alias mdl="echo 'Memory Usage' ; free -mto ; echo ; echo 'Disk Usage' ;  dful"			# Memory and Disk Usage Linux systems
+
+
+# Pattern matching
+
+alias grep='grep -i'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+
+# Other
+
+#alias findbig='find . -type f -exec ls -s {} \; | sort -n -r | head -5'
+#alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# for working with todo.txt
+alias todo="todo.sh"
+alias t=todo
+alias eat="nano $HOME/Dropbox/todo/todo.txt"
+alias fseat="fsedit $HOME/Dropbox/todo/todo.txt"
+
+
+# for remapping the Apple Magic Mouse Buttons to one button (ie left, left, left)
+# xinput list
+# xinput set-button-map <device-num> 1 2 3 6 7
+
+#loggin in to server
+alias arc="ssh doc@arcturus.local"
+
+# mounting network storage (uses SSHFS and ZEROTIER)
+alias mountmacpro="sshfs -o follow_symlinks doc@macpro.local:/home/doc/Storage /home/doc/Storage"
+
+# cleanup mount command
+alias lsmount="mount | grep -v -e squashfs -e tmpfs | sort -k 5 | column -H 2,4 -T 6 -t "
+
+alias vcheat="less -Ss $HOME/Dropbox/Documents/vim_cheat_sheet.txt"
+
+# running Python
+alias p3=python3
+alias pt3="ptipython3 --vi -i pt3.startup.py "
+alias ptp="ptipython3 --vi"
+alias vipy=ptp
+
+# invoke pudb to debug python3 program
+alias pudb="python3 -m pudb "
+
+# copy to clipboard
+alias clip=/Users/doc/bin/clipper
+
+# only works on MacOS
+#alias preview="open -f -a /Applications/Preview.app/"
+
+# only works on Linux systems
+alias xopen='xdg-open'
+
+
+# alias to open ranger in current directory
+alias r.="ranger /home/doc/WORK"
+alias r2.='ranger --cmd="set column_ratios 1,2" /home/doc/WORK'
+alias r3.='ranger --cmd="set column_ratios 1,2,3 " /home/doc/WORK'
+
+alias evimab="vim $HOME/.vim/plugin/020_abbreviations.vim"
+#alias evimrc="vim $HOME/.vimrc"
+alias evimsnip="vim ~/.vim/my_snippets/all.snippets"
+alias evimfu="vim $HOME/.vim/after/functions.vim"
+alias evimall="vim -p $HOME/.vim/after/abbreviations.vim $HOME/.vimrc $HOME/.vim/after/functions.vim"
+
+alias vimp="vim -u ~/.vim/vimrc.programming.main"
+alias vimy="vim -u ~/.vim/vimrc.yaemrs.main"
+
+alias ezshrc="$EDITOR $HOME/.zshrc"
+
+# start yaemrs and other utilities
+#alias ya='./cmd_loop_yaemrs.py'
+#alias sya='cd $HOME/ClinicData/Yaemrs/ ; python3.7 -m pipenv shell'
+alias sy='cd $HOME/ClinicData/Yaemrs/ ; python3.7 -m pipenv run python ./cmd_loop_yaemrs.py ; cd $HOME'
+alias sya=sy
+alias ya=sy
+alias yafm='vifm $HOME/ClinicData/'
+alias enva='source ./env/bin/activate'
+alias envd='source ./env/bin/deactivate'
+
+alias :xa=exit
+alias :fun='fortune | cowsay'
+
+alias scim='sc-im'
+
+alias noturbostate='sudo cat /sys/devices/system/cpu/intel_pstate/no_turbo'
+alias set_noturbostate="sudo /bin/sh -c 'echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo'"
+
+alias sshfsmacpro='sshfs doc@macpro.local:/home/doc/ /home/doc/MacPro/'
+
+alias 3mo='clear;ccal -e --nocol -3'
+
+# open links2 to search web via CLI
+alias web='links2 '
+alias gweb='links2 -g -html-user-font-size 28 '
+# open lynx to search web via CLI
+alias xweb='lynx -vikeys -editor=vim '
+
+# start c64 with Epyx Fastload cart
+alias c64='x64 $HOME/Emulators/C64_Games/EpyxFastLoad/fastload.crt'
+
+# run nim compiler with c option
+alias nimc='nim c'
+
+# run nim compiler with c and r option
+alias nimcr='nim c -r'
+
+### Functions
+# run cheat.sh for help
+# alias cheat='curl https://cheat.sh'    # does not work
+function cheat () { curl ` [`https://cheat.sh/$1`](https://cheat.sh/$1)  `; }
+
+function vag ()
+    { fzf --prompt="Search: " \
+        --border=rounded \
+        --preview="head -n 200 {}" \
+        --preview-window=right:50%:wrap \
+        --bind "tab:execute(less {})" \
+        | xargs vim && vag
+    }
+
+#This version is working
+function va ()
+    { fzf --filter='!.pdf !.png' | \
+      fzf --delimiter / --with-nth -1 \
+          --prompt="Search: " \
+          --border=rounded \
+          --preview="head -n 60 {}" \
+          --preview-window=right:50%:wrap \
+          --bind="tab:execute(less {})" \
+          --bind="ctrl-y:execute(readlink -f {} | wl-copy)" \
+          --bind="enter:execute(readlink -f {} | wl-copy)"\
+          --with-nth=-1
+    }
+#This version splits window horizontally
+function vah ()
+    { fzf --filter='!.pdf !.png' | \
+      fzf --delimiter / --with-nth -1 \
+          --prompt="Search: " \
+          --border=rounded \
+          --preview="head -n 60 {}" \
+          --preview-window=top:70%:wrap \
+          --bind="tab:execute(less {})" \
+          --bind="ctrl-y:execute(readlink -f {} | wl-copy)" \
+          --bind="enter:execute(readlink -f {} | wl-copy)"\
+          --with-nth=-1
+    }
+
+
+function frog ()
+    { rg -i -l -e "$1" $(pwd) | \
+      fzf --delimiter / --with-nth -1 \
+          --border=rounded \
+          --preview="head -n 60 {}" \
+          --preview-window=right:50%:wrap \
+          --bind="tab:execute(less {})" \
+          --bind="ctrl-y:execute(readlink -f {} | wl-copy)" \
+          --bind="enter:execute(readlink -f {} | wl-copy)"\
+          --with-nth=-1
+    }
+
+
+# function to make bak command make a backup of the file with
+# .bak extension
+
+function bak() {
+  cp "$1" "${1}.bak"
+}
+
+# alias trash to trash-put
+alias trash=trash-put
+alias rm=trash-put
+
+# alias to get external ip address
+alias extip='curl icanhazip.com'
+
+# lazy alias for installing stuff
+alias install='sudo nala install'
+# lazy alias for searching for stuff
+alias search='sudo nala search'
+# lazy alias for updating apt
+alias update='sudo nala update'
+# lazy alias for upgrading apt packages
+alias upgrade='sudo nala update && sudo nala upgrade'
+
+# speed test alias
+alias speedtest='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 -'
+
+# top 5 mem users
+alias mem5='ps auxf | sort -nr -k 4 | head -5'
+
+# top 5 cpu users
+alias cpu5='ps auxf | sort -nr -k 3 | head -5'
+
+# show battery charge
+alias battery='acpi -b'
+
+# start simple server
+alias serve='python3 -m SimpleHTTPServer'
+
+# telnet into the penaltybox BBS
+alias penaltybox='cp437.exe telnet thepenaltybox.org'
+
+# get embeded Windows OEM Key
+alias getwindowskey='sudo cat /sys/firmware/acpi/tables/MSDM'
+
+# for use wit the KITTY terminal emulator
+alias icat="kitty +kitten icat"
+
+# to edit kitty config file
+alias ekitty="vim ~/.config/kitty/kitty.conf"
+
+# search for a file name only
+alias rgf='rg -i --files | rg'
+
+# search and execute vim on result
+#alias zag='fzf --preview="rg -i {} | head -n 200" --preview-window=up:80%:wrap | xargs -o vim'
+
+#alias zag='fzf --preview="rg -i {} | head -n 200" --preview-window=up:0%:wrap | xargs -o vim'
+#alias zag='fzf --prompt="Search: " --border=rounded --preview="rg -i {} | head -n 200" --preview-window=up:0%:wrap | xargs xclip ; zag '
+
+# backup my patient data files to the USB device
+# (must have matching UUID)
+alias ptbackup='rsync -av /home/doc/Documents /media/doc/2eed5fc6-99cb-44c0-84b5-b2d91e3aebd9'
+
+# show the contents of the filename, that is in the
+# clipboard
+alias cv='view "$(xclip -o)"'
+
+# copies the contents of the file of the filename in the
+# clipboard into the clipboard
+alias cx='cat "$(xclip -o)" | xclip'
+
+# run beeper
+alias beeper='/home/doc/bin/beeper-3.70.17.AppImage 1>/dev/null 2>/dev/null &'
+
+# set bottom to btop and run with default-light
+#alias btop="bottom --color default-light"
+
+# alias to run ktailctl
+alias ktailctl='env -u SESSION_MANAGER flatpak run org.fkoehler.KTailctl'
+
+# shortcut to my work directory
+alias work="cd ~/WORK"
+alias worker="work;r."
+alias works="work;vah"
+
+# alias cb to clipboard
+alias cb=clipboard
+
+# change de frame buffer resolution to 2560 x 1600 for
+# Arzopa external monitor
+alias set_fb2560="sudo fbset -xres 2560 -yres 1600"
+
+# is this a good idea?
+alias docker=podman
+
+# dls that shows colored output but avoids expanding
+# symlinks
+alias dls='script -q -c "lsd -l" /dev/null | perl -pe '\''s/\r/\n/g; s/ ⇒ .*//'\'' | awk '\''!seen[$0]++'\'''
+#alias d=dls
+alias d="lsd -l"
+alias chat=chatgpt-cli
+#alias lzd=podman run --rm -it -v "$XDG_RUNTIME_DIR/podman/podman.sock:/var/run/docker.sock"  -v "$HOME/.config/lazydocker:/root/.config/jesseduffield/lazydocker:Z" docker.io/lazyteam/lazydocker
+

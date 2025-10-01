@@ -1,0 +1,397 @@
+extends _
+
+snippet newpt "new patient in patient file for residents"
+------------------------------------
+- NOM: $0
+    - Dossier:
+    - RC:
+    - ATCD:
+    - MEDS:
+    - LABO:
+    - HX:
+    - EX:
+    - IMP:
+    - CAT:
+    - ADDENDUM:
+endsnippet
+
+snippet ctrl "short for contrôle"
+contrôle
+endsnippet
+
+snippet th "lowercase letter thorn"
+þ
+endsnippet
+
+snippet Th "uppercase letter thorn"
+Þ
+endsnippet
+
+snippet the "the with thorn"
+þ
+endsnippet
+
+snippet The "The with thorn"
+Þ
+endsnippet
+
+snippet beta "shorthand for β symbol "
+β-
+endsnippet
+
+snippet control "correction for word in french"
+contrôle
+endsnippet
+
+snippet new "new patient visit note"
+---
+Date: `date +%d.%m.%Y` `date +%H:%M`
+Nom: $0
+RAMQ:
+CMPM:
+Tél:
+Pharmacie:
+Antécédents:
+
+Médication:
+
+Histoire:
+
+Examen:
+
+Impression:
+
+Conduite:
+
+
+Sig: Michael LONGVAL, MD
+
+Dx:
+Fx:
+Suivi:
+Todo:
+---
+endsnippet
+
+snippet hd "just print Lieu: CHUS Hotel-Dieu"
+Lieu: CHUS Hotel-Dieu
+endsnippet
+
+snippet news "new patient visit note santé mentale"
+---
+Date: `date +%d.%m.%Y` `date +%H:%M`
+Lieu: CHUS Hotel-Dieu
+Nom: $0
+RAMQ:
+CHUS:
+CMPM:
+Tél:
+Pharmacie:
+Antécédents:
+
+Médication:
+
+Histoire:
+
+Examen:
+
+Impression:
+
+Conduite:
+
+
+Sig: Michael LONGVAL, MD
+
+Dx:
+Fx:
+Suivi:
+Todo:
+---
+endsnippet
+
+snippet cmpm "just write clinique ..."
+Lieu: Clinique Médicale Plateau Marquette
+endsnippet
+
+snippet newm "new patient visit note cmpm"
+---
+Date: `date +%d.%m.%Y` `date +%H:%M`
+Lieu: Clinique Médicale Plateau Marquette
+Nom: $0
+RAMQ:
+CHUS:
+CMPM:
+Tél:
+Pharmacie:
+Antécédents:
+
+Médication:
+
+Histoire:
+
+Examen:
+
+Impression:
+
+Conduite:
+
+
+Sig: Michael LONGVAL, MD
+
+Dx:
+Fx:
+Suivi:
+Todo:
+---
+endsnippet
+
+snippet newt "new patient phone call note"
+---
+Date: `date +%d.%m.%Y` `date +%H:%M`
+Nom:
+RAMQ:
+CMPM:
+Tél:
+Pharmacie:
+Antécédents:
+
+Médication:
+
+Histoire:
+	- Téléphone
+
+Examen:
+
+Impression:
+
+Conduite:
+
+Suivi:
+
+Sig: Michael LONGVAL, MD
+
+Dx:
+Fx:
+Todo:
+---
+endsnippet
+
+
+snippet :-
+(négatif)
+endsnippet
+
+snippet :+
+(positif)
+endsnippet
+
+snippet :n
+(normal)
+endsnippet
+
+snippet :d
+(D)
+endsnippet
+
+snippet :g
+(G)
+endsnippet
+
+snippet hb
+HBA1c $1% $0
+endsnippet
+
+snippet done
+☑
+endsnippet
+
+snippet time "hh:mm" w
+`!v strftime("%Hh%M")`
+endsnippet
+
+snippet datetime "DD.MM.YYYY hh:mm" w
+`!v strftime("%d.%m.%Y %Hh%M")`
+endsnippet
+
+snippet dt "DD.MM.YYYY hh:mm" w
+`!v strftime("%d.%m.%Y %Hh%M")`
+endsnippet
+
+snippet Dt "DD.MM.YYYY hh:mm" w
+`!v strftime("Date: %d.%m.%Y %Hh%M")`
+endsnippet
+
+snippet DDt "DD.MM.YYYY hh:mm and delete next line" w
+`!v strftime("Date: %d.%m.%Y %Hh%M")`
+`!v execute("normal! jdd")`
+endsnippet
+
+snippet my "MM.YYYY" w
+`!v strftime("%m.%Y")`
+endsnippet
+
+snippet yy "YYYY" w
+`!v strftime("%Y")`
+endsnippet
+
+snippet ht4 "hypothyroïdie"
+Hypothyroïdie
+endsnippet
+
+snippet syn "Synthroïde"
+Synthroïde $1 mcg $0
+endsnippet
+
+snippet Syn "Synthroïde"
+Synthroïde $1 mcg $0
+endsnippet
+
+snippet irc
+IRC ClCr $1 mL/min/1.73m2 DFG Estimé $0
+endsnippet
+
+snippet clc
+ClCr $1 mL/min/1.73m2 DFG Estimé $0
+endsnippet
+
+snippet cc
+ç
+endsnippet
+
+snippet chol
+CTotal  	$1 mmol/L
+  Trig 		$2 mmol/L
+  HDL		$3 mmol/L
+  LDL(calc) $4 mmol/L $0
+endsnippet
+
+snippet testo
+TestoTotal 	$1 nmol/L (9-25)
+  SHBG 		$2 nmol/L (12-52)
+  Libre		$3 pmol/L (192-761)
+  Biodisp   $4 nmol/L (3.9-15.6) $0
+endsnippet
+
+snippet dlpd
+Dyslipidémie
+endsnippet
+
+snippet diab2
+Diabète Type 2
+endsnippet
+
+snippet Diab2
+Diabète Type 2
+endsnippet
+
+snippet d2
+diabète Type 2
+endsnippet
+
+snippet D2
+Diabète Type 2
+endsnippet
+
+snippet npd
+Neuropathie Diabétique
+endsnippet
+
+snippet hta
+Hypertension artérielle
+endsnippet
+
+snippet dj
+déjà
+endsnippet
+
+snippet mm
+même
+endsnippet
+
+snippet tete
+tête
+endsnippet
+
+snippet etre
+être
+endsnippet
+
+snippet plutot
+plutôt
+endsnippet
+
+snippet a
+à
+endsnippet
+
+snippet sx
+symptômes
+endsnippet
+
+snippet Sx
+Symptômes
+endsnippet
+
+snippet bx
+biopsie
+endsnippet
+
+snippet psa
+PSA $1 mcg/L $0
+endsnippet
+
+snippet tsh
+TSH $1 mUI/L $0
+endsnippet
+
+snippet hz
+Hydrochlorothiazide
+endsnippet
+
+snippet hctz
+Hydrochlorothiazide
+endsnippet
+
+snippet esp
+examen suivi (présentiel)
+endsnippet
+
+snippet est
+examen suivi (téléphonique)
+endsnippet
+
+snippet tel
+téléphone
+endsnippet
+
+snippet Tel
+Téléphone
+endsnippet
+
+snippet mab
+Maladie affective bipolaire
+endsnippet
+
+snippet MAB
+Maladie affective bipolaire
+endsnippet
+
+snippet deg
+°
+endsnippet
+
+snippet degrees
+°
+endsnippet
+
+snippet vav
+vis-à-vis
+endsnippet
+
+snippet garcon
+garçon
+endsnippet
+
+snippet ->
+⇒
+endsnippet
