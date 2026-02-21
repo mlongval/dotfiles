@@ -2195,3 +2195,54 @@ class duplicate(Command):
         self.fm.thisdir.mark_undo()
         self.fm.thisdir.load_content(schedule=False)
         self.fm.select_file(new_path)
+
+import os, time
+from ranger.api.commands import Command
+
+class paste_and_chmod(Command):
+    """
+    :paste_and_chmod
+    Paste the yank buffer into the current directory, then chmod 755
+    on the pasted targets (handles renames and async paste).
+    """
+    def execute(self):
+        fm = self.fm
+        dest_dir = fm.thisdir.path
+
+        # snapshot before paste
+        before = set(os.listdir(dest_dir))
+
+        # names we *expect* (covers overwrite cases)
+        expected = [os.path.basename(f.path) for f in getattr(fm, "copy_buffer", [])]
+        expected_count = len(expected)
+
+        # do the paste (internal, async)
+        fm.execute_console("paste")
+
+        # wait for the new items to appear (or for overwrite to complete)
+        appeared = set()
+        deadline = time.time() + 10.0          # up to 10s for big copies
+        while time.time() < deadline:
+            now = set(os.listdir(dest_dir))
+            appeared = now - before            # newly visible entries
+            # break when we likely have everything, or at least something
+            if len(appeared) >= expected_count or (appeared and time.time() > deadline - 8.0):
+                break
+            time.sleep(0.1)
+
+        # candidates: newly visible entries + any expected basenames (for overwrite)
+        candidates = {os.path.join(dest_dir, n) for n in appeared}
+        candidates.update(os.path.join(dest_dir, n) for n in expected)
+
+        changed = []
+        for path in sorted(candidates):
+            if os.path.exists(path):
+                fm.run(["chmod", "755", path])
+                changed.append(os.path.basename(path))
+
+        if changed:
+            fm.notify(f"chmod 755 → {', '.join(changed)}")
+            fm.thisdir.load_content(schedule=False)
+        else:
+            fm.notify("Nothing chmod'ed (paste still in progress or no matches).", bad=True)
+

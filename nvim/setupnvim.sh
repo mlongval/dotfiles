@@ -15,7 +15,7 @@ ln -sf "$VIM_DIR/vimrc" "$NVIM_DIR/init.vim"
 ln -sf "$VIM_DIR/functions.vim" "$NVIM_DIR/functions.vim"
 
 # Link the Neovim config directory to ~/.config
-ln -sf "$NVIM_DIR" "$CONFIG_DIR"
+#ln -sf "$NVIM_DIR" "$CONFIG_DIR"
 
 # Confirm result
 echo "Symlinks created:"

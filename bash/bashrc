@@ -128,9 +128,9 @@ source $HOME/.functions
 # Created by `pipx` on 2024-07-06 02:06:57
 #export PATH="$PATH:/home/doc/.local/bin"
 export PATH="$PATH:/home/doc/bin"
+export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 
 export OPENAI_API_KEY=REMOVED
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-#. /home/doc/.nix-profile/etc/profile.d/nix.sh
+#eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 export OPENAI_API_KEY="REMOVED"

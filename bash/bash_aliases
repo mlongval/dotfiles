@@ -3,8 +3,11 @@
 #
 
 # setup editors
-export VISUAL=vim
-export EDITOR=vim
+# export VISUAL=vim
+# export EDITOR=vim
+export VISUAL=nvim
+export EDITOR=nvim
+
 
 # Directory listings and navigation
 
@@ -244,7 +247,10 @@ function vah ()
           --bind="tab:execute(less {})" \
           --bind="ctrl-y:execute(readlink -f {} | wl-copy)" \
           --bind="enter:execute(readlink -f {} | wl-copy)"\
-          --with-nth=-1
+          --with-nth=-1 \
+          --border=none \
+          --preview-window='border-none' \
+          --preview-window=border-line
     }
 
 
@@ -363,4 +369,7 @@ alias dls='script -q -c "lsd -l" /dev/null | perl -pe '\''s/\r/\n/g; s/ ⇒ .*//
 alias d="lsd -l"
 alias chat=chatgpt-cli
 #alias lzd=podman run --rm -it -v "$XDG_RUNTIME_DIR/podman/podman.sock:/var/run/docker.sock"  -v "$HOME/.config/lazydocker:/root/.config/jesseduffield/lazydocker:Z" docker.io/lazyteam/lazydocker
-
+# alias for "line count"
+alias lc="wc -l"
+# my favorite ripgrep
+alias rg1="rg -H -e "
