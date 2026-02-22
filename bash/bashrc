@@ -1,4 +1,8 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
+#
+# API keys and secrets do NOT belong here.
+# Store them in ~/.secrets (not tracked by git) and source it from ~/.profile:
+#   [ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
 
 # If not running interactively, don't do anything
 case $- in
