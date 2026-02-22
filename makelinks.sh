@@ -1,16 +1,17 @@
-cd /home/doc
-ln -s /home/doc/dotfiles/bash/bash_aliases /home/doc/.bash_aliases
-ln -s /home/doc/dotfiles/bash/bash_functions /home/doc/.bash_functions
-ln -s /home/doc/dotfiles/bash/profile /home/doc/.bash_profile
-ln -s /home/doc/dotfiles/bash/bashrc /home/doc/.bashrc
-ln -s /home/doc/dotfiles/bash/bash_functions /home/doc/.functions
-ln -s /home/doc/dotfiles/bash/profile /home/doc/.profile
-ln -s /home/doc/dotfiles/tmux /home/doc/.tmux
-ln -s /home/doc/dotfiles/tmux/tmux.conf /home/doc/.tmux.conf
-ln -s /home/doc/dotfiles/vim /home/doc/.vim
-ln -s /home/doc/dotfiles/zsh/zshrc /home/doc/.zshrc
-ln -s /home/doc/dotfiles/tmux /home/doc/.config/tmux
-ln -s /home/doc/dotfiles/nvim /home/doc/.config/nvim
-ln -s /home/doc/dotfiles/ranger /home/doc/.config/ranger
-ln -s /home/doc/dotfiles/powerlevel10k/p10k.zsh /home/doc/.p10k.zsh
+DOTFILES="$(cd "$(dirname "$0")" && pwd)"
+
+ln -s "$DOTFILES/bash/bash_aliases"      "$HOME/.bash_aliases"
+ln -s "$DOTFILES/bash/bash_functions"    "$HOME/.bash_functions"
+ln -s "$DOTFILES/bash/profile"           "$HOME/.bash_profile"
+ln -s "$DOTFILES/bash/bashrc"            "$HOME/.bashrc"
+ln -s "$DOTFILES/bash/bash_functions"    "$HOME/.functions"
+ln -s "$DOTFILES/bash/profile"           "$HOME/.profile"
+ln -s "$DOTFILES/tmux"                   "$HOME/.tmux"
+ln -s "$DOTFILES/tmux/tmux.conf"         "$HOME/.tmux.conf"
+ln -s "$DOTFILES/vim"                    "$HOME/.vim"
+ln -s "$DOTFILES/zsh/zshrc"             "$HOME/.zshrc"
+ln -s "$DOTFILES/tmux"                   "$HOME/.config/tmux"
+ln -s "$DOTFILES/nvim"                   "$HOME/.config/nvim"
+ln -s "$DOTFILES/ranger"                 "$HOME/.config/ranger"
+ln -s "$DOTFILES/powerlevel10k/p10k.zsh" "$HOME/.p10k.zsh"
 
