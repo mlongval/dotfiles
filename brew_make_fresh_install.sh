@@ -1,7 +1,19 @@
-# What to do after a fresh install
+#!/bin/sh
+# Packages to install on a fresh machine via Homebrew (Linux or macOS).
+# Run after makelinks.sh.
 
-# do a homebrew install
-#
-
-brew install trash-cli eza zsh vim neovim htop neofetch
-
+brew install \
+    zsh \
+    tmux \
+    neovim \
+    vim \
+    ranger \
+    fzf \
+    ripgrep \
+    lsd \
+    eza \
+    trash-cli \
+    fastfetch \
+    htop \
+    nala \
+    git

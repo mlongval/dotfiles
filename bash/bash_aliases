@@ -19,7 +19,7 @@ alias ....='cd ../../..'
 #alias ls='exa -@ --group-directories-first '
 #alias ls='eza -@ --group-directories-first '
 #alias d='ls --color=always -lFh'
-alias d='ls --color=always -lh'
+alias d="lsd -l"
 alias dh='change_dir_history'      # allow viewing and navigating history of directories
 alias c='cat'
 alias l='less -R'
@@ -37,7 +37,7 @@ alias ka='k -Ah'
 alias dush="du -sh"
 
 # show file annotations if exist
-alias da='/home/doc/bin/list_with_attrs.py'
+alias da="$HOME/bin/list_with_attrs.py"
 # Fool proofing
 
 alias cpi='cp -iv'	# interactive and verbose
@@ -130,7 +130,7 @@ alias fseat="fsedit $HOME/Dropbox/todo/todo.txt"
 alias arc="ssh doc@arcturus.local"
 
 # mounting network storage (uses SSHFS and ZEROTIER)
-alias mountmacpro="sshfs -o follow_symlinks doc@macpro.local:/home/doc/Storage /home/doc/Storage"
+alias mountmacpro="sshfs -o follow_symlinks doc@macpro.local:/home/doc/Storage $HOME/Storage"
 
 # cleanup mount command
 alias lsmount="mount | grep -v -e squashfs -e tmpfs | sort -k 5 | column -H 2,4 -T 6 -t "
@@ -147,7 +147,7 @@ alias vipy=ptp
 alias pudb="python3 -m pudb "
 
 # copy to clipboard
-alias clip=/Users/doc/bin/clipper
+alias clip="$HOME/bin/clipper"
 
 # only works on MacOS
 #alias preview="open -f -a /Applications/Preview.app/"
@@ -157,9 +157,9 @@ alias xopen='xdg-open'
 
 
 # alias to open ranger in current directory
-alias r.="ranger /home/doc/WORK"
-alias r2.='ranger --cmd="set column_ratios 1,2" /home/doc/WORK'
-alias r3.='ranger --cmd="set column_ratios 1,2,3 " /home/doc/WORK'
+alias r.="ranger $HOME/WORK"
+alias r2.="ranger --cmd='set column_ratios 1,2' $HOME/WORK"
+alias r3.="ranger --cmd='set column_ratios 1,2,3' $HOME/WORK"
 
 alias evimab="vim $HOME/.vim/plugin/020_abbreviations.vim"
 #alias evimrc="vim $HOME/.vimrc"
@@ -190,7 +190,7 @@ alias scim='sc-im'
 alias noturbostate='sudo cat /sys/devices/system/cpu/intel_pstate/no_turbo'
 alias set_noturbostate="sudo /bin/sh -c 'echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo'"
 
-alias sshfsmacpro='sshfs doc@macpro.local:/home/doc/ /home/doc/MacPro/'
+alias sshfsmacpro="sshfs doc@macpro.local:/home/doc/ $HOME/MacPro/"
 
 alias 3mo='clear;ccal -e --nocol -3'
 
@@ -263,7 +263,7 @@ alias rgf='rg -i --files | rg'
 
 # backup my patient data files to the USB device
 # (must have matching UUID)
-alias ptbackup='rsync -av /home/doc/Documents /media/doc/2eed5fc6-99cb-44c0-84b5-b2d91e3aebd9'
+alias ptbackup="rsync -av $HOME/Documents /media/doc/2eed5fc6-99cb-44c0-84b5-b2d91e3aebd9"
 
 # show the contents of the filename, that is in the
 # clipboard
@@ -274,7 +274,7 @@ alias cv='view "$(xclip -o)"'
 alias cx='cat "$(xclip -o)" | xclip'
 
 # run beeper
-alias beeper='/home/doc/bin/beeper-3.70.17.AppImage 1>/dev/null 2>/dev/null &'
+alias beeper="$HOME/bin/beeper-3.70.17.AppImage 1>/dev/null 2>/dev/null &"
 
 # set bottom to btop and run with default-light
 #alias btop="bottom --color default-light"
@@ -300,8 +300,6 @@ alias docker=podman
 # dls that shows colored output but avoids expanding
 # symlinks
 alias dls='script -q -c "lsd -l" /dev/null | perl -pe '\''s/\r/\n/g; s/ ⇒ .*//'\'' | awk '\''!seen[$0]++'\'''
-#alias d=dls
-alias d="lsd -l"
 alias chat=chatgpt-cli
 #alias lzd=podman run --rm -it -v "$XDG_RUNTIME_DIR/podman/podman.sock:/var/run/docker.sock"  -v "$HOME/.config/lazydocker:/root/.config/jesseduffield/lazydocker:Z" docker.io/lazyteam/lazydocker
 # alias for "line count"

@@ -28,6 +28,6 @@ link "$DOTFILES/zsh/zshrc"             "$HOME/.zshrc"
 link "$DOTFILES/tmux"                   "$HOME/.config/tmux"
 link "$DOTFILES/nvim"                   "$HOME/.config/nvim"
 link "$DOTFILES/ranger"                 "$HOME/.config/ranger"
-link "$DOTFILES/powerlevel10k/p10k.zsh" "$HOME/.p10k.zsh"
+link "$DOTFILES/p10k/p10k.zsh"           "$HOME/.p10k.zsh"
 
 echo "Done."
