@@ -80,3 +80,63 @@ lzd() {
 #   hoover_spider_pdfs
 #   # or seed additional pages:
 #   hoover_spider_pdfs "https://commodore.bombjack.org/commodore/magazines/transactor/transactor.htm"
+
+# quick cheat sheet lookup via cheat.sh
+function cheat() { curl "https://cheat.sh/$1"; }
+
+# fzf file picker — open result in vim
+function vag() {
+    fzf --prompt="Search: " \
+        --border=rounded \
+        --preview="head -n 200 {}" \
+        --preview-window=right:50%:wrap \
+        --bind "tab:execute(less {})" \
+    | xargs vim && vag
+}
+
+# fzf file picker — copy path to clipboard (wayland)
+function va() {
+    fzf --filter='!.pdf !.png' | \
+    fzf --delimiter / --with-nth -1 \
+        --prompt="Search: " \
+        --border=rounded \
+        --preview="head -n 60 {}" \
+        --preview-window=right:50%:wrap \
+        --bind="tab:execute(less {})" \
+        --bind="ctrl-y:execute(readlink -f {} | wl-copy)" \
+        --bind="enter:execute(readlink -f {} | wl-copy)" \
+        --with-nth=-1
+}
+
+# like va but preview splits horizontally
+function vah() {
+    fzf --filter='!.pdf !.png' | \
+    fzf --delimiter / --with-nth -1 \
+        --prompt="Search: " \
+        --preview="head -n 60 {}" \
+        --preview-window=top:70%:wrap \
+        --bind="tab:execute(less {})" \
+        --bind="ctrl-y:execute(readlink -f {} | wl-copy)" \
+        --bind="enter:execute(readlink -f {} | wl-copy)" \
+        --with-nth=-1 \
+        --border=none \
+        --preview-window=border-line
+}
+
+# ripgrep + fzf: search file contents, pick result, copy path
+function frog() {
+    rg -i -l -e "$1" "$(pwd)" | \
+    fzf --delimiter / --with-nth -1 \
+        --border=rounded \
+        --preview="head -n 60 {}" \
+        --preview-window=right:50%:wrap \
+        --bind="tab:execute(less {})" \
+        --bind="ctrl-y:execute(readlink -f {} | wl-copy)" \
+        --bind="enter:execute(readlink -f {} | wl-copy)" \
+        --with-nth=-1
+}
+
+# make a .bak copy of a file
+function bak() {
+    cp "$1" "${1}.bak"
+}
