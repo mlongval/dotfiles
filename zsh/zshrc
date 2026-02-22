@@ -41,3 +41,4 @@ fi
 
 # Greeting
 fastfetch -l none
+export PATH="$HOME/.npm-global/bin:$PATH"
