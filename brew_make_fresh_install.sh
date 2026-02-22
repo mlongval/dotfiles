@@ -3,5 +3,5 @@
 # do a homebrew install
 #
 
-brew install trash-cli eza zsh tmux vim neovim htop neofetch
+brew install trash-cli eza zsh vim neovim htop neofetch
 
