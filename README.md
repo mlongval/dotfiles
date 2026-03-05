@@ -36,7 +36,7 @@ git clone --recurse-submodules git@github.com:mlongval/dotfiles.git ~/dotfiles
 | `bash/` | bash aliases, functions, profile |
 | `tmux/tmux.conf` | tmux (plugins via TPM) |
 | `nvim/` | Neovim |
-| `vim/` | Vim |
+| `vim/` | Vim (plugins managed by vim-plug, not tracked) |
 | `ranger/` | ranger file manager |
 | `powerlevel10k/` | p10k prompt theme (submodule) |
 | `tmux/plugins/tpm` | Tmux Plugin Manager (submodule) |
@@ -44,3 +44,11 @@ git clone --recurse-submodules git@github.com:mlongval/dotfiles.git ~/dotfiles
 ## Tmux plugins
 
 Plugins are managed by [TPM](https://github.com/tmux-plugins/tpm) and tracked as git submodules. After `makelinks.sh` runs they are already present — no need to install them manually. To update plugins inside a tmux session: `prefix + U`.
+
+## Vim plugins
+
+Plugins are managed by [vim-plug](https://github.com/juniper/vim-plug) and are **not** tracked in this repo. On a new machine, open vim and run `:PlugInstall` to install them.
+
+## SSH agent
+
+The zshrc automatically starts the SSH agent and loads `~/.ssh/id_ed25519` on login. This means `git push/pull` will work without manual `ssh-add` after the first shell session.
