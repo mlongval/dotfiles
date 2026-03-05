@@ -28,10 +28,11 @@ fi
 
 echo "==> Logging into GitHub (follow the prompts)..."
 gh auth login -h github.com -p ssh
+gh auth refresh -h github.com -s admin:public_key
 
 echo "==> Uploading SSH key to GitHub..."
 MACHINE_NAME="${1:-$(hostname)}"
-gh ssh-key add "$SSH_KEY.pub" --title "$MACHINE_NAME" 2>/dev/null || echo "    Key may already be uploaded, continuing..."
+gh ssh-key add "$SSH_KEY.pub" --title "$MACHINE_NAME" || echo "    Key may already be uploaded, continuing..."
 
 echo "==> Starting SSH agent..."
 eval "$(ssh-agent -s)" > /dev/null
