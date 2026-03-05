@@ -39,7 +39,7 @@ eval "$(ssh-agent -s)" > /dev/null
 ssh-add "$SSH_KEY"
 
 echo "==> Testing GitHub SSH connection..."
-ssh -T git@github.com 2>&1 || true
+ssh -T git@github.com </dev/null 2>&1 || true
 
 echo "==> Cloning dotfiles..."
 if [ -d "$DOTFILES_DIR" ]; then
