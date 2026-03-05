@@ -10,7 +10,7 @@ git -C "$DOTFILES" submodule update --init --recursive
 mkdir -p "$HOME/.config"
 
 link() {
-    ln -sf "$1" "$2"
+    ln -sfn "$1" "$2"
     echo "  $2 -> $1"
 }
 
