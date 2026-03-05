@@ -3,11 +3,6 @@
 # Presents an fzf menu to SSH into another Tailscale machine.
 # Skips automatically if already in an SSH session or a subshell.
 
-# Guards
-[[ $- != *i* ]] && return          # non-interactive shell
-[[ -n "$SSH_CONNECTION" ]] && return  # already remote
-[[ "${SHLVL:-1}" -gt 1 ]] && return  # subshell
-
 # Detect current machine via tailscale, fall back to hostname
 _current_machine() {
     local name
@@ -20,6 +15,11 @@ _current_machine() {
 }
 
 _machine_connect() {
+    # Guards — return is valid here whether sourced or executed
+    [[ $- != *i* ]] && return          # non-interactive shell
+    [[ -n "$SSH_CONNECTION" ]] && return  # already remote
+    [[ "${SHLVL:-1}" -gt 1 ]] && return  # subshell
+
     # label:tailscale-host
     local -a entries=(
         "Local:"
