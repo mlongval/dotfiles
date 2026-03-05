@@ -13,6 +13,11 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
+# Cache SSH key passphrase across sessions (requires keychain: apt install keychain)
+if command -v keychain &>/dev/null; then
+    eval "$(keychain --eval --quiet id_rsa)"
+fi
+
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:.:$PATH"
