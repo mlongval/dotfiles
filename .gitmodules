@@ -1,6 +1,7 @@
 [submodule "powerlevel10k"]
 	path = powerlevel10k
 	url = https://github.com/romkatv/powerlevel10k
+	ignore = dirty
 
 [submodule "tmux/plugins/tpm"]
 	path = tmux/plugins/tpm
