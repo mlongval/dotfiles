@@ -17,6 +17,7 @@ _current_machine() {
 _machine_connect() {
     # Guards — return is valid here whether sourced or executed
     [[ $- != *i* ]] && return          # non-interactive shell
+    [[ -n "$TMUX" ]] && return         # already inside tmux
     [[ "${SHLVL:-1}" -gt 1 ]] && return  # subshell
 
     # label:tailscale-host
@@ -55,8 +56,8 @@ _machine_connect() {
             --prompt="  Connect to: " \
             --no-sort)
 
-    # Empty or Local → stay here
-    [[ -z "$choice" || "$choice" == "Local"* ]] && return
+    # Empty or Local → start tmux locally
+    [[ -z "$choice" || "$choice" == "Local"* ]] && exec tmux
 
     # Resolve tailscale hostname from chosen label
     for entry in "${entries[@]}"; do
