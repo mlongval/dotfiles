@@ -1,0 +1,198 @@
+" ============================================================
+" Bootstrap vim-plug (auto-installs on new machines)
+" ============================================================
+let s:plug_vim = expand('~/.vim/autoload/plug.vim')
+if empty(glob(s:plug_vim))
+  silent execute '!curl -fLo ' . s:plug_vim . ' --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Allow neovim to share plug.vim from vim's autoload
+if has('nvim') && empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+  silent execute '!ln -sf ' . s:plug_vim . ' ~/.local/share/nvim/site/autoload/plug.vim'
+endif
+
+" ============================================================
+" Plugins
+" ============================================================
+call plug#begin('~/.vim/plugged')
+
+" Writing / Focus
+Plug 'vimwiki/vimwiki'
+Plug 'https://github.com/preservim/vim-pencil'
+Plug 'junegunn/goyo.vim'
+Plug 'https://codeberg.org/turysaz/vim-zenmode'
+
+" Navigation
+Plug 'easymotion/vim-easymotion'
+Plug 'preservim/nerdtree'
+
+" UI
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'ryanoasis/vim-devicons'
+Plug 'yggdroot/indentline'
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+
+" Editing
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'https://github.com/pseewald/vim-anyfold'
+Plug 'https://github.com/SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+
+" Prettification
+Plug 'stevearc/dressing.nvim'
+call plug#end()
+
+" ============================================================
+" General settings
+" ============================================================
+let s:very_dark_gray = 234
+let s:darker_gray    = 236
+let s:medium_gray    = 240
+let s:light_gray     = 244
+
+set tabstop=4
+set softtabstop=0
+set expandtab
+set shiftwidth=4
+set smarttab
+set autoindent
+set smartcase
+set ignorecase
+set backspace=indent,eol,start
+set helplang=en
+set laststatus=2
+set nomodeline
+set ruler
+set textwidth=56
+set number
+set relativenumber
+set foldmethod=indent
+set foldlevel=99
+set colorcolumn=56
+set spell
+set spelllang+=fr
+set showtabline=0
+set fillchars+=vert:\ ,diff:-
+set numberwidth=4
+set scrolloff=999
+set linebreak
+
+execute 'highlight ColorColumn'  . ' ctermbg=' . s:darker_gray
+highlight SpellBad   ctermfg=NONE ctermbg=NONE cterm=underline gui=underline
+highlight SpellCap   cterm=underline gui=underline
+highlight SpellLocal cterm=underline gui=underline
+highlight SpellRare  cterm=underline gui=underline
+
+" Terminal-only settings
+if !has('nvim')
+  set printfont=courier:h14
+  set printoptions=paper:letter
+endif
+
+" ============================================================
+" Plugin settings
+" ============================================================
+
+" Airline
+let g:airline_left_sep  = ''
+let g:airline_right_sep = ''
+
+" Anyfold
+let g:anyfold_fold_comments = 0
+
+" Vimwiki
+let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+
+" UltiSnips
+let g:UltiSnipsSnippetsDir        = '~/.vim/my_snippets'
+let g:UltiSnipsSnippetDirectories = [$HOME . '/.vim/my_snippets', $HOME . '/.vim/UltiSnips']
+let g:UltiSnipsExpandTrigger      = ','
+let g:UltiSnipsJumpForwardTrigger  = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
+
+" ============================================================
+" Key mappings
+" ============================================================
+let mapleader = ','
+
+" EasyMotion
+nmap <leader><leader> <Plug>(easymotion-prefix)
+xmap <leader><leader> <Plug>(easymotion-prefix)
+omap <leader><leader> <Plug>(easymotion-prefix)
+map  f                <leader><leader>
+
+" Escape / whitespace
+imap jk <ESC>:StripWhitespace<CR><ESC>
+map  <leader>s :StripWhitespace<CR>
+
+" Clipboard (Wayland)
+map  <leader>x :w !/bin/wl-copy<CR><CR>
+map  <leader>c :w !/bin/wl-copy<CR><CR>
+map  <leader>C <esc>ggvGg_:w !/bin/wl-copy<CR><CR>
+map  <leader>p "+p
+map  <leader>P "+p
+vmap <C-c> "+yi
+vmap <C-x> "+c
+vmap <C-v> c<ESC>"+p
+imap <C-v> <ESC>"+pa
+
+" Tabs
+map <leader>T :tabnew<CR>
+map <leader>t :tabnext<CR>
+
+" System / billing / workflow
+map  <leader>b :!clear;acpi<CR>
+map  <leader>B :w !get_bill.sh >> BILLING<CR><CR>
+map  <leader>V :w !get_suivi.sh >> SUIVIS<CR><CR>
+map  <leader>N :w !get_todo.sh >> TODO_LIST.txt<CR><CR>
+map  <leader>D <ESC>:w<CR>:let @a=expand('%')<CR>:execute 'silent! !mkdir -p DONE && mv '.@a.' DONE/'<CR>:q<CR><ESC>
+map  <leader>A :w<ENTER><leader>L<ESC>:!read<CR><leader>W<ESC><leader>C<ESC><leader>B<ESC><leader>V<ESC><leader>D<ESC>:q<ENTER>
+map  <leader>L <ESC>:w<CR><ESC>:!clear && echo 'Linting YAML file.' && yamllint %<CR>
+map  <leader>q :!clear;cal -3; cat ~/Documents/CANADA_HOLIDAYS.txt;<CR>
+map  <leader>g <ESC>:ZEN<CR>
+map  <leader>z <ESC>:ZEN<CR>
+
+" Misc
+map      <leader>P   :!less ~/Documents/phonenumbers_HD.txt<CR>
+map      <leader>n   <ESC>:set number relativenumber<CR>
+nnoremap <leader>nw  :set numberwidth=12<CR>
+nnoremap <BS>        :call ExitAtBufferStart()<CR>
+nnoremap <Tab>       :call EndOfLineTab()<CR>
+nmap     <F2>        :ZEN<CR>
+nmap     <F7>        :set spell!<CR>
+nmap     zf          [s1z=$
+imap     zf          <esc>[s1z=$a
+nmap     gF          <leader>bb<c-^><cr>
+
+" Disable q (use Q for macros if needed)
+nnoremap q <Nop>
+vnoremap q <Nop>
+
+" Regex helpers
+nnoremap ,d  0f:lD$a<SPACE>
+nnoremap ,:  0f:lD$a<SPACE>
+noremap  ,zr :%s/\([A-Za-z]\+\)\(\d\{4}\)\(\d\{4}\)Exp :\(\d\{4}\)/\1 \2 \3 \4/g<ENTER><ESC>
+
+" ============================================================
+" Cursor shape per mode
+" ============================================================
+let &t_SI .= "\e[5 q"
+let &t_SR .= "\e[4 q"
+let &t_EI .= "\e[1 q"
+
+" ============================================================
+" External files
+" ============================================================
+source ~/.vim/functions.vim
+
+" ============================================================
+" Neovim-only
+" ============================================================
+if has('nvim')
+  lua require('hardcopy').setup()
+  " dressing.nvim — prettier vim.ui.select and vim.ui.input
+  lua require('dressing').setup({})
+endif

@@ -1,0 +1,31 @@
+# Plugins — reinstalled via :PlugInstall
+plugged/
+pack/
+
+# vim-plug itself — bootstrapped automatically
+autoload/plug.vim
+autoload/
+
+# Undo history — machine-specific
+undodir/
+
+# Compiled spell files — regenerated from .add files
+spell/*.spl
+spell/*.sug
+spell/*.BAK
+
+# Trash
+trash_to_be_deleted_eventually/
+
+# Redundant vimrc variants — git is the history now
+vimrc_and_nvimrc.vim
+vimrc_only_this_is_the_original_keep_it_safe.vim
+
+# Temp/generated files
+*.ps
+*.txt.txt
+
+# OS noise
+.DS_Store
+
+
