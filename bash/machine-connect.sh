@@ -17,7 +17,6 @@ _current_machine() {
 _machine_connect() {
     # Guards — return is valid here whether sourced or executed
     [[ $- != *i* ]] && return          # non-interactive shell
-    [[ -n "$SSH_CONNECTION" ]] && return  # already remote
     [[ "${SHLVL:-1}" -gt 1 ]] && return  # subshell
 
     # label:tailscale-host
