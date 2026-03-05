@@ -10,7 +10,7 @@ endif
 
 " Allow neovim to share plug.vim from vim's autoload
 if has('nvim') && empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-  silent execute '!ln -sf ' . s:plug_vim . ' ~/.local/share/nvim/site/autoload/plug.vim'
+  silent execute '!mkdir -p ~/.local/share/nvim/site/autoload && ln -sf ' . s:plug_vim . ' ~/.local/share/nvim/site/autoload/plug.vim'
 endif
 
 " ============================================================
