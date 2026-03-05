@@ -7,7 +7,7 @@ Personal configuration files for zsh, tmux, vim, nvim, and ranger.
 Paste this into a terminal:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/mlongval/dotfiles/master/bootstrap.sh | bash -s "machine-name"
+curl -fsSL https://raw.githubusercontent.com/mlongval/dotfiles/master/bootstrap.sh -o /tmp/bootstrap.sh && bash /tmp/bootstrap.sh "machine-name"
 ```
 
 Replace `machine-name` with something descriptive (e.g. `laptop`, `work-pc`). The script will:
