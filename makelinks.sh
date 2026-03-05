@@ -6,8 +6,9 @@ DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 # Init submodules (tpm, powerlevel10k, tmux plugins)
 git -C "$DOTFILES" submodule update --init --recursive
 
-# Ensure ~/.config exists
+# Ensure required directories exist
 mkdir -p "$HOME/.config"
+mkdir -p "$HOME/.local/share/nvim/site/autoload"
 
 link() {
     ln -sfn "$1" "$2"
