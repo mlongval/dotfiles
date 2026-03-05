@@ -27,8 +27,8 @@ if ! command -v gh &>/dev/null; then
 fi
 
 echo "==> Logging into GitHub (follow the prompts)..."
-gh auth login -h github.com -p ssh
-gh auth refresh -h github.com -s admin:public_key
+gh auth login -h github.com -p ssh || true
+gh auth refresh -h github.com -s admin:public_key || true
 
 echo "==> Uploading SSH key to GitHub..."
 MACHINE_NAME="${1:-$(hostname)}"
