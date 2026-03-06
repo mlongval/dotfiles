@@ -14,7 +14,7 @@ HISTCONTROL=ignoreboth
 HISTSIZE=1000
 HISTFILESIZE=2000
 
-shopt -s checkwinsize
+[ -n "$BASH_VERSION" ] && shopt -s checkwinsize
 
 # make less more friendly for non-text input files
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"

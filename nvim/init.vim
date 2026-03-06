@@ -1,1 +1,1 @@
-/home/doc/dotfiles/vim/vimrc
+/var/home/doc/dotfiles/vim/vimrc

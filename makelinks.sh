@@ -9,6 +9,7 @@ git -C "$DOTFILES" submodule update --init --recursive
 # Ensure required directories exist
 mkdir -p "$HOME/.config"
 mkdir -p "$HOME/.local/share/nvim/site/autoload"
+ln -sf "$DOTFILES/vim/autoload/plug.vim" "$HOME/.local/share/nvim/site/autoload/plug.vim"
 
 link() {
     ln -sfn "$1" "$2"

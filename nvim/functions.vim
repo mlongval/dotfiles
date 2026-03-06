@@ -1,1 +1,1 @@
-/home/doc/dotfiles/vim/functions.vim
+/var/home/doc/dotfiles/vim/functions.vim
