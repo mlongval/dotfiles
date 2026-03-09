@@ -16,6 +16,8 @@ link() {
     echo "  $2 -> $1"
 }
 
+mkdir -p "$HOME/.claude"
+
 echo "Linking dotfiles..."
 link "$DOTFILES/bash/bash_aliases"      "$HOME/.bash_aliases"
 link "$DOTFILES/bash/bash_functions"    "$HOME/.bash_functions"
@@ -31,5 +33,6 @@ link "$DOTFILES/tmux"                   "$HOME/.config/tmux"
 link "$DOTFILES/nvim"                   "$HOME/.config/nvim"
 link "$DOTFILES/ranger"                 "$HOME/.config/ranger"
 link "$DOTFILES/p10k/p10k.zsh"           "$HOME/.p10k.zsh"
+link "$DOTFILES/claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
 
 echo "Done."
