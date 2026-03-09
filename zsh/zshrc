@@ -1,6 +1,5 @@
 source $HOME/.profile
 source $HOME/.functions
-source $HOME/.bashrc
 source $HOME/.bash_aliases
 
 # Greeting
