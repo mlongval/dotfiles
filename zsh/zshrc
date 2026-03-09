@@ -53,3 +53,9 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
 fi
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# Auto-enter DailyUse distrobox on t480i5 only
+# Exit the container to reach a host shell; use NO_DISTROBOX=1 to skip
+if [[ "$HOST" == "t480i5" ]] && [[ -z "$CONTAINER_ID" ]] && [[ -z "$NO_DISTROBOX" ]] && [[ $- == *i* ]]; then
+    distrobox enter DailyUse
+fi
