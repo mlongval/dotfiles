@@ -49,3 +49,9 @@ fi
 if [ -d "/home/linuxbrew" ]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
+
+# Auto-enter DailyUse distrobox on t480i5 only
+# Exit the container to reach a host shell; use NO_DISTROBOX=1 to skip
+if [[ "$HOSTNAME" == "t480i5" ]] && [[ -z "$CONTAINER_ID" ]] && [[ -z "$NO_DISTROBOX" ]] && [[ $- == *i* ]]; then
+    distrobox enter DailyUse
+fi
