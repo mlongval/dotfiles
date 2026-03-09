@@ -2,6 +2,15 @@ source $HOME/.profile
 source $HOME/.functions
 source $HOME/.bash_aliases
 
+# Auto-enter DailyUse distrobox on t480i5 only
+# Exit the container to reach a host shell; use NO_DISTROBOX=1 to skip
+if [[ "$HOST" == "t480i5" ]] && [[ -z "$CONTAINER_ID" ]] && [[ -z "$NO_DISTROBOX" ]] && [[ $- == *i* ]]; then
+    if ! distrobox list | grep -q "DailyUse"; then
+        distrobox create --name DailyUse --image registry.fedoraproject.org/fedora:latest --volume /var/home/linuxbrew:/home/linuxbrew:ro --yes
+    fi
+    distrobox enter DailyUse
+fi
+
 # Greeting
 command -v fastfetch >/dev/null 2>&1 && fastfetch -l none
 
@@ -47,10 +56,3 @@ fi
 export PATH="$HOME/.npm-global/bin:$PATH"
 
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-# Auto-enter DailyUse distrobox on t480i5 only
-# Exit the container to reach a host shell; use NO_DISTROBOX=1 to skip
-if [[ "$HOST" == "t480i5" ]] && [[ -z "$CONTAINER_ID" ]] && [[ -z "$NO_DISTROBOX" ]] && [[ $- == *i* ]]; then
-    distrobox enter DailyUse
-fi
