@@ -41,6 +41,11 @@ if [ -f ~/.bash_aliases ]; then
 fi
 export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
 
+# Auto-start tmux for local sessions only (SSH sessions skip to avoid nesting)
+if [[ -z "$TMUX" && -z "$SSH_TTY" ]]; then
+    tmux attach -t default 2>/dev/null || tmux new-session -s default
+fi
+
 if [ -d "/home/linuxbrew" ]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi

@@ -15,7 +15,7 @@ fi
 
 # Cache SSH key passphrase across sessions (requires keychain: apt install keychain)
 if command -v keychain &>/dev/null; then
-    eval "$(keychain --eval --quiet id_rsa)"
+    eval "$(keychain --eval --quiet id_rsa id_ed25519)"
 fi
 
 # set PATH so it includes user's private bin if it exists
