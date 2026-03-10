@@ -1,0 +1,21 @@
+#!/bin/bash
+# workoff — unmount and lock the WORK directory
+
+MOUNT="/home/doc/WORK"
+
+# Check if mounted at all
+if ! mountpoint -q "$MOUNT"; then
+    echo "✓ WORK is already locked (not mounted)"
+    exit 0
+fi
+
+echo "🔒 Locking WORK..."
+fusermount -u "$MOUNT"
+
+if ! mountpoint -q "$MOUNT"; then
+    echo "✓ WORK is now locked"
+else
+    echo "✗ Failed to unmount WORK — are files still open?" >&2
+    echo "  Check with: lsof +D $MOUNT" >&2
+    exit 1
+fi

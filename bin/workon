@@ -1,0 +1,21 @@
+#!/bin/bash
+# workon — unlock and mount the WORK directory
+
+ENCRYPTED="/home/doc/WORK.encrypted"
+MOUNT="/home/doc/WORK"
+
+# Check if already mounted
+if mountpoint -q "$MOUNT"; then
+    echo "✓ WORK is already unlocked and mounted at $MOUNT"
+    exit 0
+fi
+
+echo "🔐 Unlocking WORK..."
+gocryptfs "$ENCRYPTED" "$MOUNT"
+
+if mountpoint -q "$MOUNT"; then
+    echo "✓ WORK is now unlocked at $MOUNT"
+else
+    echo "✗ Failed to mount WORK" >&2
+    exit 1
+fi

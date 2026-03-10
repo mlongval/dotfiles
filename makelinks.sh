@@ -17,8 +17,13 @@ link() {
 }
 
 mkdir -p "$HOME/.claude"
+mkdir -p "$HOME/bin"
 
 echo "Linking dotfiles..."
+# Link all scripts in dotfiles/bin into ~/bin
+for script in "$DOTFILES/bin/"*; do
+    [ -f "$script" ] && link "$script" "$HOME/bin/$(basename "$script")"
+done
 link "$DOTFILES/bash/bash_aliases"      "$HOME/.bash_aliases"
 link "$DOTFILES/bash/bash_functions"    "$HOME/.bash_functions"
 link "$DOTFILES/bash/profile"           "$HOME/.bash_profile"
