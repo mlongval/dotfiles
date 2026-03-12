@@ -314,16 +314,14 @@ alias rg1="rg -H -e "
 #   - Non-empty answer: runs claude-init to write .clauderc, then launches claude.
 #   - Empty answer (Enter): launches claude without writing anything.
 claude() {
-  # Locate the real claude binary, bypassing this function to avoid recursion.
-  local _claude_bin
-  # Find the real claude binary by searching PATH directly, bypassing this function.
-  local _claude_bin
-  _claude_bin=$(echo "$PATH" | tr ':' '\n' | while read -r _d; do
+  # Find the real claude binary by walking PATH without a pipeline (break works correctly).
+  local _claude_bin="" _d
+  while IFS= read -r _d; do
     if [ -x "$_d/claude" ] && [ ! -d "$_d/claude" ]; then
-      echo "$_d/claude"
+      _claude_bin="$_d/claude"
       break
     fi
-  done)
+  done <<< "$(echo "$PATH" | tr ':' '\n')"
   if [ -z "$_claude_bin" ]; then
     echo "claude: binary not found in PATH" >&2
     return 1
