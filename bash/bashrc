@@ -60,3 +60,8 @@ fi
 if [[ "$HOSTNAME" == "t480i5" ]] && [[ -z "$CONTAINER_ID" ]] && [[ -z "$NO_DISTROBOX" ]] && [[ $- == *i* ]]; then
     distrobox enter DailyUse
 fi
+
+# Propagate container ID to tmux status bar
+if [ -n "$CONTAINER_ID" ] && [ -n "$TMUX" ]; then
+    tmux set -g @container_id "$CONTAINER_ID"
+fi
