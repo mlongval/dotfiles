@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+# claude-init — write a .clauderc file in the current directory
+# Usage: claude-init [label]
+#   If label is omitted, you will be prompted.
+
+# ---------------------------------------------------------------------------
+# Icon lookup — case-insensitive substring matching via case globs.
+# Returns a single Nerd Font glyph for a given project label.
+# ---------------------------------------------------------------------------
+icon_for() {
+  local key
+  key=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+  case "$key" in
+    # Documents & typesetting
+    *latex*|*lualatex*|*tex*|*pdf*)            echo "󰈙" ;;  # nf-md-file_document_edit
+    *doc*|*write*|*letter*|*report*|*note*)    echo "󰈙" ;;  # nf-md-file_document_edit
+    # Photos & images
+    *photo*|*image*|*immich*|*gallery*|*pic*)  echo "󰉏" ;;  # nf-md-image_multiple
+    # Music & audio
+    *music*|*audio*|*sound*|*playlist*|*pod*)  echo "󰎁" ;;  # nf-md-music_box_multiple
+    # Books & reading
+    *book*|*calibre*|*librar*|*epub*|*read*)   echo "󰂺" ;;  # nf-md-bookshelf
+    # Home & dashboards
+    *home*|*homepage*|*dashboard*|*portal*)    echo "󰋜" ;;  # nf-md-home
+    # Cloud & sync
+    *cloud*|*nextcloud*|*sync*|*drive*)        echo "󰅧" ;;  # nf-md-cloud
+    # Containers & Docker
+    *docker*|*container*|*compose*|*podman*)   echo "󰡨" ;;  # nf-md-docker
+    # Backups & archiving
+    *backup*|*archive*|*rsync*|*restic*)       echo "󰆍" ;;  # nf-md-backup_restore
+    # Scripts & tools
+    *script*|*bin*|*tool*|*util*|*automat*)    echo "󰆍" ;;  # nf-md-backup_restore
+    # Web & servers
+    *web*|*nginx*|*apache*|*server*|*http*)    echo "󰖟" ;;  # nf-md-web
+    # Mail
+    *mail*|*email*|*smtp*|*newsletter*)        echo "󰇮" ;;  # nf-md-email
+    # Medical & clinic
+    *medic*|*patient*|*clinic*|*health*|*dossier*|*work*) echo "󰄣" ;;  # nf-md-medical_bag
+    # Movies & video
+    *movie*|*film*|*jellyfin*|*video*|*cinema*) echo "󰕧" ;; # nf-md-movie_open
+    # Gaming
+    *game*|*gaming*)                           echo "󰊗" ;;  # nf-md-controller_classic
+    # Finance
+    *financ*|*money*|*budget*|*invoice*|*tax*) echo "󰈍" ;;  # nf-md-currency-usd
+    # Travel
+    *travel*|*trip*|*vacation*|*journey*)      echo "󰞰" ;;  # nf-md-airplane
+    # Security
+    *securit*|*vault*|*crypt*|*pass*|*key*)    echo "󰌆" ;;  # nf-md-lock
+    # Networking
+    *network*|*vpn*|*tailscale*|*firewall*)    echo "󰀂" ;;  # nf-md-network
+    # Monitoring & logs
+    *monitor*|*grafana*|*prometheus*|*log*)    echo "󰄢" ;;  # nf-md-chart_line
+    # Databases
+    *data*|*database*|*\bdb\b*|*sql*)          echo "󰆼" ;;  # nf-md-database
+    # Code & dev (broad — keep near bottom so specifics above win)
+    *code*|*dev*|*project*|*repo*|*git*)       echo "󰒓" ;;  # nf-md-cog
+    *config*|*setting*|*dotfile*|*setup*)      echo "󰒓" ;;  # nf-md-cog
+    # Family & personal
+    *famil*|*kid*|*personal*)                  echo "󰉋" ;;  # nf-md-folder
+    # Paperless
+    *paperless*)                               echo "󱧶" ;;  # nf-md-file_cabinet
+    # Default
+    *)                                         echo "󰉋" ;;  # nf-md-folder
+  esac
+}
+
+# ---------------------------------------------------------------------------
+# Resolve label
+# ---------------------------------------------------------------------------
+if [ -n "$1" ]; then
+  label="$1"
+else
+  printf "Project name: "
+  read -r label
+  if [ -z "$label" ]; then
+    echo "Aborted — no label given." >&2
+    exit 1
+  fi
+fi
+
+icon=$(icon_for "$label")
+
+# ---------------------------------------------------------------------------
+# Guard against overwrite
+# ---------------------------------------------------------------------------
+if [ -f ".clauderc" ]; then
+  existing_label=$(grep '^LABEL=' .clauderc | cut -d= -f2-)
+  printf ".clauderc already exists (LABEL=%s). Overwrite? [y/N] " "$existing_label"
+  read -r answer
+  case "$answer" in
+    [yY]|[yY][eE][sS]) ;;
+    *) echo "Aborted." >&2; exit 1 ;;
+  esac
+fi
+
+# ---------------------------------------------------------------------------
+# Write .clauderc
+# ---------------------------------------------------------------------------
+printf 'LABEL=%s\nICON=%s\n' "$label" "$icon" > .clauderc
+
+echo "  .clauderc → $label $icon"

@@ -306,3 +306,95 @@ alias chat=chatgpt-cli
 alias lc="wc -l"
 # my favorite ripgrep
 alias rg1="rg -H -e "
+
+# claude — wrapper that auto-discovers .clauderc before launching Claude Code.
+# Walks up from $PWD looking for .clauderc (mirrors statusline logic).
+# If found: launches real claude immediately (statusline reads the file itself).
+# If not found: prompts for a project name.
+#   - Non-empty answer: runs claude-init to write .clauderc, then launches claude.
+#   - Empty answer (Enter): launches claude without writing anything.
+claude() {
+  # Locate the real claude binary, bypassing this function to avoid recursion.
+  local _claude_bin
+  _claude_bin=$(command -v claude 2>/dev/null)
+  # If the shell resolved us (function shadows binary), find it via PATH walk.
+  if [ -z "$_claude_bin" ] || [ "$_claude_bin" = "claude" ]; then
+    _claude_bin=$(
+      IFS=:
+      for _d in $PATH; do
+        if [ -x "$_d/claude" ] && [ ! -d "$_d/claude" ]; then
+          echo "$_d/claude"
+          break
+        fi
+      done
+    )
+  fi
+  if [ -z "$_claude_bin" ]; then
+    echo "claude: binary not found in PATH" >&2
+    return 1
+  fi
+
+  # Walk up from $PWD looking for .clauderc.
+  local _dir="$PWD"
+  local _found=""
+  while [ "$_dir" != "/" ]; do
+    if [ -f "$_dir/.clauderc" ]; then
+      _found="$_dir/.clauderc"
+      break
+    fi
+    _dir=$(dirname "$_dir")
+  done
+
+  if [ -n "$_found" ]; then
+    # .clauderc found — statusline will pick it up automatically.
+    command "$_claude_bin" "$@"
+    return
+  fi
+
+  # No .clauderc found — ask for a project name.
+  local _label
+  printf "Project name? (Enter to skip): "
+  read -r _label
+  if [ -n "$_label" ]; then
+    claude-init "$_label"
+  fi
+  command "$_claude_bin" "$@"
+}
+
+# workas — set a per-session Claude project label via env vars.
+# Usage:
+#   workas LuaLaTeX           — set label; icon looked up from built-in table
+#   workas MyProject 󰒓        — set label + explicit Nerd Font icon
+#   workas                    — clear label (fall back to cwd basename)
+workas() {
+  if [ -z "$1" ]; then
+    unset CLAUDE_LABEL CLAUDE_ICON
+    echo "Claude label cleared (will use cwd basename)"
+    return
+  fi
+  export CLAUDE_LABEL="$1"
+  if [ -n "$2" ]; then
+    export CLAUDE_ICON="$2"
+  else
+    unset CLAUDE_ICON
+    # Mirror the icon table from ~/.claude/statusline-command.sh so the
+    # shell confirms which icon will be used before claude even starts.
+    local key icon
+    key=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+    case "$key" in
+      lualatex|latex)          icon="󰈙" ;;
+      homepage)                icon="󰋜" ;;
+      jellyfin)                icon="󰎁" ;;
+      immich)                  icon="󰉏" ;;
+      paperless|paperless-ngx) icon="󱧶" ;;
+      calibre|calibre-web)     icon="󰂺" ;;
+      nextcloud)               icon="󰅧" ;;
+      containers|docker)       icon="󰡨" ;;
+      work)                    icon="󰢬" ;;
+      backups|backup|bin)      icon="󰆍" ;;
+      documents)               icon="󰈙" ;;
+      *)                       icon="󰉋" ;;
+    esac
+    echo "Claude label set: $icon  $1"
+  fi
+}
