@@ -10,6 +10,7 @@ THM_GRAY="49;50;68"
 THM_MAGENTA="203;166;247"  # host
 THM_PINK="245;194;231"     # directory
 THM_BLUE="137;180;250"     # context
+THM_TEAL="148;226;213"    # distrobox
 
 # Powerline glyphs
 L_CAP=$'\ue0b6'  # left rounded cap
@@ -37,6 +38,11 @@ printf " "
 pill "$THM_MAGENTA" "󰒋" "$host"
 printf " "
 pill "$THM_PINK" "" "$cwd"
+
+if [ -n "$CONTAINER_ID" ]; then
+  printf " "
+  pill "$THM_TEAL" "󰆧" "$CONTAINER_ID"
+fi
 
 if [ -n "$used" ]; then
   used_int=$(printf "%.0f" "$used")
