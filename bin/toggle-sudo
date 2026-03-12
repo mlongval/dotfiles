@@ -1,0 +1,24 @@
+#!/bin/bash
+
+SUDOERS_FILE="/etc/sudoers.d/doc-nopasswd"
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Must be run as root: sudo toggle-sudo [enable|disable]"
+    exit 1
+fi
+
+case "$1" in
+    enable)
+        echo "doc ALL=(ALL) NOPASSWD: ALL" > "$SUDOERS_FILE"
+        chmod 440 "$SUDOERS_FILE"
+        echo "Passwordless sudo enabled for doc."
+        ;;
+    disable)
+        rm -f "$SUDOERS_FILE"
+        echo "Passwordless sudo disabled for doc."
+        ;;
+    *)
+        echo "Usage: sudo toggle-sudo [enable|disable]"
+        exit 1
+        ;;
+esac
