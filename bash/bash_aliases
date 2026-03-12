@@ -316,18 +316,17 @@ alias rg1="rg -H -e "
 claude() {
   # Locate the real claude binary, bypassing this function to avoid recursion.
   local _claude_bin
-  _claude_bin=$(command -v claude 2>/dev/null)
-  # If the shell resolved us (function shadows binary), find it via PATH walk.
-  if [ -z "$_claude_bin" ] || [ "$_claude_bin" = "claude" ]; then
-    _claude_bin=$(
-      IFS=:
-      for _d in $PATH; do
-        if [ -x "$_d/claude" ] && [ ! -d "$_d/claude" ]; then
-          echo "$_d/claude"
-          break
-        fi
-      done
-    )
+  # Use whence -p (zsh) or type -P (bash) to find the binary, bypassing the function.
+  local _claude_bin
+  _claude_bin=$(whence -p claude 2>/dev/null || type -P claude 2>/dev/null)
+  # Fallback: walk PATH manually (portable, works in bash and zsh).
+  if [ -z "$_claude_bin" ]; then
+    _claude_bin=$(echo "$PATH" | tr ':' '\n' | while read -r _d; do
+      if [ -x "$_d/claude" ] && [ ! -d "$_d/claude" ]; then
+        echo "$_d/claude"
+        break
+      fi
+    done)
   fi
   if [ -z "$_claude_bin" ]; then
     echo "claude: binary not found in PATH" >&2
