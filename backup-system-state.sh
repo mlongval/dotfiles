@@ -49,11 +49,19 @@ else
 fi
 echo "==> Snapshotting $(hostname) into snapshots/$(hostname)/"
 
-run "Homebrew packages..." "$SNAPSHOT/Brewfile" \
-    brew bundle dump --force --file=/dev/stdout 2>/dev/null
+if command -v brew &>/dev/null; then
+    run "Homebrew packages..." "$SNAPSHOT/Brewfile" \
+        brew bundle dump --force --file=/dev/stdout 2>/dev/null
+else
+    echo "==> Homebrew not found, skipping"
+fi
 
-run "Flatpak apps..." "$SNAPSHOT/flatpaks.txt" \
-    flatpak list --app --columns=application
+if command -v flatpak &>/dev/null; then
+    run "Flatpak apps..." "$SNAPSHOT/flatpaks.txt" \
+        flatpak list --app --columns=application
+else
+    echo "==> Flatpak not found, skipping"
+fi
 
 if command -v apt &>/dev/null; then
     run "apt packages..." "$SNAPSHOT/apt-packages.txt" \
@@ -71,11 +79,19 @@ elif command -v dnf &>/dev/null; then
         dnf repoquery --userinstalled --queryformat '%{name}'
 fi
 
-run "GNOME extensions..." "$SNAPSHOT/gnome-extensions.txt" \
-    bash -c 'gnome-extensions list --enabled | sort'
+if command -v gnome-extensions &>/dev/null; then
+    run "GNOME extensions..." "$SNAPSHOT/gnome-extensions.txt" \
+        bash -c 'gnome-extensions list --enabled | sort'
+else
+    echo "==> gnome-extensions not found, skipping"
+fi
 
-run "GNOME settings (dconf)..." "$SNAPSHOT/dconf-backup.ini" \
-    dconf dump /
+if command -v dconf &>/dev/null; then
+    run "GNOME settings (dconf)..." "$SNAPSHOT/dconf-backup.ini" \
+        dconf dump /
+else
+    echo "==> dconf not found, skipping"
+fi
 
 echo ""
 if $DRY_RUN; then
