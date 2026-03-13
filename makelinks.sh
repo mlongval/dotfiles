@@ -39,6 +39,10 @@ link "$DOTFILES/nvim"                   "$HOME/.config/nvim"
 link "$DOTFILES/ranger"                 "$HOME/.config/ranger"
 link "$DOTFILES/p10k/p10k.zsh"           "$HOME/.p10k.zsh"
 link "$DOTFILES/claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
+mkdir -p "$HOME/.config/fastfetch"
+link "$DOTFILES/fastfetch/bluefin.jsonc"        "$HOME/.config/fastfetch/bluefin.jsonc"
+link "$DOTFILES/fastfetch/ublue-fastfetch.json" "$HOME/.config/ublue-fastfetch.json"
+touch "$HOME/.config/no-show-user-motd"
 
 # Install git post-merge hook so uv+pynvim stay current after git pull
 HOOK="$DOTFILES/.git/hooks/post-merge"
