@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//etc/dconf/db/gdm.d/locks/**)",
+      "Read(//etc/dconf/db/gdm.d/**)",
+      "Bash(grdctl:*)",
+      "Bash(sudo:*)",
+      "Bash(jq:*)",
+      "Bash(journalctl:*)",
+      "Bash(systemctl status:*)",
+      "Bash(ss:*)",
+      "Bash(xargs ls -la)",
+      "Bash(getent passwd:*)",
+      "Bash(ssh ubuntu-s1:*)"
+    ]
+  }
+}

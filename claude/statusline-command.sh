@@ -20,6 +20,7 @@ THM_MAGENTA="203;166;247"  # host
 THM_PINK="245;194;231"     # project
 THM_BLUE="137;180;250"     # context
 THM_TEAL="148;226;213"     # distrobox
+THM_YELLOW="249;226;175"   # effort
 
 # Powerline glyphs
 L_CAP=$'\ue0b6'  # left rounded cap
@@ -130,4 +131,16 @@ if [ -n "$used" ]; then
   fi
   printf " "
   pill "$THM_BLUE" "$mood" "${used_int}%"
+fi
+
+effort=$(echo "$input" | jq -r '.effort // empty')
+if [ -n "$effort" ]; then
+  case "$effort" in
+    low)    effort_icon="󰓅" ;;  # speedometer low
+    medium) effort_icon="󰓅" ;;  # speedometer mid
+    high)   effort_icon="󰓅" ;;  # speedometer high
+    *)      effort_icon="󰓅" ;;
+  esac
+  printf " "
+  pill "$THM_YELLOW" "$effort_icon" "$effort"
 fi

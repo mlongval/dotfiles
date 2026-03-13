@@ -1,0 +1,1 @@
+Read the memory files for the current project and print a clean summary of everything you know — project structure, user preferences, known issues, workflow notes, and any other stored context. This confirms what is loaded into the current session.

@@ -49,8 +49,8 @@ else
     git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
 fi
 
-echo "==> Running makelinks..."
-bash "$DOTFILES_DIR/makelinks.sh"
+echo "==> Running install..."
+bash "$DOTFILES_DIR/install.sh"
 
 echo "==> Setting up Neovim Python provider..."
 bash "$DOTFILES_DIR/bin/setup-neovim-python.sh"

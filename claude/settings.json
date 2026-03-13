@@ -1,0 +1,19 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '[\"[\" + (now | strftime(\"%Y-%m-%d %H:%M:%S\")) + \"]\", .tool_name, (.tool_input | to_entries | map(.key + \"=\" + (.value | tostring | .[0:80])) | join(\" \"))] | join(\" \")' >> /var/home/doc/.claude/activity.log"
+          }
+        ]
+      }
+    ]
+  }
+}
