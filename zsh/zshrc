@@ -70,4 +70,6 @@ fi
 export PATH="$HOME/.npm-global/bin:$PATH"
 
 # OpenClaw Completion
-[ -f "/var/home/doc/.openclaw/completions/openclaw.zsh" ] && source "/var/home/doc/.openclaw/completions/openclaw.zsh"
+[ -f "$HOME/.openclaw/completions/openclaw.zsh" ] && source "$HOME/.openclaw/completions/openclaw.zsh"
+
+. "$HOME/.local/bin/env"

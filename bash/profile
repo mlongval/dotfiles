@@ -48,3 +48,5 @@ fi
 #     cd /home/doc/NOTES_EN_COURS
 # fi
 #
+
+. "$HOME/.local/bin/env"
