@@ -52,5 +52,8 @@ fi
 echo "==> Running makelinks..."
 bash "$DOTFILES_DIR/makelinks.sh"
 
+echo "==> Setting up Neovim Python provider..."
+bash "$DOTFILES_DIR/bin/setup-neovim-python.sh"
+
 echo ""
 echo "Done! Open a new shell to load your config."

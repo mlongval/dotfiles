@@ -40,4 +40,13 @@ link "$DOTFILES/ranger"                 "$HOME/.config/ranger"
 link "$DOTFILES/p10k/p10k.zsh"           "$HOME/.p10k.zsh"
 link "$DOTFILES/claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
 
+# Install git post-merge hook so uv+pynvim stay current after git pull
+HOOK="$DOTFILES/.git/hooks/post-merge"
+cat > "$HOOK" <<'EOF'
+#!/usr/bin/env bash
+bash "$(git -C "$(dirname "$0")/../.." rev-parse --show-toplevel)/bin/setup-neovim-python.sh"
+EOF
+chmod +x "$HOOK"
+echo "  post-merge hook installed"
+
 echo "Done."

@@ -1,4 +1,12 @@
 " ============================================================
+" Python provider (pynvim via uv)
+" ============================================================
+let s:uv_python = expand('~/.local/share/uv/tools/pynvim/bin/python3')
+if executable(s:uv_python)
+  let g:python3_host_prog = s:uv_python
+endif
+
+" ============================================================
 " Bootstrap vim-plug (auto-installs on new machines)
 " ============================================================
 let s:plug_vim = expand('~/.vim/autoload/plug.vim')
