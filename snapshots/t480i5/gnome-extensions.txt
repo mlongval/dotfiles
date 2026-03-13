@@ -1,0 +1,11 @@
+appindicatorsupport@rgcjonas.gmail.com
+blur-my-shell@aunetx
+custom-hot-corners-extended@G-dH.github.com
+date-menu-formatter@marcinjakubowski.github.com
+gsconnect@andyholmes.github.io
+just-perfection-desktop@just-perfection
+logomenu@aryan_k
+search-light@icedman.github.com
+tailscale-status@maxgallup.github.com
+tiling-assistant@leleat-on-github
+vertical-workspaces@G-dH.github.com
