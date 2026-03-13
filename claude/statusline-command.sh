@@ -122,6 +122,12 @@ fi
 
 if [ -n "$used" ]; then
   used_int=$(printf "%.0f" "$used")
+  if   [ "$used_int" -ge 90 ]; then mood="😱"
+  elif [ "$used_int" -ge 75 ]; then mood="😅"
+  elif [ "$used_int" -ge 50 ]; then mood="🤔"
+  elif [ "$used_int" -ge 25 ]; then mood="🙂"
+  else                               mood="😌"
+  fi
   printf " "
-  pill "$THM_BLUE" "󰾪" "${used_int}%"
+  pill "$THM_BLUE" "$mood" "${used_int}%"
 fi
