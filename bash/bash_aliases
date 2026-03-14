@@ -316,6 +316,33 @@ alias rg1="rg -H -e "
 #   - Non-empty answer: runs claude-init to write .clauderc, then launches claude.
 #   - Empty answer (Enter): launches claude without writing anything.
 claude() {
+  # Handle -h / --help before doing anything else.
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    cat <<'EOF'
+claude — wrapper around the Claude Code binary
+
+Usage: claude [options] [claude-binary-args...]
+
+Wrapper behaviour:
+  Walks up from $PWD looking for a .clauderc file.
+  If found:    launches Claude immediately (statusline reads it automatically).
+  If not found: prompts "Project name? (Enter to skip)".
+                Non-empty answer → runs claude-init <name>, then launches Claude.
+                Empty answer     → launches Claude with no .clauderc written.
+
+Wrapper options:
+  -h, --help   Show this help text and exit.
+
+All other options are passed directly to the Claude Code binary.
+Run 'claude --help' after removing -h to see the binary's own help.
+
+Related commands:
+  claude-init [label]   Write a .clauderc in the current directory.
+  workas <label> [icon] Set a per-session project label via env vars.
+EOF
+    return 0
+  fi
+
   # Find the real claude binary by walking PATH without a pipeline (break works correctly).
   local _claude_bin="" _d
   while IFS= read -r _d; do
