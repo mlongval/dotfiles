@@ -20,7 +20,9 @@ alias ....='cd ../../..'
 #alias ls='eza -@ --group-directories-first '
 #alias d='ls --color=always -lFh'
 alias d="lsd -l"
+alias ldh='echo "Contents of $(findmnt -T "$PWD" -o TARGET --noheadings) on $(hostname)"; lsd -l'
 alias dh='change_dir_history'      # allow viewing and navigating history of directories
+alias d=ldh
 alias c='cat'
 alias l='less -R'
 alias dg='d -G'
