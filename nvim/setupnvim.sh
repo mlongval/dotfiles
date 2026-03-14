@@ -10,9 +10,9 @@ CONFIG_DIR=~/.config/nvim
 mkdir -p "$NVIM_DIR"
 #mkdir -p ~/.config
 
-# Create symlinks from vim config to neovim config
-ln -sf "$VIM_DIR/vimrc" "$NVIM_DIR/init.vim"
-ln -sf "$VIM_DIR/functions.vim" "$NVIM_DIR/functions.vim"
+# Create symlinks from vim config to neovim config (relative, so they work across machines)
+ln -sf ../vim/vimrc "$NVIM_DIR/init.vim"
+ln -sf ../vim/functions.vim "$NVIM_DIR/functions.vim"
 
 # Link the Neovim config directory to ~/.config
 #ln -sf "$NVIM_DIR" "$CONFIG_DIR"
