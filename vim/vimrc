@@ -112,7 +112,11 @@ let g:airline_right_sep = ''
 let g:anyfold_fold_comments = 0
 
 " Vimwiki
-let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+if hostname() == 'ubuntu-s1'
+  let g:vimwiki_list = [{'path': '~/Documents/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+else
+  let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+endif
 
 " UltiSnips
 let g:UltiSnipsSnippetsDir        = '~/.vim/my_snippets'
