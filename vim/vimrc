@@ -203,4 +203,59 @@ if has('nvim')
   lua require('hardcopy').setup()
   " dressing.nvim — prettier vim.ui.select and vim.ui.input
   lua require('dressing').setup({})
+
+  " VimWiki cheatsheet popup
+  function! s:VimwikiHelp() abort
+    let lines = [
+      \ '  VimWiki Cheatsheet  (leader = ,)       ',
+      \ ' ─────────────────────────────────────── ',
+      \ '  Navigation                              ',
+      \ '   ,ww       Open index                  ',
+      \ '   ,wd       Open diary index             ',
+      \ '   ,w,w      Today''s diary entry          ',
+      \ '   <Enter>   Follow / create link         ',
+      \ '   <BS>      Go back                      ',
+      \ '   <Tab>     Next link on page            ',
+      \ '   <S-Tab>   Previous link on page        ',
+      \ ' ─────────────────────────────────────── ',
+      \ '  Editing                                 ',
+      \ '   ,wn       New wiki page                ',
+      \ '   =         Increase heading level       ',
+      \ '   -         Decrease heading level       ',
+      \ ' ─────────────────────────────────────── ',
+      \ '  Diary                                   ',
+      \ '   ,w,w      Today                        ',
+      \ '   ,w,t      Today in new tab             ',
+      \ '   ,w,y      Yesterday                    ',
+      \ '   ,w,m      Tomorrow                     ',
+      \ ' ─────────────────────────────────────── ',
+      \ '  Lists (insert mode)                     ',
+      \ '   <C-Space> Toggle checkbox [ ] → [X]   ',
+      \ ' ─────────────────────────────────────── ',
+      \ '   ,w?      This cheatsheet                 ',
+      \ ' ─────────────────────────────────────── ',
+      \ '        <Esc> / q / <Enter> to close      ',
+      \ ]
+    let width  = max(map(copy(lines), 'len(v:val)'))
+    let height = len(lines)
+    let row    = (&lines   - height) / 2
+    let col    = (&columns - width)  / 2
+    let buf = nvim_create_buf(v:false, v:true)
+    call nvim_buf_set_lines(buf, 0, -1, v:true, lines)
+    call nvim_buf_set_option(buf, 'modifiable', v:false)
+    call nvim_buf_set_option(buf, 'bufhidden',  'wipe')
+    call nvim_open_win(buf, v:true, {
+      \ 'relative': 'editor',
+      \ 'width':    width,
+      \ 'height':   height,
+      \ 'row':      row,
+      \ 'col':      col,
+      \ 'style':    'minimal',
+      \ 'border':   'rounded',
+      \ })
+    nnoremap <buffer> <Esc>   :close<CR>
+    nnoremap <buffer> q       :close<CR>
+    nnoremap <buffer> <CR>    :close<CR>
+  endfunction
+  nnoremap <leader>w? :call <SID>VimwikiHelp()<CR>
 endif
