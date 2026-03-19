@@ -56,9 +56,11 @@ link "$DOTFILES/fastfetch/ublue-fastfetch.json" "$HOME/.config/ublue-fastfetch.j
 touch "$HOME/.config/no-show-user-motd"
 
 # Claude Code
-link "$DOTFILES/claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
-link "$DOTFILES/claude/settings.json"         "$HOME/.claude/settings.json"
-link "$DOTFILES/claude/settings.local.json"   "$HOME/.claude/settings.local.json"
+mkdir -p "$HOME/.claude/hooks"
+link "$DOTFILES/claude/statusline-command.sh"                  "$HOME/.claude/statusline-command.sh"
+link "$DOTFILES/claude/settings.json"                          "$HOME/.claude/settings.json"
+link "$DOTFILES/claude/settings.local.json"                    "$HOME/.claude/settings.local.json"
+link "$DOTFILES/claude/hooks/auto-approve-allowed-commands.sh" "$HOME/.claude/hooks/auto-approve-allowed-commands.sh"
 # Skills and commands — link each entry individually so ~/.claude/{skills,commands}
 # can still hold non-tracked items (e.g. auto-memory files generated at runtime)
 for skill_dir in "$DOTFILES/claude/skills/"*/; do

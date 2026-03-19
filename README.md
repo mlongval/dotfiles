@@ -46,7 +46,7 @@ dconf load / < ~/dotfiles/dconf-backup.ini
 curl -fsSL https://claude.ai/install.sh | bash
 claude login
 ```
-Symlinks from `install.sh` will have already placed your settings, statusline, skills, and commands into `~/.claude/`.
+Symlinks from `install.sh` will have already placed your settings, statusline, skills, commands, and hooks into `~/.claude/`.
 
 ---
 
@@ -100,7 +100,7 @@ Run it before wiping a machine, or periodically to keep the repo current. Then c
 | `nvim/` | Neovim |
 | `vim/` | Vim (plugins managed by vim-plug, not tracked) |
 | `ranger/` | ranger file manager |
-| `claude/` | Claude Code — statusline, settings, skills, commands |
+| `claude/` | Claude Code — statusline, settings, skills, commands, hooks |
 | `powerlevel10k/` | p10k prompt theme (submodule) |
 | `tmux/plugins/tpm` | Tmux Plugin Manager (submodule) |
 | `Brewfile` | Homebrew package list (auto-generated) |
