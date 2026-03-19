@@ -5,7 +5,7 @@ source $HOME/.bash_aliases
 
 # Disable passwordless sudo if it was left enabled
 if [ -f /etc/sudoers.d/doc-nopasswd ]; then
-    sudo toggle-sudo disable
+    sudo toggle-sudo disable 2>/dev/null || true
 fi
 
 # Greeting — skip inside distrobox (host already showed it before entering)
