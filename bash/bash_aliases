@@ -155,7 +155,7 @@ alias clip="$HOME/bin/clipper"
 #alias preview="open -f -a /Applications/Preview.app/"
 
 # only works on Linux systems
-alias xopen='xdg-open'
+alias open='xdg-open &>/dev/null'
 
 
 # alias to open ranger in current directory
@@ -419,4 +419,9 @@ workas() {
     esac
     echo "Claude label set: $icon  $1"
   fi
+}
+
+# Added by claude-code-plus for shell alias
+claude+() {
+  env -u TMUX SHELL="/bin/bash" CLAUDE_CODE_PLUS=1 command claude "$@"
 }
