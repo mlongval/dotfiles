@@ -79,5 +79,5 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 
 # Added by claude-code-plus for shell alias
 claude+() {
-  env -u TMUX SHELL="/bin/bash" CLAUDE_CODE_PLUS=1 command claude "$@"
+  env -u TMUX SHELL="/bin/bash" CLAUDE_CODE_PLUS=1 claude "$@"
 }
