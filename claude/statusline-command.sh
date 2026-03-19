@@ -21,6 +21,7 @@ THM_PINK="245;194;231"     # project
 THM_BLUE="137;180;250"     # context
 THM_TEAL="148;226;213"     # distrobox
 THM_YELLOW="249;226;175"   # effort
+THM_GREEN="166;227;161"    # claude-code-plus
 
 # Powerline glyphs
 L_CAP=$'\ue0b6'  # left rounded cap
@@ -131,6 +132,11 @@ if [ -n "$used" ]; then
   fi
   printf " "
   pill "$THM_BLUE" "$mood" "${used_int}%"
+fi
+
+if [ -n "$CLAUDE_CODE_PLUS" ]; then
+  printf " "
+  pill "$THM_GREEN" "󰐅" "CCPlus"
 fi
 
 effort=$(echo "$input" | jq -r '.effort // empty')

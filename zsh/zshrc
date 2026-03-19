@@ -44,6 +44,9 @@ SAVEHIST=1000
 bindkey -v
 bindkey -M viins 'jk' vi-cmd-mode
 
+# Options
+setopt AUTO_CD
+
 # Completion
 zstyle :compinstall filename '$HOME/.zshrc'
 autoload -Uz compinit
@@ -73,3 +76,8 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 [ -f "$HOME/.openclaw/completions/openclaw.zsh" ] && source "$HOME/.openclaw/completions/openclaw.zsh"
 
 . "$HOME/.local/bin/env"
+
+# Added by claude-code-plus for shell alias
+claude+() {
+  env -u TMUX SHELL="/bin/bash" CLAUDE_CODE_PLUS=1 command claude "$@"
+}

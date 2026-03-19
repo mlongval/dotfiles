@@ -67,3 +67,4 @@ if [ -n "$CONTAINER_ID" ] && [ -n "$TMUX" ]; then
 fi
 
 . "$HOME/.local/bin/env"
+
