@@ -120,3 +120,9 @@ Managed by [vim-plug](https://github.com/juniper/vim-plug), **not** tracked in t
 ## SSH agent
 
 The zshrc automatically starts the SSH agent and loads `~/.ssh/id_ed25519` on login. `git push/pull` will work without manual `ssh-add` after the first shell session.
+
+## Bluefin / distrobox notes
+
+On Bluefin (t480i5), the shell auto-enters the `DailyUse` distrobox on login. Inside that container, `/home/linuxbrew` is mounted **read-only** by design — Homebrew is intended to be managed from the host shell only.
+
+A `brew()` function in `bash/bash_functions` handles this transparently: when called inside a distrobox container where `/home/linuxbrew` is not writable, it delegates to `distrobox-host-exec brew`. On all other systems (Ubuntu, plain Fedora, host Bluefin shell) it calls brew directly. No configuration needed.
