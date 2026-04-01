@@ -140,3 +140,13 @@ function frog() {
 function bak() {
     cp "$1" "${1}.bak"
 }
+
+# On Bluefin distrobox containers, /home/linuxbrew is mounted read-only.
+# Redirect brew calls to the host so installs/upgrades work correctly.
+brew() {
+    if [ -n "$CONTAINER_ID" ] && [ -d /home/linuxbrew ] && [ ! -w /home/linuxbrew ]; then
+        distrobox-host-exec brew "$@"
+    else
+        command brew "$@"
+    fi
+}
