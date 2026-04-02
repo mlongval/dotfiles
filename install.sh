@@ -49,6 +49,10 @@ link "$DOTFILES/nvim" "$HOME/.config/nvim"
 # Other tools
 link "$DOTFILES/ranger" "$HOME/.config/ranger"
 
+# Foot terminal
+mkdir -p "$HOME/.config/foot"
+link "$DOTFILES/foot/foot.ini" "$HOME/.config/foot/foot.ini"
+
 # Fastfetch
 mkdir -p "$HOME/.config/fastfetch"
 link "$DOTFILES/fastfetch/bluefin.jsonc"        "$HOME/.config/fastfetch/bluefin.jsonc"
