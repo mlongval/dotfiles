@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILE=$(wl-paste)
+FILE=$(cat /tmp/works_selected)
 
 if [ -e "$FILE" ]; then
     install -m 0755 "$FILE" "$1"

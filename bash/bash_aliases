@@ -286,8 +286,68 @@ alias ktailctl='env -u SESSION_MANAGER flatpak run org.fkoehler.KTailctl'
 
 # shortcut to my work directory
 alias work="cd ~/WORK"
-alias worker="work;r."
-alias works="work;vah"
+
+worker() {
+  local dir="${1:-$HOME/WORK}"
+  cd "$dir" && ranger "$dir"
+}
+
+works() {
+  local dir="${1:-$HOME/WORK/CLINICAL_NOTE/CLINIC_EXT_SM/NOTES_EN_COURS/PAR_AN}"
+  cd "$dir" || return
+  local query="" line1 line2 filelist
+  filelist=$(find . -type f ! -name "*.pdf" | sort -r)
+  while true; do
+    { IFS= read -r line1; IFS= read -r line2; } < <(
+      echo "$filelist" | fzf \
+        --prompt="Patient: " --border=rounded --height=100% \
+        --preview="cat {}" --preview-window=right:60%:wrap \
+        --print-query --query="$query"
+    )
+    query="$line1"
+    [ -z "$line2" ] && break
+    printf '%s' "$(echo "$line2" | sed "s|^\./|${dir}/|")" > /tmp/works_selected
+    echo "Copied: $line2"
+  done
+}
+
+# Open a clinical session: left pane = worker (Ranger), right pane = works (fzf)
+# Usage: worksession           -> ~/WORK
+#        worksession --test    -> PRACTICE_WORK
+#        worksession /some/dir -> custom directory
+worksession() {
+  local dir="$HOME/WORK"
+  if [ "$1" = "--test" ]; then
+    dir="/media/doc/Internal_3TB/Documents/Projects/ClinicalNotesSystem/PRACTICE_WORK"
+  elif [ -n "$1" ]; then
+    dir="$1"
+  fi
+
+  # If not inside tmux, warn and exit
+  if [ -z "$TMUX" ]; then
+    echo "worksession must be run inside a tmux session."
+    return 1
+  fi
+
+  # Left pane: Ranger
+  tmux send-keys "worker '$dir'" Enter
+
+  # Right pane: works (fzf loop)
+  tmux split-window -h
+  tmux send-keys "works '$dir'" Enter
+
+  # Focus left pane
+  tmux select-pane -L
+}
+
+clinic() {
+  local work_root="/media/doc/Internal_3TB/Documents/Projects/ClinicalNotesSystem/PRACTICE_WORK"
+  if [ "$1" = "--live" ]; then
+    work_root="$HOME/WORK"
+  fi
+  nvim -c "lua dofile('/media/doc/Internal_3TB/Documents/Projects/ClinicalNotesSystem/neovim/newnote.lua').setup({ work_root = '${work_root}' })" \
+       -c "NewNote"
+}
 
 # alias cb to clipboard
 alias cb=clipboard
