@@ -204,6 +204,22 @@ source ~/.vim/functions.vim
 " Neovim-only
 " ============================================================
 if has('nvim')
+  " OSC 52 clipboard — works over SSH/tmux without display server
+  set clipboard=unnamedplus
+  lua << EOF
+  vim.g.clipboard = {
+    name = 'OSC 52',
+    copy = {
+      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+    },
+    paste = {
+      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+    },
+  }
+EOF
+
   lua require('hardcopy').setup()
   " dressing.nvim — prettier vim.ui.select and vim.ui.input
   lua require('dressing').setup({})
