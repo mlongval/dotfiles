@@ -1,24 +1,34 @@
 #!/bin/bash
 
 SUDOERS_FILE="/etc/sudoers.d/doc-nopasswd"
+TIMER_UNIT="sudo-revert"
+TIMEOUT="${2:-15min}"
 
 if [ "$(id -u)" -ne 0 ]; then
-    echo "Must be run as root: sudo toggle-sudo [enable|disable]"
+    echo "Must be run as root: sudo toggle-sudo [enable|disable] [timeout]"
     exit 1
 fi
+
+_cancel_timer() {
+    systemctl stop "${TIMER_UNIT}.timer" 2>/dev/null || true
+}
 
 case "$1" in
     enable)
         echo "doc ALL=(ALL) NOPASSWD: ALL" > "$SUDOERS_FILE"
         chmod 440 "$SUDOERS_FILE"
-        echo "Passwordless sudo enabled for doc."
+        _cancel_timer
+        systemd-run --on-active="$TIMEOUT" --unit="$TIMER_UNIT" \
+            /bin/bash -c "rm -f $SUDOERS_FILE"
+        echo "Passwordless sudo enabled for doc (auto-disables in ${TIMEOUT})."
         ;;
     disable)
         rm -f "$SUDOERS_FILE"
+        _cancel_timer
         echo "Passwordless sudo disabled for doc."
         ;;
     *)
-        echo "Usage: sudo toggle-sudo [enable|disable]"
+        echo "Usage: sudo toggle-sudo [enable|disable] [timeout (default: 15min)]"
         exit 1
         ;;
 esac

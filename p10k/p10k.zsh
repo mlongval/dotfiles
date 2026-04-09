@@ -37,6 +37,7 @@
     dir                     # current directory
     vcs                     # git status
     toolbox                 # distrobox/toolbox name
+    sudo_unlocked           # passwordless sudo indicator
     time                    # current time
     # =========================[ Line #2 ]=========================
     newline                 # \n
@@ -1711,6 +1712,17 @@
   # typeset -g POWERLEVEL9K_TIME_VISUAL_IDENTIFIER_EXPANSION='⭐'
   # Custom prefix.
   typeset -g POWERLEVEL9K_TIME_PREFIX=''
+
+  ##############[ sudo_unlocked: indicator when passwordless sudo is active ]###############
+  function prompt_sudo_unlocked() {
+    [[ -f /etc/sudoers.d/doc-nopasswd ]] || return
+    p10k segment -b 1 -f 3 -i $'\uf09c' -t 'NOPASSWD'
+  }
+  function instant_prompt_sudo_unlocked() {
+    prompt_sudo_unlocked
+  }
+  typeset -g POWERLEVEL9K_SUDO_UNLOCKED_FOREGROUND=3   # yellow text
+  typeset -g POWERLEVEL9K_SUDO_UNLOCKED_BACKGROUND=1   # red background
 
   # Example of a user-defined prompt segment. Function prompt_example will be called on every
   # prompt if `example` prompt segment is added to POWERLEVEL9K_LEFT_PROMPT_ELEMENTS or

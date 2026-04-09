@@ -46,25 +46,12 @@ if [[ -z "$TMUX" && -z "$SSH_TTY" ]]; then
     tmux attach -t default 2>/dev/null || tmux new-session -s default
 fi
 
-if [ -d "/home/linuxbrew" ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
-
 # Disable passwordless sudo if it was left enabled
 if [ -f /etc/sudoers.d/doc-nopasswd ]; then
     sudo toggle-sudo disable
 fi
 
-# Auto-enter DailyUse distrobox on t480i5 only
-# Exit the container to reach a host shell; use NO_DISTROBOX=1 to skip
-if [[ "$HOSTNAME" == "t480i5" ]] && [[ -z "$CONTAINER_ID" ]] && [[ -z "$NO_DISTROBOX" ]] && [[ $- == *i* ]]; then
-    distrobox enter DailyUse
-fi
-
-# Propagate container ID to tmux status bar
-if [ -n "$CONTAINER_ID" ] && [ -n "$TMUX" ]; then
-    tmux set -g @container_id "$CONTAINER_ID"
-fi
-
 . "$HOME/.local/bin/env"
 
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

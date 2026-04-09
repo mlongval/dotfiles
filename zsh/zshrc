@@ -1,5 +1,4 @@
 source $HOME/.profile
-export FASTFETCH_CONFIG_FILE="$HOME/.config/ublue-fastfetch.json"
 source $HOME/.functions
 source $HOME/.bash_aliases
 
@@ -8,25 +7,7 @@ if [ -f /etc/sudoers.d/doc-nopasswd ]; then
     sudo toggle-sudo disable 2>/dev/null || true
 fi
 
-# Greeting — skip inside distrobox (host already showed it before entering)
-[[ -z "$CONTAINER_ID" ]] && command -v fastfetch >/dev/null 2>&1 && fastfetch -l none
-
-# Auto-enter DailyUse distrobox on t480i5 only
-# Exit the container to reach a host shell; use NO_DISTROBOX=1 to skip
-if [[ "$HOST" == "t480i5" ]] && [[ -z "$CONTAINER_ID" ]] && [[ -z "$NO_DISTROBOX" ]] && [[ $- == *i* ]]; then
-    if ! distrobox list | grep -q "DailyUse"; then
-        distrobox create --name DailyUse --image registry.fedoraproject.org/fedora:latest --volume /var/home/linuxbrew:/home/linuxbrew:ro --yes
-    fi
-    distrobox enter DailyUse
-    # Returned from distrobox — show host info again
-    command -v ublue-motd >/dev/null 2>&1 && ublue-motd
-    command -v fastfetch >/dev/null 2>&1 && fastfetch -l none
-fi
-
-# Propagate container ID to tmux status bar
-if [ -n "$CONTAINER_ID" ] && [ -n "$TMUX" ]; then
-    tmux set -g @container_id "$CONTAINER_ID"
-fi
+command -v fastfetch >/dev/null 2>&1 && fastfetch -l none
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -63,11 +44,6 @@ source ~/dotfiles/powerlevel10k/powerlevel10k.zsh-theme
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-
-# Linuxbrew
-if [ -d "/home/linuxbrew" ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
 
 
 export PATH="$HOME/.npm-global/bin:$PATH"

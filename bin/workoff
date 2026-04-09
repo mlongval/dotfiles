@@ -2,6 +2,10 @@
 # workoff — unmount and lock the WORK directory
 
 MOUNT="/home/doc/WORK"
+TIMER_UNIT="work-autolock"
+
+# Cancel any pending auto-lock timer
+systemctl --user stop "${TIMER_UNIT}.timer" 2>/dev/null || true
 
 # Check if mounted at all
 if ! mountpoint -q "$MOUNT"; then

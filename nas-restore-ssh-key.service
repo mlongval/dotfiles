@@ -1,0 +1,14 @@
+[Unit]
+Description=Restore SSH key on WD NAS after reboot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=doc
+ExecStart=/home/doc/bin/nas-restore-ssh-key.sh
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

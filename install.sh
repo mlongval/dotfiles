@@ -55,9 +55,6 @@ link "$DOTFILES/foot/foot.ini" "$HOME/.config/foot/foot.ini"
 
 # Fastfetch
 mkdir -p "$HOME/.config/fastfetch"
-link "$DOTFILES/fastfetch/bluefin.jsonc"        "$HOME/.config/fastfetch/bluefin.jsonc"
-link "$DOTFILES/fastfetch/ublue-fastfetch.json" "$HOME/.config/ublue-fastfetch.json"
-touch "$HOME/.config/no-show-user-motd"
 
 # Claude Code
 mkdir -p "$HOME/.claude/hooks"

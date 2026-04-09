@@ -205,20 +205,23 @@ source ~/.vim/functions.vim
 " ============================================================
 if has('nvim')
   " OSC 52 clipboard — works over SSH/tmux without display server
+  " Module only exists in nvim 0.10+; on 0.9.x wl-clipboard handles it
   set clipboard=unnamedplus
-  lua << EOF
-  vim.g.clipboard = {
-    name = 'OSC 52',
-    copy = {
-      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-    },
-    paste = {
-      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-    },
-  }
+  if has('nvim-0.10')
+    lua << EOF
+    vim.g.clipboard = {
+      name = 'OSC 52',
+      copy = {
+        ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+      },
+      paste = {
+        ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+      },
+    }
 EOF
+  endif
 
   lua require('hardcopy').setup()
   " dressing.nvim — prettier vim.ui.select and vim.ui.input

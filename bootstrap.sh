@@ -14,16 +14,9 @@ else
     echo "    Found existing $SSH_KEY"
 fi
 
-echo "==> Checking for brew..."
-if ! command -v brew &>/dev/null; then
-    echo "    Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
-
 echo "==> Checking for gh CLI..."
 if ! command -v gh &>/dev/null; then
-    brew install gh
+    sudo dnf install -y gh
 fi
 
 echo "==> Logging into GitHub (follow the prompts)..."

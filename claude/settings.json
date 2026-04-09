@@ -1,32 +1,4 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": ".*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "jq -r '[\"[\" + (now | strftime(\"%Y-%m-%d %H:%M:%S\")) + \"]\", .tool_name, (.tool_input | to_entries | map(.key + \"=\" + (.value | tostring | .[0:80])) | join(\" \"))] | join(\" \")' >> $HOME/.claude/activity.log"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/auto-approve-allowed-commands.sh"
-          }
-        ]
-      }
-    ]
-  },
   "env": {
     "SHELL": "/bin/bash"
   },
@@ -920,5 +892,36 @@
       "WebSearch",
       "mcp__ide__getDiagnostics"
     ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '[\"[\" + (now | strftime(\"%Y-%m-%d %H:%M:%S\")) + \"]\", .tool_name, (.tool_input | to_entries | map(.key + \"=\" + (.value | tostring | .[0:80])) | join(\" \"))] | join(\" \")' >> $HOME/.claude/activity.log"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/auto-approve-allowed-commands.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "telegram@claude-plugins-official": true
   }
 }

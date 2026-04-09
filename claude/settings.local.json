@@ -11,7 +11,28 @@
       "Bash(ss:*)",
       "Bash(xargs ls -la)",
       "Bash(getent passwd:*)",
-      "Bash(ssh ubuntu-s1:*)"
+      "Bash(ssh ubuntu-s1:*)",
+      "Bash(docker exec:*)",
+      "Bash(systemctl --user cat calibre-consume.service)",
+      "Read(//etc/systemd/system/**)",
+      "Bash(chmod +x /home/doc/bin/rescue_external.sh)",
+      "Bash(bash /home/doc/bin/rescue_external.sh)",
+      "Read(//media/doc/Internal_2TB/Emulation/**)",
+      "Read(//media/doc/Internal_3TB/**)",
+      "Read(//media/doc/Internal_3TB/Documents/**)",
+      "Bash(mkdir -p /media/doc/Internal_3TB/Emulation)",
+      "Bash(mv /media/doc/Internal_3TB/Documents/Emulators/* /media/doc/Internal_3TB/Emulation/)",
+      "Bash(rsync -a --remove-source-files /media/doc/Internal_2TB/Emulation/ /media/doc/Internal_3TB/Emulation/)",
+      "Bash(rmdir --ignore-fail-on-non-empty /media/doc/Internal_2TB/Emulation)",
+      "Bash(mv /media/doc/External_BUP_5TB/doc_stuff_various/Downloads/MAME_0.185_ROMs_split.zip /media/doc/Internal_3TB/Emulation/)",
+      "Bash(mv /media/doc/External_BUP_5TB/doc_stuff_various/Downloads/SegaGenesisUSAroms.zip /media/doc/Internal_3TB/Emulation/)",
+      "Bash(mkdir -p ~/.claude/channels/telegram)",
+      "Bash(chmod +x:*)",
+      "Bash(findmnt /media/doc/Internal_3TB --output OPTIONS -n)",
+      "Bash(mount)",
+      "Bash(dmesg --since \"2026-04-09 00:00:00\")",
+      "Bash(crontab:*)",
+      "Bash(python3:*)"
     ]
   }
 }

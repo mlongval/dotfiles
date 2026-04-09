@@ -281,9 +281,6 @@ alias beeper="$HOME/bin/beeper-3.70.17.AppImage 1>/dev/null 2>/dev/null &"
 # set bottom to btop and run with default-light
 #alias btop="bottom --color default-light"
 
-# alias to run ktailctl
-alias ktailctl='env -u SESSION_MANAGER flatpak run org.fkoehler.KTailctl'
-
 # shortcut to my work directory
 alias work="cd ~/WORK"
 

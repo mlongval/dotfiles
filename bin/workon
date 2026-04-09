@@ -1,8 +1,12 @@
 #!/bin/bash
 # workon — unlock and mount the WORK directory
+# Usage: workon [timeout]   e.g. workon 2h, workon 30min
 
 ENCRYPTED="/home/doc/WORK.encrypted"
 MOUNT="/home/doc/WORK"
+WORKOFF="$(dirname "$(realpath "$0")")/workoff"
+TIMER_UNIT="work-autolock"
+TIMEOUT="${1:-}"
 
 # Check if already mounted
 if mountpoint -q "$MOUNT"; then
@@ -13,9 +17,17 @@ fi
 echo "🔐 Unlocking WORK..."
 gocryptfs "$ENCRYPTED" "$MOUNT"
 
-if mountpoint -q "$MOUNT"; then
-    echo "✓ WORK is now unlocked at $MOUNT"
-else
+if ! mountpoint -q "$MOUNT"; then
     echo "✗ Failed to mount WORK" >&2
     exit 1
+fi
+
+systemctl --user stop "${TIMER_UNIT}.timer" 2>/dev/null || true
+
+if [[ -n "$TIMEOUT" ]]; then
+    systemd-run --user --on-active="$TIMEOUT" --unit="$TIMER_UNIT" "$WORKOFF"
+    echo "✓ WORK is now unlocked at $MOUNT (auto-locks in ${TIMEOUT})"
+else
+    systemd-run --user --on-calendar="*-*-* 02:00:00" --unit="$TIMER_UNIT" "$WORKOFF"
+    echo "✓ WORK is now unlocked at $MOUNT (auto-locks at 02:00)"
 fi
