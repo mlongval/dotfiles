@@ -59,6 +59,8 @@ git clone --recurse-submodules git@github.com:mlongval/dotfiles.git ~/dotfiles
 
 `install.sh` is safe to re-run at any time — it will update or recreate all symlinks without touching the underlying files.
 
+> **Requires:** `curl` (to fetch `uv` on first run). `install.sh` automatically installs `uv` and `pynvim` for the Neovim Python provider (`UltiSnips`, etc.) via `bin/setup-neovim-python.sh`.
+
 ---
 
 ## Re-running install.sh

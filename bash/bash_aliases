@@ -287,6 +287,10 @@ alias ktailctl='env -u SESSION_MANAGER flatpak run org.fkoehler.KTailctl'
 # shortcut to my work directory
 alias work="cd ~/WORK"
 
+
+# shortcut to get to server
+alias ubu="ssh ubuntu-s1"
+
 worker() {
   local dir="${1:-$HOME/WORK}"
   cd "$dir" && ranger "$dir"

@@ -83,4 +83,7 @@ EOF
 chmod +x "$HOOK"
 echo "  post-merge hook installed"
 
+echo "==> Setting up Neovim Python provider (uv + pynvim)..."
+bash "$DOTFILES/bin/setup-neovim-python.sh"
+
 echo "Done."
