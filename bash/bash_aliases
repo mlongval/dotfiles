@@ -296,19 +296,23 @@ worker() {
 works() {
   local dir="${1:-$HOME/WORK/CLINICAL_NOTE/CLINIC_EXT_SM/NOTES_EN_COURS/PAR_AN}"
   cd "$dir" || return
-  local query="" line1 line2 filelist
+  local query="" key selected filelist
   filelist=$(find . -type f ! -name "*.pdf" | sort -r)
   while true; do
-    { IFS= read -r line1; IFS= read -r line2; } < <(
+    { IFS= read -r query; IFS= read -r key; IFS= read -r selected; } < <(
       echo "$filelist" | fzf \
         --prompt="Patient: " --border=rounded --height=100% \
         --preview="cat {}" --preview-window=right:60%:wrap \
+        --expect=tab \
         --print-query --query="$query"
     )
-    query="$line1"
-    [ -z "$line2" ] && break
-    printf '%s' "$(echo "$line2" | sed "s|^\./|${dir}/|")" > /tmp/works_selected
-    echo "Copied: $line2"
+    [ -z "$selected" ] && break
+    if [ "$key" = "tab" ]; then
+      $EDITOR "$(echo "$selected" | sed "s|^\./|${dir}/|")"
+    else
+      printf '%s' "$(echo "$selected" | sed "s|^\./|${dir}/|")" > /tmp/works_selected
+      echo "Copied: $selected"
+    fi
   done
 }
 
