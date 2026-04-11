@@ -196,6 +196,8 @@ alias sshfsmacpro="sshfs doc@macpro.local:/home/doc/ $HOME/MacPro/"
 
 alias 3mo='clear;ccal -e --nocol -3'
 
+# shortcut to clear using Commodore 64 syntax
+alias cls=clear
 # open links2 to search web via CLI
 alias web='links2 '
 alias gweb='links2 -g -html-user-font-size 28 '
@@ -373,6 +375,10 @@ alias chat=chatgpt-cli
 alias lc="wc -l"
 # my favorite ripgrep
 alias rg1="rg -H -e "
+
+# alias for claude with skip-permissions
+#
+alias dangerous_claude="claude --dangerously-skip-permissions"
 
 # claude — wrapper that auto-discovers .clauderc before launching Claude Code.
 # Walks up from $PWD looking for .clauderc (mirrors statusline logic).
