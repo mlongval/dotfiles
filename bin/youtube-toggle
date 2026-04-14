@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Toggle YouTube access via /etc/hosts blocking
+# Usage: youtube-toggle [on|off|status]
+# A cron job resets access to ON at midnight.
+
+HOSTS_FILE="/etc/hosts"
+BLOCK_MARKER="# youtube-toggle-block"
+YOUTUBE_DOMAINS=(
+    "youtube.com"
+    "www.youtube.com"
+    "m.youtube.com"
+    "youtu.be"
+    "youtubei.googleapis.com"
+    "yt3.ggpht.com"
+    "ytimg.com"
+    "s.ytimg.com"
+    "i.ytimg.com"
+)
+
+is_blocked() {
+    grep -q "$BLOCK_MARKER" "$HOSTS_FILE" 2>/dev/null
+}
+
+block_youtube() {
+    if is_blocked; then
+        echo "YouTube is already blocked."
+        return 0
+    fi
+    {
+        echo ""
+        echo "$BLOCK_MARKER"
+        for domain in "${YOUTUBE_DOMAINS[@]}"; do
+            echo "127.0.0.1 $domain"
+        done
+        echo "# youtube-toggle-end"
+    } | sudo tee -a "$HOSTS_FILE" > /dev/null
+    echo "YouTube access: OFF"
+}
+
+unblock_youtube() {
+    if ! is_blocked; then
+        echo "YouTube is already unblocked."
+        return 0
+    fi
+    sudo sed -i "/$BLOCK_MARKER/,/# youtube-toggle-end/d" "$HOSTS_FILE"
+    echo "YouTube access: ON"
+}
+
+status_youtube() {
+    if is_blocked; then
+        echo "YouTube access: OFF (blocked)"
+    else
+        echo "YouTube access: ON"
+    fi
+}
+
+case "${1:-status}" in
+    off)   block_youtube ;;
+    on)    unblock_youtube ;;
+    status) status_youtube ;;
+    *)
+        echo "Usage: $(basename "$0") [on|off|status]"
+        echo "  on     - allow YouTube"
+        echo "  off    - block YouTube"
+        echo "  status - show current state (default)"
+        exit 1
+        ;;
+esac
