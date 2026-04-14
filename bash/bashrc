@@ -42,9 +42,9 @@ fi
 export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
 
 # Auto-start tmux for local sessions only (SSH sessions skip to avoid nesting)
-if [[ -z "$TMUX" && -z "$SSH_TTY" && -z "$TMUX_NOATTACH" ]]; then
-    tmux attach -t default 2>/dev/null || tmux new-session -s default
-fi
+#if [[ -z "$TMUX" && -z "$SSH_TTY" ]]; then
+#    tmux attach -t default 2>/dev/null || tmux new-session -s default
+#fi
 
 # Disable passwordless sudo if it was left enabled
 if [ -f /etc/sudoers.d/doc-nopasswd ]; then
@@ -55,5 +55,5 @@ fi
 
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
