@@ -2246,3 +2246,34 @@ class paste_and_chmod(Command):
         else:
             fm.notify("Nothing chmod'ed (paste still in progress or no matches).", bad=True)
 
+
+class confirm_delete(Command):
+    """:confirm_delete
+
+    Shows a warning in the status bar then opens the safe_delete console prompt.
+    """
+
+    def execute(self):
+        self.fm.open_console('safe_delete ')
+        self.fm.notify("Type DELETE (uppercase) to confirm — anything else aborts.")
+
+
+class safe_delete(Command):
+    """:safe_delete DELETE
+
+    Deletes selected files only if the user types DELETE (uppercase) to confirm.
+    Bind to a key via: map <key> console safe_delete%space
+    """
+
+    def execute(self):
+        if self.rest(1) == 'DELETE':
+            cwd = self.fm.thisdir
+            tfile = self.fm.thisfile
+            if not cwd or not tfile:
+                self.fm.notify("Error: no file selected for deletion!", bad=True)
+                return
+            files = [f.relative_path for f in self.fm.thistab.get_selection()]
+            self.fm.delete(files)
+        else:
+            self.fm.notify("Aborted: you must type DELETE in uppercase to confirm.", bad=True)
+
