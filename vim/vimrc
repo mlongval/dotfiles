@@ -141,9 +141,8 @@ imap jk <ESC>:StripWhitespace<CR><ESC>
 map  <leader>s :StripWhitespace<CR>
 
 " Clipboard (Wayland)
-map  <leader>x :w !/bin/wl-copy<CR><CR>
-map  <leader>c :w !/bin/wl-copy<CR><CR>
-map  <leader>C <esc>ggvGg_:w !/bin/wl-copy<CR><CR>
+vmap <leader>c "+y
+map  <leader>C <esc>ggvGg_"+y
 map  <leader>p "+p
 map  <leader>P "+p
 vmap <C-c> "+yi
@@ -224,6 +223,7 @@ EOF
   endif
 
   lua require('hardcopy').setup()
+  lua require('patientnote').setup()
   " dressing.nvim — prettier vim.ui.select and vim.ui.input
   lua require('dressing').setup({})
 

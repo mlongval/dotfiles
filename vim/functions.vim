@@ -40,33 +40,25 @@ endfunction
 " Function: Print to PDF in current directory
 function! PrintToPdf_PWD()
     let full_name = expand('%')
-    let headerstring = fnameescape(full_name . "||$% / $=")
-    let text_path_conv = full_name . '.txt'
     let ps_path = full_name . '.ps'
     let pdf_output = full_name . '.pdf'
-    silent execute '!iconv -f utf-8 -t iso-8859-1 -o ' . text_path_conv . ' ' . full_name . ' > /dev/null 2>&1'
-    silent execute '!enscript --header=' . headerstring . ' -X 88591 -o ' . ps_path . ' ' . text_path_conv . ' > /dev/null 2>&1'
+    silent execute '!paps ' . fnameescape(full_name) . ' --font=Monospace --paper letter > ' . fnameescape(ps_path) . ' 2>/dev/null'
     silent execute '!ps2pdf ' . fnameescape(ps_path) . ' ' . fnameescape(pdf_output) . ' > /dev/null 2>&1'
-    silent execute '!rm ' . text_path_conv
-    silent execute '!rm ' . ps_path
+    silent execute '!rm ' . fnameescape(ps_path)
     silent execute '!mkdir -p PDF'
-    silent execute '!mv ' . pdf_output . ' PDF/'
+    silent execute '!mv ' . fnameescape(pdf_output) . ' PDF/'
     redraw!
 endfunction
 
 " Function: Print to PDF with date suffix
 function! PrintToPdf_PWD_with_date()
     let full_name = expand('%')
-    let headerstring = fnameescape(full_name . "||$% / $=")
-    let text_path_conv = full_name . '.txt'
     let ps_path = full_name . '.ps'
     let pdf_output = full_name . '_' . trim(expand('%:p:h:t')) . '.pdf'
-    silent execute '!iconv -f utf-8 -t iso-8859-1 -o ' . text_path_conv . ' ' . full_name . ' > /dev/null 2>&1'
-    silent execute '!enscript --header=' . headerstring . ' -X 88591 -o ' . ps_path . ' ' . text_path_conv . ' > /dev/null 2>&1'
+    silent execute '!paps ' . fnameescape(full_name) . ' --font=Monospace --paper letter > ' . fnameescape(ps_path) . ' 2>/dev/null'
     silent execute '!ps2pdf ' . fnameescape(ps_path) . ' ' . fnameescape(pdf_output) . ' > /dev/null 2>&1'
-    silent execute '!rm ' . text_path_conv
-    silent execute '!rm ' . ps_path
+    silent execute '!rm ' . fnameescape(ps_path)
     silent execute '!mkdir -p PDF'
-    silent execute '!mv ' . pdf_output . ' PDF/'
+    silent execute '!mv ' . fnameescape(pdf_output) . ' PDF/'
     redraw!
 endfunction

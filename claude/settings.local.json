@@ -33,9 +33,11 @@
       "Bash(dmesg --since \"2026-04-09 00:00:00\")",
       "Bash(crontab:*)",
       "Bash(python3:*)",
-      "Bash(/usr/sbin/tailscale status:*)",
       "Bash(last -x reboot shutdown)",
-      "Bash(lsblk -d -o NAME,SIZE,MODEL,TRAN)"
+      "Bash(lsblk -d -o NAME,SIZE,MODEL,TRAN)",
+      "Bash(ssh:*)",
+      "Read(//home/linuxbrew/.linuxbrew/bin/**)",
+      "Read(//home/linuxbrew/.linuxbrew/Cellar/superfile/**)"
     ]
   }
 }

@@ -163,6 +163,9 @@ alias r.="ranger $HOME/WORK"
 alias r2.="ranger --cmd='set column_ratios 1,2' $HOME/WORK"
 alias r3.="ranger --cmd='set column_ratios 1,2,3' $HOME/WORK"
 
+alias rangercd="ranger-cd"
+alias rcd="ranger-cd"
+
 alias evimab="vim $HOME/.vim/plugin/020_abbreviations.vim"
 #alias evimrc="vim $HOME/.vimrc"
 alias evimsnip="vim ~/.vim/my_snippets/all.snippets"
@@ -291,31 +294,41 @@ alias work="cd ~/WORK"
 alias ubu="ssh ubuntu-s1"
 
 worker() {
-  local dir="${1:-$HOME/WORK}"
+  local dir="${1:-$HOME/WORK/CLINICAL_NOTE/CLINIC_EXT_SM/NOTES_EN_COURS/PAR_AN/}"
   cd "$dir" && ranger "$dir"
 }
 
 works() {
-  local dir="${1:-$HOME/WORK/CLINICAL_NOTE/CLINIC_EXT_SM/NOTES_EN_COURS/PAR_AN}"
+  local dir="${1:-$HOME/WORK/CLINICAL_NOTE/CLINIC_EXT_SM/NOTES_EN_COURS/PAR_AN/}"
   cd "$dir" || return
-  local query="" key selected filelist
+  local query="" key selected filelist output
   filelist=$(find . -type f ! -name "*.pdf" | sort -r)
   while true; do
-    { IFS= read -r query; IFS= read -r key; IFS= read -r selected; } < <(
-      echo "$filelist" | fzf \
-        --prompt="Patient: " --border=rounded --height=100% \
-        --preview="cat {}" --preview-window=right:60%:wrap \
-        --expect=tab \
-        --print-query --query="$query"
-    )
+    output=$(printf '%s\n' "$filelist" | fzf \
+      --prompt="Patient: " --border=rounded \
+      --preview="cat {}" --preview-window=right:60%:wrap \
+      --expect=tab \
+      --print-query --query="$query") || break
+    query=$(printf '%s\n' "$output" | sed -n '1p')
+    key=$(printf '%s\n' "$output" | sed -n '2p')
+    selected=$(printf '%s\n' "$output" | sed -n '3p')
     [ -z "$selected" ] && break
     if [ "$key" = "tab" ]; then
-      $EDITOR "$(echo "$selected" | sed "s|^\./|${dir}/|")"
+      $EDITOR "$(printf '%s\n' "$selected" | sed "s|^\./|${dir}/|")"
     else
-      printf '%s' "$(echo "$selected" | sed "s|^\./|${dir}/|")" > /tmp/works_selected
+      printf '%s' "$(printf '%s\n' "$selected" | sed "s|^\./|${dir}/|")" > /tmp/works_selected
       echo "Copied: $selected"
     fi
   done
+}
+
+practice_worker() {
+  local dir="${1:-/media/doc/Internal_3TB/Documents/Projects/ClinicalNotesSystem/PRACTICE_WORK}"
+  cd "$dir" && ranger "$dir"
+}
+
+practice_works() {
+  works "${1:-/media/doc/Internal_3TB/Documents/Projects/ClinicalNotesSystem/PRACTICE_WORK}"
 }
 
 # Open a clinical session: left pane = worker (Ranger), right pane = works (fzf)
