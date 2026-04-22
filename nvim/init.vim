@@ -149,7 +149,6 @@ map  <leader>s :StripWhitespace<CR>
 vmap <leader>c "+y
 map  <leader>C <esc>ggvGg_"+y
 map  <leader>p "+p
-map  <leader>P "+p
 vmap <C-c> "+yi
 vmap <C-x> "+c
 vmap <C-v> c<ESC>"+p
@@ -186,7 +185,6 @@ autocmd! User GoyoLeave nested call <SID>goyo_leave()
 map  <leader>z <ESC>:ZEN<CR>
 
 " Misc
-map      <leader>P   :!less ~/Documents/phonenumbers_HD.txt<CR>
 map      <leader>n   <ESC>:set number relativenumber<CR>
 nnoremap <leader>nw  :set numberwidth=12<CR>
 nnoremap <BS>        :call ExitAtBufferStart()<CR>
@@ -277,7 +275,6 @@ EOF
       { '<leader>z', desc = 'ZEN mode' },
       { '<leader>q', desc = 'Calendrier + jours fériés' },
       { '<leader>b', desc = 'Batterie (acpi)' },
-      { '<leader>P', desc = 'Répertoire téléphonique' },
       { '<leader>n', desc = 'Afficher les numéros de ligne' },
       -- Groups
       { '<leader>w', group = 'VimWiki' },
