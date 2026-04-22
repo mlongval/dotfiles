@@ -1,1 +1,344 @@
-../vim/vimrc
+" ============================================================
+" Python provider (pynvim via uv)
+" ============================================================
+let s:uv_python = expand('~/.local/share/uv/tools/pynvim/bin/python3')
+if executable(s:uv_python)
+  let g:python3_host_prog = s:uv_python
+endif
+
+" ============================================================
+" Bootstrap vim-plug (auto-installs on new machines)
+" ============================================================
+let s:plug_vim = expand('~/.vim/autoload/plug.vim')
+if empty(glob(s:plug_vim))
+  silent execute '!curl -fLo ' . s:plug_vim . ' --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Allow neovim to share plug.vim from vim's autoload
+if has('nvim') && empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+  silent execute '!mkdir -p ~/.local/share/nvim/site/autoload && ln -sf ' . s:plug_vim . ' ~/.local/share/nvim/site/autoload/plug.vim'
+endif
+
+" ============================================================
+" Plugins
+" ============================================================
+call plug#begin('~/.vim/plugged')
+
+" Writing / Focus
+Plug 'vimwiki/vimwiki'
+Plug 'https://github.com/preservim/vim-pencil'
+Plug 'junegunn/goyo.vim'
+Plug 'https://codeberg.org/turysaz/vim-zenmode'
+
+" Navigation
+Plug 'easymotion/vim-easymotion'
+Plug 'preservim/nerdtree'
+
+" UI
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'ryanoasis/vim-devicons'
+Plug 'yggdroot/indentline'
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+
+" Editing
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'https://github.com/pseewald/vim-anyfold'
+Plug 'https://github.com/SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+
+" Prettification
+Plug 'stevearc/dressing.nvim'
+
+" Key hints popup (neovim only)
+if has('nvim')
+  Plug 'folke/which-key.nvim'
+endif
+call plug#end()
+
+" ============================================================
+" General settings
+" ============================================================
+let s:very_dark_gray = 234
+let s:darker_gray    = 236
+let s:medium_gray    = 240
+let s:light_gray     = 244
+
+set tabstop=4
+set softtabstop=0
+set expandtab
+set shiftwidth=4
+set smarttab
+set autoindent
+set smartcase
+set ignorecase
+set backspace=indent,eol,start
+set helplang=en
+set laststatus=2
+set nomodeline
+set ruler
+set textwidth=56
+set number
+set relativenumber
+set foldmethod=indent
+set foldlevel=99
+set colorcolumn=56
+set spell
+set spelllang+=fr
+set showtabline=0
+set fillchars+=vert:\ ,diff:-
+set numberwidth=4
+set scrolloff=999
+set linebreak
+
+execute 'highlight ColorColumn'  . ' ctermbg=' . s:darker_gray
+highlight SpellBad   ctermfg=NONE ctermbg=NONE cterm=underline gui=underline
+highlight SpellCap   cterm=underline gui=underline
+highlight SpellLocal cterm=underline gui=underline
+highlight SpellRare  cterm=underline gui=underline
+
+" Terminal-only settings
+if !has('nvim')
+  set printfont=courier:h14
+  set printoptions=paper:letter
+endif
+
+" ============================================================
+" Plugin settings
+" ============================================================
+
+" Airline
+let g:airline_left_sep  = ''
+let g:airline_right_sep = ''
+
+" Anyfold
+let g:anyfold_fold_comments = 0
+
+" Vimwiki
+if hostname() == 'ubuntu-s1'
+  let g:vimwiki_list = [{'path': '~/Documents/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+else
+  let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+endif
+
+" UltiSnips
+let g:UltiSnipsSnippetsDir        = '~/.vim/my_snippets'
+let g:UltiSnipsSnippetDirectories = [$HOME . '/.vim/my_snippets', $HOME . '/.vim/UltiSnips']
+let g:UltiSnipsExpandTrigger      = ','
+let g:UltiSnipsJumpForwardTrigger  = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
+
+" ============================================================
+" Key mappings
+" ============================================================
+let mapleader = ','
+
+" EasyMotion
+nmap <leader><leader> <Plug>(easymotion-prefix)
+xmap <leader><leader> <Plug>(easymotion-prefix)
+omap <leader><leader> <Plug>(easymotion-prefix)
+map  f                <leader><leader>
+
+" Escape / whitespace
+imap jk <ESC>:StripWhitespace<CR><ESC>
+map  <leader>s :StripWhitespace<CR>
+
+" Clipboard (Wayland)
+vmap <leader>c "+y
+map  <leader>C <esc>ggvGg_"+y
+map  <leader>p "+p
+map  <leader>P "+p
+vmap <C-c> "+yi
+vmap <C-x> "+c
+vmap <C-v> c<ESC>"+p
+imap <C-v> <ESC>"+pa
+
+" Tabs
+map <leader>T :tabnew<CR>
+map <leader>t :tabnext<CR>
+
+" System / billing / workflow
+map  <leader>b :!clear;acpi<CR>
+map  <leader>B :w !get_bill.sh >> BILLING<CR><CR>
+map  <leader>V :w !get_suivi.sh >> SUIVIS<CR><CR>
+map  <leader>N :w !get_todo.sh >> TODO_LIST.txt<CR><CR>
+map  <leader>D <ESC>:w<CR>:let @a=expand('%')<CR>:execute 'silent! !mkdir -p DONE && mv '.@a.' DONE/'<CR>:q<CR><ESC>
+map  <leader>A :w<ENTER><leader>L<ESC>:!read<CR><leader>W<ESC><leader>C<ESC><leader>B<ESC><leader>V<ESC><leader>D<ESC>:q<ENTER>
+map  <leader>L <ESC>:w<CR><ESC>:!clear && echo 'Linting YAML file.' && yamllint %<CR>
+map  <leader>q :!clear;cal -3; cat ~/Documents/CANADA_HOLIDAYS.txt;<CR>
+map  <leader>g <ESC>:Goyo<CR>
+
+function! s:goyo_enter()
+  let b:goyo_quitting = 0
+  autocmd QuitPre <buffer> let b:goyo_quitting = 1
+endfunction
+
+function! s:goyo_leave()
+  if b:goyo_quitting
+    wq
+  endif
+endfunction
+
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
+map  <leader>z <ESC>:ZEN<CR>
+
+" Misc
+map      <leader>P   :!less ~/Documents/phonenumbers_HD.txt<CR>
+map      <leader>n   <ESC>:set number relativenumber<CR>
+nnoremap <leader>nw  :set numberwidth=12<CR>
+nnoremap <BS>        :call ExitAtBufferStart()<CR>
+nnoremap <Tab>       :call EndOfLineTab()<CR>
+nmap     <F2>        :ZEN<CR>
+nmap     <F7>        :set spell!<CR>
+nmap     zf          [s1z=$
+imap     zf          <esc>[s1z=$a
+nmap     gF          <leader>bb<c-^><cr>
+
+" Disable q (use Q for macros if needed)
+nnoremap q <Nop>
+vnoremap q <Nop>
+
+" Regex helpers
+nnoremap ,d  0f:lD$a<SPACE>
+nnoremap ,:  0f:lD$a<SPACE>
+noremap  ,zr :%s/\([A-Za-z]\+\)\(\d\{4}\)\(\d\{4}\)Exp :\(\d\{4}\)/\1 \2 \3 \4/g<ENTER><ESC>
+
+" ============================================================
+" Cursor shape per mode
+" ============================================================
+let &t_SI .= "\e[5 q"
+let &t_SR .= "\e[4 q"
+let &t_EI .= "\e[1 q"
+
+" ============================================================
+" External files
+" ============================================================
+source ~/.vim/functions.vim
+
+" ============================================================
+" Neovim-only
+" ============================================================
+if has('nvim')
+  " OSC 52 clipboard — works over SSH/tmux without display server
+  " Module only exists in nvim 0.10+; on 0.9.x wl-clipboard handles it
+  set clipboard=unnamedplus
+  if has('nvim-0.10')
+    lua << EOF
+    vim.g.clipboard = {
+      name = 'OSC 52',
+      copy = {
+        ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+      },
+      paste = {
+        ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+      },
+    }
+EOF
+  endif
+
+  lua require('hardcopy').setup()
+  lua require('patientnote').setup()
+  lua require('allergycheck').setup()
+  lua require('fieldreorder').setup()
+  nnoremap <leader>r <cmd>FieldReorder<CR>
+  nnoremap <leader>k <cmd>AllergyCheck<CR>
+  " dressing.nvim — prettier vim.ui.select and vim.ui.input
+  lua require('dressing').setup({})
+
+  " Note printing mappings
+  nnoremap <leader>f <cmd>NotePDF<CR>
+  nnoremap <leader>i <cmd>NotePrint<CR>
+
+  " which-key — leader hint popup (only if installed)
+  lua << EOF
+  local ok, wk = pcall(require, 'which-key')
+  if ok then
+    wk.setup({ delay = 400 })
+    wk.add({
+      -- Clinical note tools
+      { '<leader>f', desc = 'Note → PDF (aperçu)' },
+      { '<leader>i', desc = 'Note → Imprimer' },
+      { '<leader>k', desc = 'Vérifier les allergies' },
+      { '<leader>r', desc = 'Réordonner les champs YAML' },
+      { '<leader>A', desc = 'Compléter la note (lint → PDF → archiver)' },
+      { '<leader>L', desc = 'Valider le YAML (yamllint)' },
+      { '<leader>B', desc = 'Extraire la facturation → BILLING' },
+      { '<leader>V', desc = 'Extraire le suivi → SUIVIS' },
+      { '<leader>N', desc = 'Extraire les tâches → TODO_LIST' },
+      { '<leader>D', desc = 'Archiver → DONE/' },
+      -- General
+      { '<leader>s', desc = 'Supprimer les espaces superflus' },
+      { '<leader>g', desc = 'Goyo — mode focus' },
+      { '<leader>z', desc = 'ZEN mode' },
+      { '<leader>q', desc = 'Calendrier + jours fériés' },
+      { '<leader>b', desc = 'Batterie (acpi)' },
+      { '<leader>P', desc = 'Répertoire téléphonique' },
+      { '<leader>n', desc = 'Afficher les numéros de ligne' },
+      -- Groups
+      { '<leader>w', group = 'VimWiki' },
+      { '<leader>c', group = 'Presse-papier' },
+      { '<leader>t', group = 'Onglets' },
+    })
+  end
+EOF
+
+  " VimWiki cheatsheet popup
+  function! s:VimwikiHelp() abort
+    let lines = [
+      \ '  VimWiki Cheatsheet  (leader = ,)       ',
+      \ ' ─────────────────────────────────────── ',
+      \ '  Navigation                              ',
+      \ '   ,ww       Open index                  ',
+      \ '   ,wd       Open diary index             ',
+      \ '   ,w,w      Today''s diary entry          ',
+      \ '   <Enter>   Follow / create link         ',
+      \ '   <BS>      Go back                      ',
+      \ '   <Tab>     Next link on page            ',
+      \ '   <S-Tab>   Previous link on page        ',
+      \ ' ─────────────────────────────────────── ',
+      \ '  Editing                                 ',
+      \ '   ,wn       New wiki page                ',
+      \ '   =         Increase heading level       ',
+      \ '   -         Decrease heading level       ',
+      \ ' ─────────────────────────────────────── ',
+      \ '  Diary                                   ',
+      \ '   ,w,w      Today                        ',
+      \ '   ,w,t      Today in new tab             ',
+      \ '   ,w,y      Yesterday                    ',
+      \ '   ,w,m      Tomorrow                     ',
+      \ ' ─────────────────────────────────────── ',
+      \ '  Lists (insert mode)                     ',
+      \ '   <C-Space> Toggle checkbox [ ] → [X]   ',
+      \ ' ─────────────────────────────────────── ',
+      \ '   ,w?      This cheatsheet                 ',
+      \ ' ─────────────────────────────────────── ',
+      \ '        <Esc> / q / <Enter> to close      ',
+      \ ]
+    let width  = max(map(copy(lines), 'len(v:val)'))
+    let height = len(lines)
+    let row    = (&lines   - height) / 2
+    let col    = (&columns - width)  / 2
+    let buf = nvim_create_buf(v:false, v:true)
+    call nvim_buf_set_lines(buf, 0, -1, v:true, lines)
+    call nvim_buf_set_option(buf, 'modifiable', v:false)
+    call nvim_buf_set_option(buf, 'bufhidden',  'wipe')
+    call nvim_open_win(buf, v:true, {
+      \ 'relative': 'editor',
+      \ 'width':    width,
+      \ 'height':   height,
+      \ 'row':      row,
+      \ 'col':      col,
+      \ 'style':    'minimal',
+      \ 'border':   'rounded',
+      \ })
+    nnoremap <buffer> <Esc>   :close<CR>
+    nnoremap <buffer> q       :close<CR>
+    nnoremap <buffer> <CR>    :close<CR>
+  endfunction
+  nnoremap <leader>w? :call <SID>VimwikiHelp()<CR>
+endif
