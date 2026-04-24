@@ -78,6 +78,7 @@ else
   # Tier 2: walk up from cwd looking for .clauderc
   _proj_label=""
   _proj_icon=""
+  _found_dir=""
   _dir="${cwd_raw:-$PWD}"
   while [ "$_dir" != "/" ]; do
     if [ -f "$_dir/.clauderc" ]; then
@@ -93,10 +94,17 @@ else
       done < "$_dir/.clauderc"
       _proj_label="$_tmp_LABEL"
       _proj_icon="$_tmp_ICON"
+      _found_dir="$_dir"
       break
     fi
     _dir=$(dirname "$_dir")
   done
+
+  # Skip ~/.clauderc when cwd is a subdirectory — fall through to basename
+  if [ "$_found_dir" = "$HOME" ] && [ "${cwd_raw:-$PWD}" != "$HOME" ]; then
+    _proj_label=""
+    _proj_icon=""
+  fi
 
   if [ -n "$_proj_label" ]; then
     # Tier 2 hit: use file values, fall back to lookup table for icon if absent
@@ -139,7 +147,7 @@ if [ -n "$CLAUDE_CODE_PLUS" ]; then
   pill "$THM_GREEN" "󰐅" "CCPlus"
 fi
 
-effort=$(echo "$input" | jq -r 'if (.effort | type) == "object" then .effort.level else .effort end // empty')
+effort=$(echo "$input" | jq -r '(.effort | if type == "object" then .level else . end) // empty')
 if [ -n "$effort" ]; then
   case "$effort" in
     low)    effort_icon="󰓅" ;;  # speedometer low
