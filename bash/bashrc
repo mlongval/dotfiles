@@ -51,7 +51,7 @@ if [ -f /etc/sudoers.d/doc-nopasswd ]; then
     sudo toggle-sudo disable
 fi
 
-. "$HOME/.local/bin/env"
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
