@@ -37,7 +37,9 @@
       "Bash(lsblk -d -o NAME,SIZE,MODEL,TRAN)",
       "Bash(ssh:*)",
       "Read(//home/linuxbrew/.linuxbrew/bin/**)",
-      "Read(//home/linuxbrew/.linuxbrew/Cellar/superfile/**)"
+      "Read(//home/linuxbrew/.linuxbrew/Cellar/superfile/**)",
+      "Bash(git -C /home/doc/dotfiles submodule status)",
+      "Bash(git *)"
     ]
   }
 }

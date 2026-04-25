@@ -139,7 +139,7 @@ if [ -n "$CLAUDE_CODE_PLUS" ]; then
   pill "$THM_GREEN" "󰐅" "CCPlus"
 fi
 
-effort=$(echo "$input" | jq -r '.effort // empty')
+effort=$(echo "$input" | jq -r 'if (.effort | type) == "object" then .effort.level else .effort end // empty')
 if [ -n "$effort" ]; then
   case "$effort" in
     low)    effort_icon="󰓅" ;;  # speedometer low
