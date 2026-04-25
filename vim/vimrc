@@ -53,6 +53,10 @@ Plug 'honza/vim-snippets'
 Plug 'stevearc/dressing.nvim'
 call plug#end()
 
+if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 " ============================================================
 " General settings
 " ============================================================

@@ -3,6 +3,27 @@ set -e
 
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 
+# =============================================================================
+# Requirements: brew, zsh, neovim
+# =============================================================================
+
+# Install Homebrew if missing
+if ! command -v brew >/dev/null 2>&1; then
+    echo "==> Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # Add brew to PATH for the rest of this script
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+for pkg in zsh neovim; do
+    if ! brew list "$pkg" >/dev/null 2>&1; then
+        echo "==> Installing $pkg via brew..."
+        brew install "$pkg"
+    fi
+done
+
+# =============================================================================
+
 # Init submodules (tpm, powerlevel10k, tmux plugins)
 git -C "$DOTFILES" submodule update --init --recursive
 
@@ -48,6 +69,25 @@ link "$DOTFILES/nvim" "$HOME/.config/nvim"
 
 # Other tools
 link "$DOTFILES/ranger" "$HOME/.config/ranger"
+
+# Fontconfig — alias Adwaita Mono to Nerd Font variant for glyph support
+mkdir -p "$HOME/.config/fontconfig/conf.d"
+link "$DOTFILES/fontconfig/conf.d/99-adwaita-nerd.conf" "$HOME/.config/fontconfig/conf.d/99-adwaita-nerd.conf"
+
+# Download AdwaitaMono Nerd Font if not already installed
+FONT_DIR="$HOME/.fonts/AdwaitaMono"
+if [ ! -d "$FONT_DIR" ]; then
+    echo "==> Downloading AdwaitaMono Nerd Font..."
+    mkdir -p "$FONT_DIR"
+    tmp=$(mktemp /tmp/AdwaitaMono.XXXXXX.zip)
+    curl -fsSL "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/AdwaitaMono.zip" -o "$tmp"
+    unzip -q "$tmp" -d "$FONT_DIR"
+    rm "$tmp"
+    echo "  installed to $FONT_DIR"
+else
+    echo "  AdwaitaMono Nerd Font already installed, skipping"
+fi
+fc-cache -f "$HOME/.fonts"
 
 # Foot terminal
 mkdir -p "$HOME/.config/foot"

@@ -41,5 +41,5 @@
 
 [submodule "tmux/plugins/catppuccin-tmux"]
 	path = tmux/plugins/catppuccin-tmux
-	url = git@github.com:mlongval/catppuccin-tmux.git
+	url = https://github.com/mlongval/catppuccin-tmux.git
 
