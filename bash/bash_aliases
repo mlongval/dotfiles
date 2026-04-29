@@ -293,72 +293,7 @@ alias work="cd ~/WORK"
 # shortcut to get to server
 alias ubu="ssh ubuntu-s1"
 
-worker() {
-  local dir="${1:-$HOME/WORK/CLINICAL_NOTE/CLINIC_EXT_SM/NOTES_EN_COURS/PAR_AN/}"
-  cd "$dir" && ranger "$dir"
-}
 
-works() {
-  local dir="${1:-$HOME/WORK/CLINICAL_NOTE/CLINIC_EXT_SM/NOTES_EN_COURS/PAR_AN/}"
-  cd "$dir" || return
-  local query="" key selected filelist output
-  filelist=$(find . -type f ! -name "*.pdf" | sort -r)
-  while true; do
-    output=$(printf '%s\n' "$filelist" | fzf \
-      --prompt="Patient: " --border=rounded \
-      --preview="cat {}" --preview-window=right:60%:wrap \
-      --expect=tab \
-      --print-query --query="$query") || break
-    query=$(printf '%s\n' "$output" | sed -n '1p')
-    key=$(printf '%s\n' "$output" | sed -n '2p')
-    selected=$(printf '%s\n' "$output" | sed -n '3p')
-    [ -z "$selected" ] && break
-    if [ "$key" = "tab" ]; then
-      $EDITOR "$(printf '%s\n' "$selected" | sed "s|^\./|${dir}/|")"
-    else
-      printf '%s' "$(printf '%s\n' "$selected" | sed "s|^\./|${dir}/|")" > /tmp/works_selected
-      echo "Copied: $selected"
-    fi
-  done
-}
-
-practice_worker() {
-  local dir="${1:-/media/doc/Internal_3TB/Documents/Projects/ClinicalNotesSystem/PRACTICE_WORK}"
-  cd "$dir" && ranger "$dir"
-}
-
-practice_works() {
-  works "${1:-/media/doc/Internal_3TB/Documents/Projects/ClinicalNotesSystem/PRACTICE_WORK}"
-}
-
-# Open a clinical session: left pane = worker (Ranger), right pane = works (fzf)
-# Usage: worksession           -> ~/WORK
-#        worksession --test    -> PRACTICE_WORK
-#        worksession /some/dir -> custom directory
-worksession() {
-  local dir="$HOME/WORK"
-  if [ "$1" = "--test" ]; then
-    dir="/media/doc/Internal_3TB/Documents/Projects/ClinicalNotesSystem/PRACTICE_WORK"
-  elif [ -n "$1" ]; then
-    dir="$1"
-  fi
-
-  # If not inside tmux, warn and exit
-  if [ -z "$TMUX" ]; then
-    echo "worksession must be run inside a tmux session."
-    return 1
-  fi
-
-  # Left pane: Ranger
-  tmux send-keys "worker '$dir'" Enter
-
-  # Right pane: works (fzf loop)
-  tmux split-window -h
-  tmux send-keys "works '$dir'" Enter
-
-  # Focus left pane
-  tmux select-pane -L
-}
 
 clinic() {
   local work_root="/media/doc/Internal_3TB/Documents/Projects/ClinicalNotesSystem/PRACTICE_WORK"
@@ -453,7 +388,7 @@ EOF
 
   if [ -n "$_found" ]; then
     # .clauderc found — statusline will pick it up automatically.
-    command "$_claude_bin" "$@"
+    CLAUDE_CODE_TMUX_TRUECOLOR=1 command "$_claude_bin" "$@"
     return
   fi
 
@@ -464,7 +399,7 @@ EOF
   if [ -n "$_label" ]; then
     claude-init "$_label"
   fi
-  command "$_claude_bin" "$@"
+  CLAUDE_CODE_TMUX_TRUECOLOR=1 command "$_claude_bin" "$@"
 }
 
 # workas — set a per-session Claude project label via env vars.
