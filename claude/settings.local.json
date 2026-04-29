@@ -48,7 +48,18 @@
       "Bash(git -C /var/home/doc/dotfiles_old remote -v)",
       "Bash(git -C /var/home/doc/folio diff --stat)",
       "Bash(git -C /var/home/doc/folio status)",
-      "Bash(git *)"
+      "Bash(lpstat -a)",
+      "Bash(scp \"doc@hdieu.auroch-universe.ts.net:/home/doc/Pictures/Screenshots/$\\(ssh doc@hdieu.auroch-universe.ts.net 'ls -t ~/Pictures/Screenshots/ | head -1'\\)\" /tmp/printer_screenshot.png)",
+      "Bash(lpr -H hdieu.auroch-universe.ts.net -P BrotherL2550DW_HDieu /dev/null)",
+      "Bash(echo \"%PDF-1.4 test\")",
+      "Bash(/home/doc/bin/note-print /tmp/test.pdf)",
+      "Bash(ranger --version)",
+      "Bash(scp *)",
+      "Bash(git *)",
+      "Bash(ssh-keygen -R p15.auroch-universe.ts.net)",
+      "Bash(xargs -I{} grep -l \"No such file\" {})",
+      "Bash(rm -rf ~/LocalRepositories/ubuntu-s1-config)",
+      "Bash(mkdir -p ~/LocalRepositories)"
     ]
   }
 }

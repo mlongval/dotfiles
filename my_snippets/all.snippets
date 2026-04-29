@@ -1,20 +1,5 @@
 extends _
 
-snippet newpt "new patient in patient file for residents"
-------------------------------------
-- NOM: $0
-    - Dossier:
-    - RC:
-    - ATCD:
-    - MEDS:
-    - LABO:
-    - HX:
-    - EX:
-    - IMP:
-    - CAT:
-    - ADDENDUM:
-endsnippet
-
 snippet ctrl "short for contrôle"
 contrôle
 endsnippet
@@ -48,9 +33,11 @@ snippet new "new patient visit note"
 Date: `date +%d.%m.%Y` `date +%H:%M`
 Nom: $0
 RAMQ:
+CHUS:
 CMPM:
 Tél:
 Pharmacie:
+Allergies:
 Antécédents:
 
 Médication:
@@ -63,117 +50,88 @@ Impression:
 
 Conduite:
 
-
+Dx:
+Fx:
+Suivi:
+Todo:
+Color:
 Sig: Michael LONGVAL, MD
+---
+endsnippet
+
+snippet news "new patient psychiatry"
+---
+Date: `date +%d.%m.%Y` `date +%H:%M`
+Lieu: CHUS Hotel-Dieu
+Nom: $0
+RAMQ:
+CHUS:
+CMPM:
+Tél:
+Pharmacie:
+Allergies:
+Antécédents:
+
+Médication:
+
+Histoire:
+
+Examen:
+
+Impression:
+
+Conduite:
 
 Dx:
 Fx:
 Suivi:
 Todo:
+Color:
+Sig: Michael LONGVAL, MD
 ---
 endsnippet
+
+
+snippet newm "new patient visit note CMPM"
+---
+Date: `date +%d.%m.%Y` `date +%H:%M`
+Lieu: Clinique Médicale Plateau Marquette
+Nom: $0
+RAMQ:
+CHUS:
+CMPM:
+Tél:
+Pharmacie:
+Allergies:
+Antécédents:
+
+Médication:
+
+Histoire:
+
+Examen:
+
+Impression:
+
+Conduite:
+
+Dx:
+Fx:
+Suivi:
+Todo:
+Color:
+Sig: Michael LONGVAL, MD
+---
+endsnippet
+
+
 
 snippet hd "just print Lieu: CHUS Hotel-Dieu"
 Lieu: CHUS Hotel-Dieu
 endsnippet
 
-snippet news "new patient visit note santé mentale"
----
-Date: `date +%d.%m.%Y` `date +%H:%M`
-Lieu: CHUS Hotel-Dieu
-Nom: $0
-RAMQ:
-CHUS:
-CMPM:
-Tél:
-Pharmacie:
-Antécédents:
-
-Médication:
-
-Histoire:
-
-Examen:
-
-Impression:
-
-Conduite:
-
-
-Sig: Michael LONGVAL, MD
-
-Dx:
-Fx:
-Suivi:
-Todo:
----
-endsnippet
-
 snippet cmpm "just write clinique ..."
 Lieu: Clinique Médicale Plateau Marquette
-endsnippet
-
-snippet newm "new patient visit note cmpm"
----
-Date: `date +%d.%m.%Y` `date +%H:%M`
-Lieu: Clinique Médicale Plateau Marquette
-Nom: $0
-RAMQ:
-CHUS:
-CMPM:
-Tél:
-Pharmacie:
-Antécédents:
-
-Médication:
-
-Histoire:
-
-Examen:
-
-Impression:
-
-Conduite:
-
-
-Sig: Michael LONGVAL, MD
-
-Dx:
-Fx:
-Suivi:
-Todo:
----
-endsnippet
-
-snippet newt "new patient phone call note"
----
-Date: `date +%d.%m.%Y` `date +%H:%M`
-Nom:
-RAMQ:
-CMPM:
-Tél:
-Pharmacie:
-Antécédents:
-
-Médication:
-
-Histoire:
-	- Téléphone
-
-Examen:
-
-Impression:
-
-Conduite:
-
-Suivi:
-
-Sig: Michael LONGVAL, MD
-
-Dx:
-Fx:
-Todo:
----
 endsnippet
 
 

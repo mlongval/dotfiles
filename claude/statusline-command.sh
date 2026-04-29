@@ -120,7 +120,6 @@ fi
 host=$(hostname -s)
 used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
-printf " "
 pill "$THM_MAGENTA" "󰒋" "$host"
 printf " "
 pill "$THM_PINK" "$ICON" "$LABEL"

@@ -51,6 +51,11 @@ Plug 'honza/vim-snippets'
 
 " Prettification
 Plug 'stevearc/dressing.nvim'
+
+" Key hints popup (neovim only)
+if has('nvim')
+  Plug 'folke/which-key.nvim'
+endif
 call plug#end()
 
 if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
@@ -230,6 +235,25 @@ EOF
   lua require('patientnote').setup()
   " dressing.nvim — prettier vim.ui.select and vim.ui.input
   lua require('dressing').setup({})
+
+  " Note printing mappings
+  nnoremap <leader>f <cmd>NotePDF<CR>
+  nnoremap <leader>i <cmd>NotePrint<CR>
+
+  " which-key — leader hint popup (only if installed)
+  lua << EOF
+  local ok, wk = pcall(require, 'which-key')
+  if ok then
+    wk.setup({ delay = 400 })
+    wk.add({
+      { '<leader>f', desc = 'Note → PDF (aperçu)' },
+      { '<leader>i', desc = 'Note → Imprimer' },
+      { '<leader>w', group = 'VimWiki' },
+      { '<leader>c', group = 'Presse-papier' },
+      { '<leader>t', group = 'Onglets' },
+    })
+  end
+EOF
 
   " VimWiki cheatsheet popup
   function! s:VimwikiHelp() abort

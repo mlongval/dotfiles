@@ -1,6 +1,8 @@
 {
   "env": {
-    "SHELL": "/bin/bash"
+    "SHELL": "/bin/bash",
+    "COLORTERM": "truecolor",
+    "FORCE_COLOR": "3"
   },
   "permissions": {
     "allow": [
@@ -924,5 +926,9 @@
   "enabledPlugins": {
     "telegram@claude-plugins-official": true
   },
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-daltonized",
+  "editorMode": "vim",
+  "verbose": true,
+  "effortLevel": "medium"
 }
