@@ -165,6 +165,7 @@ alias r3.="ranger --cmd='set column_ratios 1,2,3' $HOME/WORK"
 
 alias rangercd="ranger-cd"
 alias rcd="ranger-cd"
+alias ranger="ranger-cd"
 
 alias evimab="vim $HOME/.vim/plugin/020_abbreviations.vim"
 #alias evimrc="vim $HOME/.vimrc"
@@ -438,4 +439,20 @@ workas() {
     esac
     echo "Claude label set: $icon  $1"
   fi
+}
+
+# worker: wrap the worker script so Q/:q in ranger drops the shell
+# into ranger's final directory (its --choosedir target).
+worker() {
+    local f
+    f=$(mktemp) || return 1
+    WORKER_CHOOSEDIR="$f" command worker "$@"
+    local rc=$?
+    if [[ -s "$f" ]]; then
+        local d
+        d=$(cat "$f")
+        [[ -d "$d" ]] && cd "$d"
+    fi
+    rm -f "$f"
+    return $rc
 }

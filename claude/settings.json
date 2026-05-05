@@ -893,7 +893,8 @@
       "WebFetch",
       "WebSearch",
       "mcp__ide__getDiagnostics"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "hooks": {
     "PostToolUse": [
@@ -926,9 +927,10 @@
   "enabledPlugins": {
     "telegram@claude-plugins-official": true
   },
+  "effortLevel": "medium",
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark-daltonized",
   "editorMode": "vim",
   "verbose": true,
-  "effortLevel": "medium"
+  "skipAutoPermissionPrompt": true
 }

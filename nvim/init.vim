@@ -17,8 +17,11 @@ if empty(glob(s:plug_vim))
 endif
 
 " Allow neovim to share plug.vim from vim's autoload
-if has('nvim') && empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-  silent execute '!mkdir -p ~/.local/share/nvim/site/autoload && ln -sf ' . s:plug_vim . ' ~/.local/share/nvim/site/autoload/plug.vim'
+if has('nvim')
+  let s:nvim_autoload = stdpath('data') . '/site/autoload/plug.vim'
+  if empty(glob(s:nvim_autoload))
+    silent execute '!mkdir -p ' . fnamemodify(s:nvim_autoload, ':h') . ' && ln -sf ' . s:plug_vim . ' ' . s:nvim_autoload
+  endif
 endif
 
 " ============================================================
@@ -86,12 +89,21 @@ set foldmethod=indent
 set foldlevel=99
 set colorcolumn=56
 set spell
-set spelllang+=fr
+set spelllang=fr
+execute 'set spellfile=' . stdpath('config') . '/spell/fr.utf-8.add'
+" Disable spell for ephemeral buffers (e.g. Claude Code ctrl-g scratch files)
+" — undercurl/underline attrs can leak back into the host TUI on exit.
+augroup NoSpellTmp
+  autocmd!
+  autocmd BufRead,BufNewFile /tmp/*,/var/tmp/*,/dev/shm/* setlocal nospell
+augroup END
 set showtabline=0
 set fillchars+=vert:\ ,diff:-
 set numberwidth=4
 set scrolloff=999
 set linebreak
+set noswapfile
+set updatetime=60000
 
 execute 'highlight ColorColumn'  . ' ctermbg=' . s:darker_gray
 highlight SpellBad   ctermfg=NONE ctermbg=NONE cterm=underline gui=underline
@@ -126,7 +138,7 @@ endif
 " UltiSnips
 let g:UltiSnipsSnippetsDir        = '~/.vim/my_snippets'
 let g:UltiSnipsSnippetDirectories = [$HOME . '/.vim/my_snippets', $HOME . '/.vim/UltiSnips']
-let g:UltiSnipsExpandTrigger      = ','
+let g:UltiSnipsExpandTrigger      = '<C-j>'
 let g:UltiSnipsJumpForwardTrigger  = '<tab>'
 let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
 
@@ -146,8 +158,8 @@ imap jk <ESC>:StripWhitespace<CR><ESC>
 map  <leader>s :StripWhitespace<CR>
 
 " Clipboard (Wayland)
-vmap <leader>c "+y
-map  <leader>C <esc>ggvGg_"+y
+vmap <leader>y "+y
+map  <leader>Y <esc>ggvGg_"+y
 map  <leader>p "+p
 vmap <C-c> "+yi
 vmap <C-x> "+c
@@ -158,14 +170,16 @@ imap <C-v> <ESC>"+pa
 map <leader>T :tabnew<CR>
 map <leader>t :tabnext<CR>
 
-" System / billing / workflow
+" System / battery
 map  <leader>b :!clear;acpi<CR>
-map  <leader>B :w !get_bill.sh >> BILLING<CR><CR>
-map  <leader>V :w !get_suivi.sh >> SUIVIS<CR><CR>
-map  <leader>N :w !get_todo.sh >> TODO_LIST.txt<CR><CR>
-map  <leader>D <ESC>:w<CR>:let @a=expand('%')<CR>:execute 'silent! !mkdir -p DONE && mv '.@a.' DONE/'<CR>:q<CR><ESC>
-map  <leader>A :w<ENTER><leader>L<ESC>:!read<CR><leader>W<ESC><leader>C<ESC><leader>B<ESC><leader>V<ESC><leader>D<ESC>:q<ENTER>
-map  <leader>L <ESC>:w<CR><ESC>:!clear && echo 'Linting YAML file.' && yamllint %<CR>
+
+" Clinical workflow
+map  <leader>cb :w !get_bill.sh >> BILLING<CR><CR>
+map  <leader>cs :w !get_suivi.sh >> SUIVIS<CR><CR>
+map  <leader>cn :w !get_todo.sh >> TODO_LIST.txt<CR><CR>
+map  <leader>cd <ESC>:w<CR>:let @a=expand('%')<CR>:execute 'silent! !mkdir -p DONE && mv '.@a.' DONE/'<CR>:q<CR><ESC>
+map  <leader>ca :w<ENTER><leader>cl<ESC>:!read<CR><leader>W<ESC><leader>Y<ESC><leader>cb<ESC><leader>cs<ESC><leader>cd<ESC>:q<ENTER>
+map  <leader>cl <ESC>:w<CR><ESC>:!clear && echo 'Linting YAML file.' && yamllint %<CR>
 map  <leader>q :!clear;cal -3; cat ~/Documents/CANADA_HOLIDAYS.txt;<CR>
 map  <leader>g <ESC>:Goyo<CR>
 
@@ -204,6 +218,9 @@ nnoremap ,d  0f:lD$a<SPACE>
 nnoremap ,:  0f:lD$a<SPACE>
 noremap  ,zr :%s/\([A-Za-z]\+\)\(\d\{4}\)\(\d\{4}\)Exp :\(\d\{4}\)/\1 \2 \3 \4/g<ENTER><ESC>
 
+" Clinical: h exits when at top-left of an unmodified buffer
+nnoremap <expr> h (line('.') == 1 && col('.') == 1 && !&modified) ? ':quit<CR>' : 'h'
+
 " ============================================================
 " Cursor shape per mode
 " ============================================================
@@ -214,7 +231,7 @@ let &t_EI .= "\e[1 q"
 " ============================================================
 " External files
 " ============================================================
-source ~/.vim/functions.vim
+execute 'source ' . stdpath('config') . '/functions.vim'
 
 " ============================================================
 " Neovim-only
@@ -243,14 +260,26 @@ EOF
   lua require('patientnote').setup()
   lua require('allergycheck').setup()
   lua require('fieldreorder').setup()
-  nnoremap <leader>r <cmd>FieldReorder<CR>
-  nnoremap <leader>k <cmd>AllergyCheck<CR>
+  lua require('claude').setup()
+  lua require('framingham').setup()
+  lua require('rx').setup()
+  nnoremap <leader>cc <cmd>lua require('claude').ask()<CR>
+  vnoremap <leader>cc :<C-u>lua require('claude').ask_with_selection()<CR>
+  nnoremap <leader>cw <cmd>lua require('framingham').run()<CR>
+  nnoremap <leader>cr <cmd>FieldReorder<CR>
+  nnoremap <leader>ck <cmd>AllergyCheck<CR>
   " dressing.nvim — prettier vim.ui.select and vim.ui.input
   lua require('dressing').setup({})
 
-  " Note printing mappings
-  nnoremap <leader>f <cmd>NotePDF<CR>
-  nnoremap <leader>i <cmd>NotePrint<CR>
+  " Note output mappings
+  nnoremap <leader>cf  <cmd>NotePDF<CR>
+  nnoremap <leader>ci  <cmd>NotePrint<CR>
+
+  " Prescription mappings
+  nnoremap <leader>rx  <cmd>RxCreate<CR>
+  nnoremap <leader>rp  <cmd>RxCreatePrint<CR>
+  nnoremap <leader>rmx <cmd>RxCreateMeds<CR>
+  nnoremap <leader>rmp <cmd>RxCreateMedsPrint<CR>
 
   " which-key — leader hint popup (only if installed)
   lua << EOF
@@ -258,28 +287,40 @@ EOF
   if ok then
     wk.setup({ delay = 400 })
     wk.add({
-      -- Clinical note tools
-      { '<leader>f', desc = 'Note → PDF (aperçu)' },
-      { '<leader>i', desc = 'Note → Imprimer' },
-      { '<leader>k', desc = 'Vérifier les allergies' },
-      { '<leader>r', desc = 'Réordonner les champs YAML' },
-      { '<leader>A', desc = 'Compléter la note (lint → PDF → archiver)' },
-      { '<leader>L', desc = 'Valider le YAML (yamllint)' },
-      { '<leader>B', desc = 'Extraire la facturation → BILLING' },
-      { '<leader>V', desc = 'Extraire le suivi → SUIVIS' },
-      { '<leader>N', desc = 'Extraire les tâches → TODO_LIST' },
-      { '<leader>D', desc = 'Archiver → DONE/' },
+      -- Clinical group
+      { '<leader>c',   group = 'Clinique' },
+      { '<leader>ca',  desc = 'Auto — lint → PDF → archiver' },
+      { '<leader>cb',  desc = 'Facturation → BILLING' },
+      { '<leader>cc',  desc = 'Claude — question / transformer (visuel)', mode = { 'n', 'v' } },
+      { '<leader>cd',  desc = 'Archiver → DONE/' },
+      { '<leader>cf',  desc = 'Note → PDF (aperçu)' },
+      { '<leader>ci',  desc = 'Note → Imprimer' },
+      { '<leader>ck',  desc = 'Vérifier les allergies' },
+      { '<leader>cl',  desc = 'Valider le YAML (yamllint)' },
+      { '<leader>cn',  desc = 'Extraire les tâches → TODO_LIST' },
+      { '<leader>cr',  desc = 'Réordonner les champs YAML' },
+      { '<leader>cs',  desc = 'Suivis → SUIVIS' },
+      { '<leader>cw',  desc = 'Framingham — risque CV 10 ans' },
+      -- Prescription group
+      { '<leader>r',   group = 'Prescription' },
+      { '<leader>rx',  desc = 'Créer' },
+      { '<leader>rp',  desc = 'Créer + imprimer' },
+      { '<leader>rmx', desc = 'Renouvellement (avec méds)' },
+      { '<leader>rmp', desc = 'Renouvellement + imprimer' },
+      -- Clipboard
+      { '<leader>y',   desc = 'Copier sélection → presse-papier', mode = 'v' },
+      { '<leader>Y',   desc = 'Copier tout le tampon → presse-papier' },
+      { '<leader>p',   desc = 'Coller depuis presse-papier' },
       -- General
-      { '<leader>s', desc = 'Supprimer les espaces superflus' },
-      { '<leader>g', desc = 'Goyo — mode focus' },
-      { '<leader>z', desc = 'ZEN mode' },
-      { '<leader>q', desc = 'Calendrier + jours fériés' },
-      { '<leader>b', desc = 'Batterie (acpi)' },
-      { '<leader>n', desc = 'Afficher les numéros de ligne' },
+      { '<leader>s',   desc = 'Supprimer les espaces superflus' },
+      { '<leader>g',   desc = 'Goyo — mode focus' },
+      { '<leader>z',   desc = 'ZEN mode' },
+      { '<leader>q',   desc = 'Calendrier + jours fériés' },
+      { '<leader>b',   desc = 'Batterie (acpi)' },
+      { '<leader>n',   desc = 'Afficher les numéros de ligne' },
       -- Groups
-      { '<leader>w', group = 'VimWiki' },
-      { '<leader>c', group = 'Presse-papier' },
-      { '<leader>t', group = 'Onglets' },
+      { '<leader>w',   group = 'VimWiki' },
+      { '<leader>t',   group = 'Onglets' },
     })
   end
 EOF
@@ -339,3 +380,6 @@ EOF
   endfunction
   nnoremap <leader>w? :call <SID>VimwikiHelp()<CR>
 endif
+
+" Auto-save after 1 minute of inactivity (whole config is clinical-only)
+autocmd CursorHold * silent! update

@@ -1,0 +1,1 @@
+/home/doc/Projects/ClinicalNotesSystem/neovim/lua/framingham.lua

@@ -59,7 +59,10 @@
       "Bash(ssh-keygen -R p15.auroch-universe.ts.net)",
       "Bash(xargs -I{} grep -l \"No such file\" {})",
       "Bash(rm -rf ~/LocalRepositories/ubuntu-s1-config)",
-      "Bash(mkdir -p ~/LocalRepositories)"
+      "Bash(mkdir -p ~/LocalRepositories)",
+      "Bash(lsblk -o NAME,SIZE,FSTYPE,LABEL,MOUNTPOINT,MODEL,SERIAL)",
+      "Bash(dmesg)",
+      "Bash(tailscale status *)"
     ]
   }
 }

@@ -89,10 +89,6 @@ else
 fi
 fc-cache -f "$HOME/.fonts"
 
-# Foot terminal
-mkdir -p "$HOME/.config/foot"
-link "$DOTFILES/foot/foot.ini" "$HOME/.config/foot/foot.ini"
-
 # Fastfetch
 mkdir -p "$HOME/.config/fastfetch"
 
