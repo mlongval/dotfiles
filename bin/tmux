@@ -15,20 +15,42 @@ if [ -n "${TMUX:-}" ]; then
     exec "$REAL_TMUX"
 fi
 
+attach_or_link() {
+    local s="$1"
+    if [ "$("$REAL_TMUX" list-clients -t "$s" 2>/dev/null | wc -l)" -gt 0 ]; then
+        # Session already has a client — create a linked session so this
+        # terminal navigates windows independently. destroy-unattached
+        # cleans the linked session up when this terminal detaches.
+        exec "$REAL_TMUX" new-session -t "$s" \; set-option destroy-unattached on
+    else
+        exec "$REAL_TMUX" attach-session -t "$s"
+    fi
+}
+
+new_named_session() {
+    printf 'Name for new session (ENTER for default): '
+    read -r name </dev/tty
+    if [ -z "$name" ]; then
+        exec "$REAL_TMUX" new-session
+    else
+        exec "$REAL_TMUX" new-session -s "$name"
+    fi
+}
+
 mapfile -t sessions < <("$REAL_TMUX" list-sessions -F '#{session_name}' 2>/dev/null || true)
 n=${#sessions[@]}
 
 case $n in
     0)
-        exec "$REAL_TMUX" new-session
+        new_named_session
         ;;
     1)
         s="${sessions[0]}"
         printf 'Attach to existing session "%s"? [Y/n] ' "$s"
         read -r ans </dev/tty
         case "${ans,,}" in
-            n|no) exec "$REAL_TMUX" new-session ;;
-            *)    exec "$REAL_TMUX" attach-session -t "$s" ;;
+            n|no) new_named_session ;;
+            *)    attach_or_link "$s" ;;
         esac
         ;;
     *)
@@ -38,9 +60,9 @@ case $n in
                 --no-multi)
         [ -z "${choice:-}" ] && exit 0
         if [ "$choice" = "new" ]; then
-            exec "$REAL_TMUX" new-session
+            new_named_session
         else
-            exec "$REAL_TMUX" attach-session -t "$choice"
+            attach_or_link "$choice"
         fi
         ;;
 esac
