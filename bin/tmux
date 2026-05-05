@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Wrapper around /usr/bin/tmux:
+#   no args -> pick/create a session interactively
+#   any args -> pass straight through to real tmux
+set -euo pipefail
+
+REAL_TMUX=/usr/bin/tmux
+
+if [ $# -gt 0 ]; then
+    exec "$REAL_TMUX" "$@"
+fi
+
+# Already inside tmux? just run it (will error appropriately)
+if [ -n "${TMUX:-}" ]; then
+    exec "$REAL_TMUX"
+fi
+
+mapfile -t sessions < <("$REAL_TMUX" list-sessions -F '#{session_name}' 2>/dev/null || true)
+n=${#sessions[@]}
+
+case $n in
+    0)
+        exec "$REAL_TMUX" new-session
+        ;;
+    1)
+        s="${sessions[0]}"
+        printf 'Attach to existing session "%s"? [Y/n] ' "$s"
+        read -r ans </dev/tty
+        case "${ans,,}" in
+            n|no) exec "$REAL_TMUX" new-session ;;
+            *)    exec "$REAL_TMUX" attach-session -t "$s" ;;
+        esac
+        ;;
+    *)
+        choice=$({ printf 'new\n'; printf '%s\n' "${sessions[@]}"; } | \
+            fzf --height=40% --reverse --prompt='tmux> ' \
+                --header='enter=select  esc=cancel  j/k or arrows to move' \
+                --no-multi)
+        [ -z "${choice:-}" ] && exit 0
+        if [ "$choice" = "new" ]; then
+            exec "$REAL_TMUX" new-session
+        else
+            exec "$REAL_TMUX" attach-session -t "$choice"
+        fi
+        ;;
+esac
