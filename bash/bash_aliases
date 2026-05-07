@@ -453,6 +453,6 @@ worker() {
         d=$(cat "$f")
         [[ -d "$d" ]] && cd "$d"
     fi
-    rm -f "$f"
+    /usr/bin/rm -f "$f" 2>/dev/null   # absolute path: bypasses any alias/function/PATH shadow
     return $rc
 }
