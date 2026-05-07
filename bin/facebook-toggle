@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# Toggle Facebook/Meta access via /etc/hosts blocking
+# Usage: facebook-toggle [on|off|status]
+# A cron job resets access to ON at midnight.
+
+HOSTS_FILE="/etc/hosts"
+BLOCK_MARKER="# facebook-toggle-block"
+FACEBOOK_DOMAINS=(
+    "facebook.com"
+    "www.facebook.com"
+    "m.facebook.com"
+    "web.facebook.com"
+    "fbcdn.net"
+    "static.xx.fbcdn.net"
+    "fb.com"
+    "fb.me"
+    "messenger.com"
+    "www.messenger.com"
+    "instagram.com"
+    "www.instagram.com"
+    "cdninstagram.com"
+    "threads.net"
+    "www.threads.net"
+)
+
+is_blocked() {
+    grep -q "$BLOCK_MARKER" "$HOSTS_FILE" 2>/dev/null
+}
+
+block_facebook() {
+    if is_blocked; then
+        echo "Facebook is already blocked."
+        return 0
+    fi
+    {
+        echo ""
+        echo "$BLOCK_MARKER"
+        for domain in "${FACEBOOK_DOMAINS[@]}"; do
+            echo "127.0.0.1 $domain"
+        done
+        echo "# facebook-toggle-end"
+    } | sudo tee -a "$HOSTS_FILE" > /dev/null
+    echo "Facebook access: OFF"
+}
+
+unblock_facebook() {
+    if ! is_blocked; then
+        echo "Facebook is already unblocked."
+        return 0
+    fi
+    sudo sed -i "/$BLOCK_MARKER/,/# facebook-toggle-end/d" "$HOSTS_FILE"
+    echo "Facebook access: ON"
+}
+
+status_facebook() {
+    if is_blocked; then
+        echo "Facebook access: OFF (blocked)"
+    else
+        echo "Facebook access: ON"
+    fi
+}
+
+case "${1:-status}" in
+    off)   block_facebook ;;
+    on)    unblock_facebook ;;
+    status) status_facebook ;;
+    *)
+        echo "Usage: $(basename "$0") [on|off|status]"
+        echo "  on     - allow Facebook"
+        echo "  off    - block Facebook"
+        echo "  status - show current state (default)"
+        exit 1
+        ;;
+esac
