@@ -1,0 +1,10 @@
+azclock@azclock.gitlab.com
+background-logo@fedorahosted.org
+custom-hot-corners-extended@G-dH.github.com
+date-menu-formatter@marcinjakubowski.github.com
+hide-cursor@elcste.com
+hide-universal-access@akiirui.github.io
+just-perfection-desktop@just-perfection
+mediacontrols@cliffniff.github.com
+tailscale-status@maxgallup.github.com
+tilingshell@ferrarodomenico.com

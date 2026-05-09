@@ -119,4 +119,7 @@ echo "  post-merge hook installed"
 echo "==> Setting up Neovim Python provider (uv + pynvim)..."
 bash "$DOTFILES/bin/setup-neovim-python.sh"
 
+# Restore GNOME extensions for this host (no-op if no snapshot or not GNOME)
+bash "$DOTFILES/bin/restore-gnome-extensions.sh" || true
+
 echo "Done."
