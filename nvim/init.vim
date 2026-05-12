@@ -1,4 +1,12 @@
 " ============================================================
+" Regular nvim — generic editor config.
+"
+" Clinical-note editing lives in a SEPARATE config under
+" ~/.config/clinical-nvim → ~/Projects/ClinicalNotesSystem/neovim/config.
+" Do not add clinical workflow, snippets, or lua modules here.
+" ============================================================
+
+" ============================================================
 " Python provider (pynvim via uv)
 " ============================================================
 let s:uv_python = expand('~/.local/share/uv/tools/pynvim/bin/python3')
@@ -7,7 +15,7 @@ if executable(s:uv_python)
 endif
 
 " ============================================================
-" Bootstrap vim-plug (auto-installs on new machines)
+" Bootstrap vim-plug
 " ============================================================
 let s:plug_vim = expand('~/.vim/autoload/plug.vim')
 if empty(glob(s:plug_vim))
@@ -16,7 +24,6 @@ if empty(glob(s:plug_vim))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-" Allow neovim to share plug.vim from vim's autoload
 if has('nvim')
   let s:nvim_autoload = stdpath('data') . '/site/autoload/plug.vim'
   if empty(glob(s:nvim_autoload))
@@ -27,7 +34,9 @@ endif
 " ============================================================
 " Plugins
 " ============================================================
-call plug#begin('~/.vim/plugged')
+" XDG-correct plug_home: ~/.local/share/nvim/plugged (or
+" ~/.local/share/<appname>/plugged when NVIM_APPNAME is set).
+call plug#begin(stdpath('data') . '/plugged')
 
 " Writing / Focus
 Plug 'vimwiki/vimwiki'
@@ -49,8 +58,7 @@ Plug 'catppuccin/vim', { 'as': 'catppuccin' }
 " Editing
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'https://github.com/pseewald/vim-anyfold'
-Plug 'https://github.com/SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+Plug 'bullets-vim/bullets.vim'
 
 " Prettification
 Plug 'stevearc/dressing.nvim'
@@ -111,7 +119,6 @@ highlight SpellCap   cterm=underline gui=underline
 highlight SpellLocal cterm=underline gui=underline
 highlight SpellRare  cterm=underline gui=underline
 
-" Terminal-only settings
 if !has('nvim')
   set printfont=courier:h14
   set printoptions=paper:letter
@@ -135,12 +142,11 @@ else
   let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 endif
 
-" UltiSnips
-let g:UltiSnipsSnippetsDir        = '~/.vim/my_snippets'
-let g:UltiSnipsSnippetDirectories = [$HOME . '/.vim/my_snippets', $HOME . '/.vim/UltiSnips']
-let g:UltiSnipsExpandTrigger      = '<C-j>'
-let g:UltiSnipsJumpForwardTrigger  = '<tab>'
-let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
+" Bullets — list continuation on <CR> for these filetypes
+let g:bullets_enabled_file_types = ['markdown', 'text', 'gitcommit', 'scratch']
+let g:bullets_enable_in_empty_buffers = 0
+let g:bullets_set_mappings = 1
+let g:bullets_pad_right = 0
 
 " ============================================================
 " Key mappings
@@ -173,13 +179,7 @@ map <leader>t :tabnext<CR>
 " System / battery
 map  <leader>b :!clear;acpi<CR>
 
-" Clinical workflow
-map  <leader>cb :w !get_bill.sh >> BILLING<CR><CR>
-map  <leader>cs :w !get_suivi.sh >> SUIVIS<CR><CR>
-map  <leader>cn :w !get_todo.sh >> TODO_LIST.txt<CR><CR>
-map  <leader>cd <ESC>:w<CR>:let @a=expand('%')<CR>:execute 'silent! !mkdir -p DONE && mv '.@a.' DONE/'<CR>:q<CR><ESC>
-map  <leader>ca :w<ENTER><leader>cl<ESC>:!read<CR><leader>W<ESC><leader>Y<ESC><leader>cb<ESC><leader>cs<ESC><leader>cd<ESC>:q<ENTER>
-map  <leader>cl <ESC>:w<CR><ESC>:!clear && echo 'Linting YAML file.' && yamllint %<CR>
+" Calendar / focus modes
 map  <leader>q :!clear;cal -3; cat ~/Documents/CANADA_HOLIDAYS.txt;<CR>
 map  <leader>g <ESC>:Goyo<CR>
 
@@ -213,12 +213,7 @@ nmap     gF          <leader>bb<c-^><cr>
 nnoremap q <Nop>
 vnoremap q <Nop>
 
-" Regex helpers
-nnoremap ,d  0f:lD$a<SPACE>
-nnoremap ,:  0f:lD$a<SPACE>
-noremap  ,zr :%s/\([A-Za-z]\+\)\(\d\{4}\)\(\d\{4}\)Exp :\(\d\{4}\)/\1 \2 \3 \4/g<ENTER><ESC>
-
-" Clinical: h exits when at top-left of an unmodified buffer
+" h exits when at top-left of an unmodified buffer
 nnoremap <expr> h (line('.') == 1 && col('.') == 1 && !&modified) ? ':quit<CR>' : 'h'
 
 " ============================================================
@@ -238,7 +233,6 @@ execute 'source ' . stdpath('config') . '/functions.vim'
 " ============================================================
 if has('nvim')
   " OSC 52 clipboard — works over SSH/tmux without display server
-  " Module only exists in nvim 0.10+; on 0.9.x wl-clipboard handles it
   set clipboard=unnamedplus
   if has('nvim-0.10')
     lua << EOF
@@ -256,30 +250,8 @@ if has('nvim')
 EOF
   endif
 
-  lua require('hardcopy').setup()
-  lua require('patientnote').setup()
-  lua require('allergycheck').setup()
-  lua require('fieldreorder').setup()
-  lua require('claude').setup()
-  lua require('framingham').setup()
-  lua require('rx').setup()
-  nnoremap <leader>cc <cmd>lua require('claude').ask()<CR>
-  vnoremap <leader>cc :<C-u>lua require('claude').ask_with_selection()<CR>
-  nnoremap <leader>cw <cmd>lua require('framingham').run()<CR>
-  nnoremap <leader>cr <cmd>FieldReorder<CR>
-  nnoremap <leader>ck <cmd>AllergyCheck<CR>
   " dressing.nvim — prettier vim.ui.select and vim.ui.input
   lua require('dressing').setup({})
-
-  " Note output mappings
-  nnoremap <leader>cf  <cmd>NotePDF<CR>
-  nnoremap <leader>ci  <cmd>NotePrint<CR>
-
-  " Prescription mappings
-  nnoremap <leader>rx  <cmd>RxCreate<CR>
-  nnoremap <leader>rp  <cmd>RxCreatePrint<CR>
-  nnoremap <leader>rmx <cmd>RxCreateMeds<CR>
-  nnoremap <leader>rmp <cmd>RxCreateMedsPrint<CR>
 
   " which-key — leader hint popup (only if installed)
   lua << EOF
@@ -287,40 +259,17 @@ EOF
   if ok then
     wk.setup({ delay = 400 })
     wk.add({
-      -- Clinical group
-      { '<leader>c',   group = 'Clinique' },
-      { '<leader>ca',  desc = 'Auto — lint → PDF → archiver' },
-      { '<leader>cb',  desc = 'Facturation → BILLING' },
-      { '<leader>cc',  desc = 'Claude — question / transformer (visuel)', mode = { 'n', 'v' } },
-      { '<leader>cd',  desc = 'Archiver → DONE/' },
-      { '<leader>cf',  desc = 'Note → PDF (aperçu)' },
-      { '<leader>ci',  desc = 'Note → Imprimer' },
-      { '<leader>ck',  desc = 'Vérifier les allergies' },
-      { '<leader>cl',  desc = 'Valider le YAML (yamllint)' },
-      { '<leader>cn',  desc = 'Extraire les tâches → TODO_LIST' },
-      { '<leader>cr',  desc = 'Réordonner les champs YAML' },
-      { '<leader>cs',  desc = 'Suivis → SUIVIS' },
-      { '<leader>cw',  desc = 'Framingham — risque CV 10 ans' },
-      -- Prescription group
-      { '<leader>r',   group = 'Prescription' },
-      { '<leader>rx',  desc = 'Créer' },
-      { '<leader>rp',  desc = 'Créer + imprimer' },
-      { '<leader>rmx', desc = 'Renouvellement (avec méds)' },
-      { '<leader>rmp', desc = 'Renouvellement + imprimer' },
-      -- Clipboard
-      { '<leader>y',   desc = 'Copier sélection → presse-papier', mode = 'v' },
-      { '<leader>Y',   desc = 'Copier tout le tampon → presse-papier' },
-      { '<leader>p',   desc = 'Coller depuis presse-papier' },
-      -- General
-      { '<leader>s',   desc = 'Supprimer les espaces superflus' },
-      { '<leader>g',   desc = 'Goyo — mode focus' },
-      { '<leader>z',   desc = 'ZEN mode' },
-      { '<leader>q',   desc = 'Calendrier + jours fériés' },
-      { '<leader>b',   desc = 'Batterie (acpi)' },
-      { '<leader>n',   desc = 'Afficher les numéros de ligne' },
-      -- Groups
-      { '<leader>w',   group = 'VimWiki' },
-      { '<leader>t',   group = 'Onglets' },
+      { '<leader>y',  desc = 'Copier sélection → presse-papier', mode = 'v' },
+      { '<leader>Y',  desc = 'Copier tout le tampon → presse-papier' },
+      { '<leader>p',  desc = 'Coller depuis presse-papier' },
+      { '<leader>s',  desc = 'Supprimer les espaces superflus' },
+      { '<leader>g',  desc = 'Goyo — mode focus' },
+      { '<leader>z',  desc = 'ZEN mode' },
+      { '<leader>q',  desc = 'Calendrier + jours fériés' },
+      { '<leader>b',  desc = 'Batterie (acpi)' },
+      { '<leader>n',  desc = 'Afficher les numéros de ligne' },
+      { '<leader>w',  group = 'VimWiki' },
+      { '<leader>t',  group = 'Onglets' },
     })
   end
 EOF
@@ -380,6 +329,3 @@ EOF
   endfunction
   nnoremap <leader>w? :call <SID>VimwikiHelp()<CR>
 endif
-
-" Auto-save after 1 minute of inactivity (whole config is clinical-only)
-autocmd CursorHold * silent! update
