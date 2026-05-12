@@ -1,91 +1,82 @@
 #!/usr/bin/env bash
-# Claude Code status line — catppuccin mocha pill style (matches tmux)
+# Claude Code statusline — flat catppuccin-mocha style.
+# See ~/dotfiles/STATUSLINES.md for design notes.
 #
 # Per-instance project label — priority order:
-#   1. CLAUDE_LABEL env var (highest — use workas() or inline):
+#   1. CLAUDE_LABEL env var (highest):
 #        workas LuaLaTeX
 #        CLAUDE_LABEL="LuaLaTeX" CLAUDE_ICON="󰈙" claude
-#   2. .clauderc file in the project tree (drop a file, zero shell setup):
+#   2. .clauderc in the project tree:
 #        echo 'LABEL=Homepage' > ~/containers/homepage/.clauderc
 #   3. cwd basename matched against the icon lookup table
-#   4. Raw cwd basename with generic folder icon (last resort)
+#   4. Raw cwd basename with generic folder icon
 
 input=$(cat)
 
-# Catppuccin Mocha palette (R;G;B)
-THM_BG="30;30;46"
-THM_FG="205;214;244"
-THM_GRAY="49;50;68"
-THM_MAGENTA="203;166;247"  # host
-THM_PINK="245;194;231"     # project
-THM_BLUE="137;180;250"     # context
-THM_TEAL="148;226;213"     # distrobox
-THM_YELLOW="249;226;175"   # effort
-THM_GREEN="166;227;161"    # claude-code-plus
+# Catppuccin-mocha palette (R;G;B for 24-bit ANSI)
+THM_FG="205;214;244"       # text     — neutral label colour
+THM_MAGENTA="203;166;247"  # mauve    — host
+THM_PINK="245;194;231"     # pink     — project
+THM_BLUE="137;180;250"     # blue     — context
+THM_TEAL="148;226;213"     # teal     — distrobox
+THM_YELLOW="249;226;175"   # yellow   — effort
+THM_GREEN="166;227;161"    # green    — claude-code-plus
 
-# Powerline glyphs
-L_CAP=$'\ue0b6'  # left rounded cap
-R_CAP=$'\ue0b4'  # right rounded cap
+SEP=' · '
 
-pill() {
+# seg <color_rgb> <icon> <text>
+# Icon in its segment colour, label in neutral fg. Resets at the end.
+seg() {
   local color="$1" icon="$2" text="$3"
-  printf "\e[38;2;%sm\e[49m%s" "$color" "$L_CAP"
-  printf "\e[48;2;%sm\e[38;2;%sm%s " "$color" "$THM_BG" "$icon"
-  printf "\e[48;2;%sm\e[38;2;%sm %s" "$THM_GRAY" "$THM_FG" "$text"
-  printf "\e[38;2;%sm\e[49m%s" "$THM_GRAY" "$R_CAP"
-  printf "\e[0m"
+  printf '\e[38;2;%sm%s\e[38;2;%sm %s\e[0m' "$color" "$icon" "$THM_FG" "$text"
+}
+
+# Tracks whether to emit a leading separator for subsequent segments.
+_first=1
+emit() {
+  if [ "$_first" -eq 1 ]; then
+    _first=0
+  else
+    printf '%s' "$SEP"
+  fi
+  seg "$@"
 }
 
 # Icon lookup table — keyed on lowercase label or directory basename.
-# Used when CLAUDE_ICON is not set. Add entries freely.
 icon_for() {
   local key
   key=$(echo "$1" | tr '[:upper:]' '[:lower:]')
   case "$key" in
-    lualatex|latex)          echo "󰈙" ;;  # nf-md-file_document_edit
-    homepage)                echo "󰋜" ;;  # nf-md-home
-    jellyfin)                echo "󰎁" ;;  # nf-md-music_box_multiple
-    immich)                  echo "󰉏" ;;  # nf-md-image_multiple
-    paperless|paperless-ngx) echo "󱧶" ;;  # nf-md-file_cabinet
-    calibre|calibre-web)     echo "󰂺" ;;  # nf-md-bookshelf
-    nextcloud)               echo "󰅧" ;;  # nf-md-cloud
-    containers|docker)       echo "󰡨" ;;  # nf-md-docker
-    work)                    echo "󰢬" ;;  # nf-md-briefcase_lock
-    backups|backup|bin)      echo "󰆍" ;;  # nf-md-backup_restore
-    documents)               echo "󰈙" ;;  # nf-md-file_document_edit
-    *)                       echo "󰉋" ;;  # nf-md-folder (default)
+    lualatex|latex)          echo "󰈙" ;;
+    homepage)                echo "󰋜" ;;
+    jellyfin)                echo "󰎁" ;;
+    immich)                  echo "󰉏" ;;
+    paperless|paperless-ngx) echo "󱧶" ;;
+    calibre|calibre-web)     echo "󰂺" ;;
+    nextcloud)               echo "󰅧" ;;
+    containers|docker)       echo "󰡨" ;;
+    work)                    echo "󰢬" ;;
+    backups|backup|bin)      echo "󰆍" ;;
+    documents)               echo "󰈙" ;;
+    *)                       echo "󰉋" ;;
   esac
 }
 
-# Resolve label and icon — four-tier priority:
-#   1. CLAUDE_LABEL env var (manual override, highest priority)
-#   2. .clauderc file found by walking up from $PWD
-#   3. cwd basename icon lookup table (smart fallback)
-#   4. raw dirname (last resort, handled by icon_for's default case)
-#
-# .clauderc is a simple KEY=VALUE shell file, e.g.:
-#   LABEL=Homepage
-#   ICON=󰋜
-# ICON is optional — omitting it falls through to the lookup table.
-
+# Resolve label and icon (four-tier priority — see header).
 cwd_raw=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
 
 if [ -n "$CLAUDE_LABEL" ]; then
-  # Tier 1: env var
   LABEL="$CLAUDE_LABEL"
   ICON="${CLAUDE_ICON:-$(icon_for "$CLAUDE_LABEL")}"
 else
-  # Tier 2: walk up from cwd looking for .clauderc
   _proj_label=""
   _proj_icon=""
   _found_dir=""
   _dir="${cwd_raw:-$PWD}"
   while [ "$_dir" != "/" ]; do
     if [ -f "$_dir/.clauderc" ]; then
-      # Source into local vars only — unset after to avoid polluting env
       _tmp_LABEL=""
       _tmp_ICON=""
-      # Read the file safely without sourcing arbitrary code paths
       while IFS='=' read -r _k _v; do
         case "$_k" in
           LABEL) _tmp_LABEL="$_v" ;;
@@ -100,18 +91,16 @@ else
     _dir=$(dirname "$_dir")
   done
 
-  # Skip ~/.clauderc when cwd is a subdirectory — fall through to basename
+  # Skip ~/.clauderc when cwd is a subdirectory — fall through to basename.
   if [ "$_found_dir" = "$HOME" ] && [ "${cwd_raw:-$PWD}" != "$HOME" ]; then
     _proj_label=""
     _proj_icon=""
   fi
 
   if [ -n "$_proj_label" ]; then
-    # Tier 2 hit: use file values, fall back to lookup table for icon if absent
     LABEL="$_proj_label"
     ICON="${_proj_icon:-$(icon_for "$_proj_label")}"
   else
-    # Tier 3/4: cwd basename + lookup table (generic folder if no match)
     LABEL=$(basename "$cwd_raw")
     ICON=$(icon_for "$LABEL")
   fi
@@ -120,13 +109,11 @@ fi
 host=$(hostname -s)
 used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
-pill "$THM_MAGENTA" "󰒋" "$host"
-printf " "
-pill "$THM_PINK" "$ICON" "$LABEL"
+emit "$THM_MAGENTA" "󰒋" "$host"
+emit "$THM_PINK"    "$ICON" "$LABEL"
 
 if [ -n "$CONTAINER_ID" ]; then
-  printf " "
-  pill "$THM_TEAL" "󰆧" "$CONTAINER_ID"
+  emit "$THM_TEAL" "󰆧" "$CONTAINER_ID"
 fi
 
 if [ -n "$used" ]; then
@@ -137,23 +124,14 @@ if [ -n "$used" ]; then
   elif [ "$used_int" -ge 25 ]; then mood="🙂"
   else                               mood="😌"
   fi
-  printf " "
-  pill "$THM_BLUE" "$mood" "${used_int}%"
+  emit "$THM_BLUE" "$mood" "${used_int}%"
 fi
 
 if [ -n "$CLAUDE_CODE_PLUS" ]; then
-  printf " "
-  pill "$THM_GREEN" "󰐅" "CCPlus"
+  emit "$THM_GREEN" "󰐅" "CCPlus"
 fi
 
 effort=$(echo "$input" | jq -r '(.effort | if type == "object" then .level else . end) // empty')
 if [ -n "$effort" ]; then
-  case "$effort" in
-    low)    effort_icon="󰓅" ;;  # speedometer low
-    medium) effort_icon="󰓅" ;;  # speedometer mid
-    high)   effort_icon="󰓅" ;;  # speedometer high
-    *)      effort_icon="󰓅" ;;
-  esac
-  printf " "
-  pill "$THM_YELLOW" "$effort_icon" "$effort"
+  emit "$THM_YELLOW" "󰓅" "$effort"
 fi
