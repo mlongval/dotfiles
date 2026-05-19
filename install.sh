@@ -24,7 +24,7 @@ done
 
 # =============================================================================
 
-# Init submodules (tpm, powerlevel10k, tmux plugins)
+# Init submodules (tpm, tmux plugins)
 git -C "$DOTFILES" submodule update --init --recursive
 
 link() {
@@ -56,7 +56,6 @@ link "$DOTFILES/bash/bashrc"         "$HOME/.bashrc"
 link "$DOTFILES/bash/bash_functions" "$HOME/.functions"
 link "$DOTFILES/bash/profile"        "$HOME/.profile"
 link "$DOTFILES/zsh/zshrc"          "$HOME/.zshrc"
-link "$DOTFILES/p10k/p10k.zsh"      "$HOME/.p10k.zsh"
 
 # Tmux
 link "$DOTFILES/tmux"           "$HOME/.tmux"
