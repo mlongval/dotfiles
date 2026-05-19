@@ -104,7 +104,7 @@ _p_build() {
 # Line 2: assembled segments.
 # Line 3: prompt char, mauve when last command ok, red when failed.
 PROMPT='
-$(_p_build)
-%(?.%F{'$_P_MAUVE'}.%F{'$_P_RED'})❯%f '
+  $(_p_build)
+  %(?.%F{'$_P_MAUVE'}.%F{'$_P_RED'})❯%f '
 
 RPROMPT=''
