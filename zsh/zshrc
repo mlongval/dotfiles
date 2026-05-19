@@ -8,7 +8,7 @@ if [ -f /etc/sudoers.d/doc-nopasswd ]; then
 fi
 
 command -v fastfetch >/dev/null 2>&1 && fastfetch -l none
-python3 ~/bin/clinic_days.py
+[ -x ~/bin/clinic_days.py ] && python3 ~/bin/clinic_days.py
 
 # History
 HISTFILE=~/.histfile
