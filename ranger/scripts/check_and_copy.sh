@@ -1,6 +1,8 @@
 #!/bin/bash
 
-FILE=$(cat /tmp/works_selected)
+# Must match the works picker writer (ClinicalNotesSystem/bin/works), which
+# writes to RAM-backed tmpfs to keep patient-identifying paths off disk.
+FILE=$(cat /dev/shm/works_selected)
 
 if [ -e "$FILE" ]; then
     install -m 0755 "$FILE" "$1"
