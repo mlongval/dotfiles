@@ -63,6 +63,9 @@ Plug 'bullets-vim/bullets.vim'
 " Prettification
 Plug 'stevearc/dressing.nvim'
 
+" Browser text fields — edit in nvim via firenvim extension
+Plug 'glacambre/firenvim', { 'do': { -> firenvim#install(0) } }
+
 " Key hints popup (neovim only)
 if has('nvim')
   Plug 'folke/which-key.nvim'
@@ -104,6 +107,13 @@ execute 'set spellfile=' . stdpath('config') . '/spell/fr.utf-8.add'
 augroup NoSpellTmp
   autocmd!
   autocmd BufRead,BufNewFile /tmp/*,/var/tmp/*,/dev/shm/* setlocal nospell
+augroup END
+" Textern (browser textbox → nvim) writes under $XDG_RUNTIME_DIR/textern/textern-*/
+" (or /tmp/textern-*/ fallback). Force English spell + English word list there for
+" Claude prompts. Must come after NoSpellTmp to override its nospell on the /tmp path.
+augroup TexternEnSpell
+  autocmd!
+  autocmd BufRead,BufNewFile */textern-*/* execute 'setlocal spell spelllang=en spellfile=' . stdpath('config') . '/spell/en.utf-8.add'
 augroup END
 set showtabline=0
 set fillchars+=vert:\ ,diff:-
