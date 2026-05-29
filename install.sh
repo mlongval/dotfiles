@@ -69,6 +69,13 @@ link "$DOTFILES/nvim" "$HOME/.config/nvim"
 # Other tools
 link "$DOTFILES/ranger" "$HOME/.config/ranger"
 
+# Autostart entries (GNOME) — e.g. one-time Textern native-host setup.
+# Each self-guards (graphical-only + run-once), so this is safe everywhere.
+mkdir -p "$HOME/.config/autostart"
+for desktop in "$DOTFILES/autostart/"*.desktop; do
+    [ -f "$desktop" ] && link "$desktop" "$HOME/.config/autostart/$(basename "$desktop")"
+done
+
 # Fontconfig — alias Adwaita Mono to Nerd Font variant for glyph support
 mkdir -p "$HOME/.config/fontconfig/conf.d"
 link "$DOTFILES/fontconfig/conf.d/99-adwaita-nerd.conf" "$HOME/.config/fontconfig/conf.d/99-adwaita-nerd.conf"

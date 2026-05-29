@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Textern to Neovim backend setup
+Comment=One-time install of the Textern native messaging host (browser textbox to nvim in Ptyxis)
+Exec=/home/doc/bin/setup-textern-backend.sh
+Terminal=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
