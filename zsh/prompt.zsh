@@ -44,6 +44,10 @@ typeset -g _P_LAST_EXIT=0
 _p_capture_exit() { _P_LAST_EXIT=$? }
 add-zsh-hook precmd _p_capture_exit
 
+# Set terminal title to user@host:cwd so it stays correct after ssh disconnects.
+_p_set_title() { print -Pn -- $'\e]0;%n@%m: %~\a' }
+add-zsh-hook precmd _p_set_title
+
 # -------- segments ----------------------------------------------------------
 # Each _p_seg_* echoes the rendered segment or empty string. The assembler
 # joins non-empty results with $_P_SEP.
