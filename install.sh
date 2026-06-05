@@ -69,6 +69,20 @@ link "$DOTFILES/nvim" "$HOME/.config/nvim"
 # Other tools
 link "$DOTFILES/ranger" "$HOME/.config/ranger"
 
+# Ptyxis terminal — custom "readable" Catppuccin Mocha palette (dim greys lifted
+# for legibility, also under alt-i window inversion). Link the palette and point
+# the default profile at it. Guarded so it's a no-op on non-Ptyxis hosts.
+if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas 2>/dev/null | grep -q '^org.gnome.Ptyxis$'; then
+    PTYXIS_PALETTES="$HOME/.local/share/org.gnome.Ptyxis/palettes"
+    mkdir -p "$PTYXIS_PALETTES"
+    link "$DOTFILES/ptyxis/catppuccin-mocha-readable.palette" "$PTYXIS_PALETTES/catppuccin-mocha-readable.palette"
+    PTYXIS_UUID=$(gsettings get org.gnome.Ptyxis default-profile-uuid | tr -d "'")
+    if [ -n "$PTYXIS_UUID" ]; then
+        gsettings set "org.gnome.Ptyxis.Profile:/org/gnome/Ptyxis/Profiles/$PTYXIS_UUID/" palette 'catppuccin-mocha-readable'
+        echo "  ptyxis profile $PTYXIS_UUID palette -> catppuccin-mocha-readable"
+    fi
+fi
+
 # Autostart entries (GNOME) — e.g. one-time Textern native-host setup.
 # Each self-guards (graphical-only + run-once), so this is safe everywhere.
 mkdir -p "$HOME/.config/autostart"
