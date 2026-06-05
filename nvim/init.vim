@@ -49,8 +49,8 @@ Plug 'easymotion/vim-easymotion'
 Plug 'preservim/nerdtree'
 
 " UI
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+" Statusline is hand-built in lua/statusline.lua (ported from the
+" ClinicalNotesSystem nvim config) — no airline.
 Plug 'ryanoasis/vim-devicons'
 Plug 'yggdroot/indentline'
 Plug 'catppuccin/vim', { 'as': 'catppuccin' }
@@ -138,10 +138,6 @@ endif
 " Plugin settings
 " ============================================================
 
-" Airline
-let g:airline_left_sep  = ''
-let g:airline_right_sep = ''
-
 " Anyfold
 let g:anyfold_fold_comments = 0
 
@@ -209,7 +205,29 @@ autocmd! User GoyoLeave nested call <SID>goyo_leave()
 map  <leader>z <ESC>:ZEN<CR>
 
 " Misc
-map      <leader>n   <ESC>:set number relativenumber<CR>
+" <leader>n cycles through three view modes (ported from the
+" ClinicalNotesSystem nvim config):
+"   0  numbers off,         colorcolumn on
+"   1  numbers + relnum on, colorcolumn on   (default)
+"   2  numbers off,         colorcolumn off, text column centered on screen
+"      via a blank left padding window (see lua/center.lua)
+let s:number_mode = 1
+function! CycleNumberMode() abort
+    let s:number_mode = (s:number_mode + 1) % 3
+    if s:number_mode == 0
+        lua require('center').off()
+        setlocal nonumber norelativenumber foldcolumn=0 signcolumn<
+        setlocal colorcolumn=56
+    elseif s:number_mode == 1
+        lua require('center').off()
+        setlocal number relativenumber foldcolumn=0 signcolumn<
+        setlocal colorcolumn=56
+    else
+        setlocal nonumber norelativenumber foldcolumn=0 signcolumn=no colorcolumn=
+        lua require('center').on()
+    endif
+endfunction
+map      <leader>n   <ESC>:call CycleNumberMode()<CR>
 nnoremap <leader>nw  :set numberwidth=12<CR>
 nnoremap <BS>        :call ExitAtBufferStart()<CR>
 nnoremap <Tab>       :call EndOfLineTab()<CR>
@@ -260,6 +278,9 @@ if has('nvim')
 EOF
   endif
 
+  " Hand-built statusline (ported from ClinicalNotesSystem nvim config)
+  lua require('statusline').setup()
+
   " dressing.nvim — prettier vim.ui.select and vim.ui.input
   lua require('dressing').setup({})
 
@@ -277,7 +298,7 @@ EOF
       { '<leader>z',  desc = 'ZEN mode' },
       { '<leader>q',  desc = 'Calendrier + jours fériés' },
       { '<leader>b',  desc = 'Batterie (acpi)' },
-      { '<leader>n',  desc = 'Afficher les numéros de ligne' },
+      { '<leader>n',  desc = 'Cycle numéros / off / texte centré' },
       { '<leader>w',  group = 'VimWiki' },
       { '<leader>t',  group = 'Onglets' },
     })
