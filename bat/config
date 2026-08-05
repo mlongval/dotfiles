@@ -1,0 +1,6 @@
+# bat config — pin the bundled Catppuccin Mocha theme so output (and ranger
+# previews via scope.sh) matches the Ptyxis palette. Catppuccin's RGBs were
+# chosen to clear contrast in BOTH normal and alt-i (RGB-negated) modes, so
+# previews stay readable inverted — unlike bat's default 256-colour greys,
+# which negate to a washy grey-on-cream.
+--theme="Catppuccin Mocha"

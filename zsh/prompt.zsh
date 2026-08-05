@@ -102,7 +102,7 @@ _p_seg_venv() {
 
 _p_seg_sudo() {
   [[ -f /etc/sudoers.d/doc-nopasswd ]] || return
-  print -n -- "%F{$_P_YELLOW}󰌾 NOPASSWD%f"
+  print -n -- "%F{$_P_YELLOW}󰌿%f"
 }
 
 _p_seg_exit() {
