@@ -140,3 +140,29 @@ function frog() {
 function bak() {
     cp "$1" "${1}.bak"
 }
+
+# Offer to install Ghostty on graphical machines that don't have it yet.
+# Skips SSH sessions and non-graphical shells entirely (installing a GUI
+# terminal emulator there makes no sense). Runs on every new shell until
+# you say yes or no; a "no" is remembered so it won't nag again.
+ghostty_offer_install() {
+    command -v ghostty >/dev/null 2>&1 && return
+    [ -n "$SSH_CONNECTION$SSH_TTY" ] && return
+    [ -z "$DISPLAY$WAYLAND_DISPLAY" ] && return
+    [ -t 0 ] || return
+
+    marker="$HOME/.cache/dotfiles/.ghostty-install-declined"
+    [ -f "$marker" ] && return
+
+    printf 'Ghostty is not installed on this machine. Install it now? [y/N] '
+    read -r reply
+    case "$reply" in
+        [yY]*) bash "$HOME/dotfiles/bin/install-ghostty.sh" ;;
+        *)
+            mkdir -p "$(dirname "$marker")"
+            touch "$marker"
+            ;;
+    esac
+    unset marker reply
+}
+ghostty_offer_install
