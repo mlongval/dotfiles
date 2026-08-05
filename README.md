@@ -25,19 +25,26 @@ After bootstrap completes, open a new shell and continue with the steps below.
 
 ### After bootstrap: install packages
 
-**Homebrew** (tracked in `Brewfile`):
+Package snapshots are per-machine, under `snapshots/<hostname>/` (see `backup-system-state.sh` below). Substitute your machine's snapshot dir — e.g. `snapshots/t480i5/` — below, or use the closest match if this is a new machine.
+
+**Terminal + preview tools** — Ghostty, plus chafa/poppler-utils for ranger's image/PDF previews:
 ```sh
-brew bundle install --file=~/dotfiles/Brewfile
+~/dotfiles/bin/install-ghostty.sh
 ```
 
-**Flatpaks** (tracked in `flatpaks.txt`):
+**Homebrew** (tracked in `snapshots/<hostname>/Brewfile`):
 ```sh
-xargs -a ~/dotfiles/flatpaks.txt flatpak install -y flathub
+brew bundle install --file=~/dotfiles/snapshots/<hostname>/Brewfile
+```
+
+**Flatpaks** (tracked in `snapshots/<hostname>/flatpaks.txt`):
+```sh
+xargs -a ~/dotfiles/snapshots/<hostname>/flatpaks.txt flatpak install -y flathub
 ```
 
 **GNOME settings** — restores all desktop settings and extension configuration:
 ```sh
-dconf load / < ~/dotfiles/dconf-backup.ini
+dconf load / < ~/dotfiles/snapshots/<hostname>/dconf-backup.ini
 ```
 > Note: install your GNOME extensions first (via the Extensions app or `gnome-extensions install`), then load dconf so their settings apply correctly.
 
@@ -77,15 +84,17 @@ No arguments needed. Existing symlinks are refreshed, nothing is deleted.
 
 ## Keeping the system state snapshot current
 
-`backup-system-state.sh` captures the current state of packages and GNOME settings:
+`backup-system-state.sh` captures the current state of packages and GNOME settings into `snapshots/$(hostname)/`:
 
 ```sh
 ~/dotfiles/backup-system-state.sh
 ```
 
-This updates:
+This updates, depending on what's present on the machine:
 - `Brewfile` — all currently installed Homebrew formulae and casks
 - `flatpaks.txt` — all installed Flatpak apps
+- `apt-packages.txt` / `dnf-packages.txt` / `rpm-ostree-packages.txt` — native distro packages
+- `gnome-extensions.txt` — enabled GNOME Shell extensions
 - `dconf-backup.ini` — full GNOME settings dump (shell, keybindings, extension configs)
 
 Run it before wiping a machine, or periodically to keep the repo current. Then commit the results.
@@ -103,11 +112,9 @@ Run it before wiping a machine, or periodically to keep the repo current. Then c
 | `vim/` | Vim (plugins managed by vim-plug, not tracked) |
 | `ranger/` | ranger file manager |
 | `claude/` | Claude Code — statusline, settings, skills, commands, hooks |
-| `powerlevel10k/` | p10k prompt theme (submodule) |
 | `tmux/plugins/tpm` | Tmux Plugin Manager (submodule) |
-| `Brewfile` | Homebrew package list (auto-generated) |
-| `flatpaks.txt` | Flatpak app list (auto-generated) |
-| `dconf-backup.ini` | GNOME settings dump (auto-generated) |
+| `bin/install-ghostty.sh` | Installs Ghostty + chafa/poppler-utils for ranger previews |
+| `snapshots/<hostname>/` | Per-machine Brewfile / flatpaks.txt / dconf-backup.ini / native package lists (auto-generated) |
 
 ---
 
@@ -123,8 +130,11 @@ Managed by [vim-plug](https://github.com/juniper/vim-plug), **not** tracked in t
 
 The zshrc automatically starts the SSH agent and loads `~/.ssh/id_ed25519` on login. `git push/pull` will work without manual `ssh-add` after the first shell session.
 
-## Bluefin / distrobox notes
+## Ghostty
 
-On Bluefin (t480i5), the shell auto-enters the `DailyUse` distrobox on login. Inside that container, `/home/linuxbrew` is mounted **read-only** by design — Homebrew is intended to be managed from the host shell only.
+`ranger`'s image and PDF previews (`ranger/plugins/chafa_ghostty.py`, `ranger/plugins/pdf_pager.py`) only activate inside Ghostty — they detect it via `$GHOSTTY_RESOURCES_DIR` and are a silent no-op in any other terminal.
 
-A `brew()` function in `bash/bash_functions` handles this transparently: when called inside a distrobox container where `/home/linuxbrew` is not writable, it delegates to `distrobox-host-exec brew`. On all other systems (Ubuntu, plain Fedora, host Bluefin shell) it calls brew directly. No configuration needed.
+On a graphical machine that doesn't have Ghostty yet, opening a new local (non-SSH) shell will prompt once per shell to install it, until you answer yes or no (see `ghostty_offer_install` in `bash/bash_functions`). To install manually, or to pick up chafa/poppler-utils for the ranger previews without the prompt:
+```sh
+~/dotfiles/bin/install-ghostty.sh
+```
