@@ -71,6 +71,16 @@ link "$DOTFILES/ranger" "$HOME/.config/ranger"
 link "$DOTFILES/bat"    "$HOME/.config/bat"
 link "$DOTFILES/ghostty" "$HOME/.config/ghostty"
 
+# UltiSnips — my_snippets/all.snippets is a symlink into ClinicalNotesSystem,
+# which owns it. On a machine without that repo the link dangles and UltiSnips
+# errors on load, so warn loudly rather than failing silently. The link itself
+# is tracked, so nothing to create here.
+if [ -L "$DOTFILES/my_snippets/all.snippets" ] && [ ! -e "$DOTFILES/my_snippets/all.snippets" ]; then
+    echo "  WARNING: my_snippets/all.snippets dangles -> $(readlink "$DOTFILES/my_snippets/all.snippets")"
+    echo "           Clone ClinicalNotesSystem to ~/Projects/, or remove the link"
+    echo "           to use vim here without the clinical snippets."
+fi
+
 # Ptyxis terminal — custom "readable" Catppuccin Mocha palette (dim greys lifted
 # for legibility, also under alt-i window inversion). Link the palette and point
 # the default profile at it. Guarded so it's a no-op on non-Ptyxis hosts.
