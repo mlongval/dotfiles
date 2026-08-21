@@ -40,6 +40,22 @@ new_named_session() {
 mapfile -t sessions < <("$REAL_TMUX" list-sessions -F '#{session_name}' 2>/dev/null || true)
 n=${#sessions[@]}
 
+# "name<TAB>annotation" — sessions in a group of size>1 are flagged so the
+# picker shows which siblings share windows. cut -f1 strips the annotation.
+build_display() {
+    "$REAL_TMUX" list-sessions \
+        -F '#{session_name}	#{session_group}	#{session_group_size}' 2>/dev/null \
+    | awk -F'\t' '{
+        name=$1; group=$2; size=$3
+        if (size+0 > 1) {
+            if (name == group) printf "%s\t[group %s: root]\n", name, group
+            else                printf "%s\t[group %s: linked]\n", name, group
+        } else {
+            printf "%s\t\n", name
+        }
+    }'
+}
+
 case $n in
     0)
         new_named_session
@@ -54,10 +70,11 @@ case $n in
         esac
         ;;
     *)
-        choice=$({ printf 'new\n'; printf '%s\n' "${sessions[@]}"; } | \
+        choice=$({ printf 'new\t\n'; build_display; } | \
             fzf --height=40% --reverse --prompt='tmux> ' \
                 --header='enter=select  esc=cancel  j/k or arrows to move' \
-                --no-multi)
+                --no-multi --delimiter=$'\t' --with-nth=1,2 --tabstop=20 \
+            | cut -f1)
         [ -z "${choice:-}" ] && exit 0
         if [ "$choice" = "new" ]; then
             new_named_session
