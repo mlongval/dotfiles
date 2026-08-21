@@ -1,1 +1,0 @@
-/home/doc/Projects/ClinicalNotesSystem/neovim/lua/hardcopy.lua
