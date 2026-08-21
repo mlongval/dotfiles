@@ -22,7 +22,8 @@ if ! mountpoint -q "$MOUNT"; then
     exit 1
 fi
 
-systemctl --user stop "${TIMER_UNIT}.timer" 2>/dev/null || true
+systemctl --user stop "${TIMER_UNIT}.timer" "${TIMER_UNIT}.service" 2>/dev/null || true
+systemctl --user reset-failed "${TIMER_UNIT}.timer" "${TIMER_UNIT}.service" 2>/dev/null || true
 
 if [[ -n "$TIMEOUT" ]]; then
     systemd-run --user --on-active="$TIMEOUT" --unit="$TIMER_UNIT" "$WORKOFF"
