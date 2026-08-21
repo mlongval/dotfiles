@@ -69,6 +69,7 @@ link "$DOTFILES/nvim" "$HOME/.config/nvim"
 # Other tools
 link "$DOTFILES/ranger" "$HOME/.config/ranger"
 link "$DOTFILES/bat"    "$HOME/.config/bat"
+link "$DOTFILES/ghostty" "$HOME/.config/ghostty"
 
 # Ptyxis terminal — custom "readable" Catppuccin Mocha palette (dim greys lifted
 # for legibility, also under alt-i window inversion). Link the palette and point

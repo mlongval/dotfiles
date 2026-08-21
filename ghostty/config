@@ -1,0 +1,6 @@
+# Ghostty configuration
+# Docs: https://ghostty.org/docs/config
+
+# Fullscreen. Ghostty 1.3.x already defaults to ctrl+enter;
+# F11 is bound as well to match the usual terminal convention.
+keybind = f11=toggle_fullscreen
