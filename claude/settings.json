@@ -199,7 +199,6 @@
       "Bash(date:*)",
       "Bash(delta --version:*)",
       "Bash(delta:*)",
-      "Bash(deno --version:*)",
       "Bash(deno bench:*)",
       "Bash(deno check:*)",
       "Bash(deno coverage:*)",
@@ -537,7 +536,6 @@
       "Bash(lsd:*)",
       "Bash(lsof:*)",
       "Bash(ltrace --version:*)",
-      "Bash(lua -v:*)",
       "Bash(luarocks --version:*)",
       "Bash(luarocks list:*)",
       "Bash(make --version:*)",
@@ -592,8 +590,6 @@
       "Bash(nl:*)",
       "Bash(nm --version:*)",
       "Bash(nmap --version:*)",
-      "Bash(node --version:*)",
-      "Bash(node -v:*)",
       "Bash(npm --version)",
       "Bash(npm -v:*)",
       "Bash(npm audit:*)",
@@ -616,8 +612,6 @@
       "Bash(npm show:*)",
       "Bash(npm view:*)",
       "Bash(npm why:*)",
-      "Bash(npx --version:*)",
-      "Bash(npx -v:*)",
       "Bash(nslookup:*)",
       "Bash(nuget --version:*)",
       "Bash(nvim --version:*)",
@@ -643,13 +637,9 @@
       "Bash(pdm info:*)",
       "Bash(pdm list:*)",
       "Bash(pdm show:*)",
-      "Bash(perl --version:*)",
-      "Bash(perl -v:*)",
       "Bash(pg_config --version:*)",
       "Bash(pg_dump --version:*)",
       "Bash(pgcli --version:*)",
-      "Bash(php --version:*)",
-      "Bash(php -v:*)",
       "Bash(ping -c:*)",
       "Bash(pip --version:*)",
       "Bash(pip -V:*)",
@@ -705,10 +695,6 @@
       "Bash(pyenv versions:*)",
       "Bash(pyenv which:*)",
       "Bash(pylint --version:*)",
-      "Bash(python --version:*)",
-      "Bash(python -V:*)",
-      "Bash(python3 --version:*)",
-      "Bash(python3 -V:*)",
       "Bash(qlmanage -p:*)",
       "Bash(qpdf:*)",
       "Bash(rails --version:*)",
@@ -729,8 +715,6 @@
       "Bash(rg:*)",
       "Bash(route:*)",
       "Bash(rsync --version:*)",
-      "Bash(ruby --version:*)",
-      "Bash(ruby -v:*)",
       "Bash(ruff --version:*)",
       "Bash(ruff check:*)",
       "Bash(rustc --version:*)",
@@ -780,7 +764,6 @@
       "Bash(sqlite3 --version:*)",
       "Bash(sqlite3 -version:*)",
       "Bash(ss:*)",
-      "Bash(ssh -V:*)",
       "Bash(ssh-keygen -l:*)",
       "Bash(stack --version:*)",
       "Bash(starship --version:*)",
@@ -896,6 +879,7 @@
     ],
     "defaultMode": "auto"
   },
+  "model": "opus[1m]",
   "hooks": {
     "PostToolUse": [
       {
@@ -925,12 +909,68 @@
     "command": "bash ~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "telegram@claude-plugins-official": true
+    "telegram@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true
   },
   "effortLevel": "medium",
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "theme": "dark-daltonized",
   "editorMode": "vim",
   "verbose": true,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Bash(tailscale status:*)",
+      "Bash(tailscale ip:*)",
+      "Bash(systemctl status:*)",
+      "Bash(journalctl:*)",
+      "Bash(crontab -l:*)"
+    ],
+    "soft_deny": [
+      "$defaults",
+      "Bash(tailscale down:*)",
+      "Bash(tailscale logout:*)",
+      "Bash(crontab -r:*)"
+    ],
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured — personal/hobby setup under the GitHub account `mlongval`",
+      "**Cloud provider(s)**: None configured — self-hosted homelab (ubuntu-s1, t480i5, t520, p15) on a Tailscale tailnet",
+      "**Repository visibility**: not queryable here (this repo is the home directory `/home/doc` with no git remotes and 0 tracked files); the personal GitHub repos named in CLAUDE.md (KoboChess, Lauzon, ReadItEventually) are described there as private — assume private unless a visibility check shows otherwise",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: None configured — `op` (1Password CLI) appears in shell history (7x); credential files exist under ~/.claude/.credentials.json and various container .env files",
+      "**Default / protected branches**: unknown — origin/HEAD unset and no remotes on this repo; no branch protection or rulesets queryable",
+      "**CI/CD deploy targets**: None configured — deployment is manual to homelab hosts (ubuntu-s1 containers, Kobo Elipsa devices) per CLAUDE.md",
+      "**Network posture**: Tailscale tailnet across personal machines plus a local LAN (gateway 192.168.2.1); Mullvad exit node; no corporate network",
+      "**Source control**: The trusted repo and its remote(s) only (no additional orgs configured) — as scoped by the Trusted repo and Repository visibility entries above; personal GitHub account `mlongval` is the only account seen in this checkout tree",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: None configured — the homelab services named in CLAUDE.md (ubuntu-s1 homepage, readiteventually on :18090, immich, jellyfin, navidrome, calibre-web, portainer) come from repo docs only and are not usage-corroborated",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar. In this checkout that notably includes patient/clinical material under ~/Projects/ClinicalNotesSystem and ~/Projects/NonBespokeCNS, retirement patient letters under ~/Projects/Retirement, personal photo libraries (immich), and credential files (.claude/.credentials.json, container .env files, secrets.yaml, client_secrets.json)",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment (hyphen/underscore/dot-delimited — e.g. matches `prod-db`, not `producer`)",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development plus homelab system administration and documentation upkeep in the home directory (`/home/doc`)",
+      "**Trusted repo**: The git repository the agent started in (its working directory) and its configured remote(s). Here that is `/home/doc` itself, which has no remotes and no tracked files — so nothing is push-trusted from this session. When the repo's public/private visibility is given — by the Repository visibility entry or the user's own message — use it to scope what is OK to commit or push there: confidential material is fine in a private repo; in a public one, only that repo's own work is — and content ported, repointed, or first read from outside this session's repo is not its own work, whoever directed the port. Visibility scopes confidential material only: secrets and sensitive data (personal & entrusted) are never cleared into any repo by its visibility (see Definitions). Note that nested checkouts under ~/Projects, ~/Repositories, ~/dotfiles and ~/folio are separate repos, including third-party clones (romkatv/powerlevel10k, garritfra/cell, nakagami/grdpwasm, JonathanRosado/claude-anyteam, SamPlvs/zero-operators) that are not the user's own",
+      "**Org-specific CLIs**: None configured — routine local tooling seen in this project is read-only host inspection (`hostname`, `uptime`, `df`, `dpkg`, `infocmp`, `chafa`) plus `tailscale`, `systemctl`, `journalctl`, `crontab`, `ping`"
+    ]
+  },
+  "mcpServers": {
+    "tokenflexing": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "tokenflexing@latest",
+        "mcp"
+      ],
+      "type": "stdio"
+    }
+  },
+  "agentPushNotifEnabled": true
 }

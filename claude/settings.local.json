@@ -62,7 +62,26 @@
       "Bash(mkdir -p ~/LocalRepositories)",
       "Bash(lsblk -o NAME,SIZE,FSTYPE,LABEL,MOUNTPOINT,MODEL,SERIAL)",
       "Bash(dmesg)",
-      "Bash(tailscale status *)"
+      "Bash(tailscale status *)",
+      "Bash(timeout 45 tailscale debug portmap)",
+      "Bash(timeout 45 tailscale netcheck)",
+      "Bash(timeout 60 tailscale ping --timeout=5s --c 8 hdieu)",
+      "Bash(who)",
+      "Bash(awk '{print $5}')",
+      "Bash(tailscale version *)",
+      "Bash(tailscale set *)",
+      "Bash(tailscale up *)",
+      "Bash(timeout 60 tailscale ping --timeout=5s --c 10 hdieu)",
+      "Bash(timeout 40 tailscale ping --timeout=5s --c 5 hdieu)",
+      "Bash(timeout 15 curl -sS http://192.168.2.1:49152/47393558/gatedesc0a.xml)",
+      "Bash(timeout 15 curl -sS http://192.168.2.1:49152/47393558/wancomicfgSCPD.xml)",
+      "Bash(bash -n bin/netlatency-log.sh)",
+      "Bash(sed -i '1s/.*/timestamp,probe,target,rtt_ms,loss_pct,load1,sys_pct,conntrack,rx_kBps,tx_kBps,qbit,wan_tx_pps,wan_rx_pps/' logs/netlatency.csv)",
+      "Bash(bash bin/netlatency-log.sh)",
+      "Bash(bash -n bin/netlatency-report.sh)",
+      "Bash(bash bin/netlatency-report.sh)",
+      "Bash(awk 'NR>380 && length\\($0\\)>70 {c++} END{print c+0\" lines\"}' Projects/Network-Problems/FINDINGS.md)",
+      "Bash(cd *)"
     ]
   }
 }
