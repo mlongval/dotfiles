@@ -260,8 +260,10 @@ execute 'source ' . stdpath('config') . '/functions.vim'
 " Neovim-only
 " ============================================================
 if has('nvim')
-  " OSC 52 clipboard — works over SSH/tmux without display server
-  set clipboard=unnamedplus
+  " OSC 52 clipboard — works over SSH/tmux without display server.
+  " Pas de clipboard=unnamedplus : sinon chaque d/x/c écrit dans le
+  " presse-papier système (et Ghostty affiche « Copied to clipboard »).
+  " Le presse-papier reste accessible via "+ et les raccourcis <leader>y/p.
   if has('nvim-0.10')
     lua << EOF
     vim.g.clipboard = {
