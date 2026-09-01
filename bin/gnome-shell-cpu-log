@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Log gnome-shell CPU%/RSS hourly, to document GSource-leak growth over uptime.
+# Context: 2026-09-01, shell burned 80% of a core in g_main_context prepare/check
+# after 15 days up.  See gitlab.gnome.org/GNOME/gnome-shell issue #62.
+LOG="$HOME/.local/share/gnome-shell-cpu.log"
+PID=$(pgrep -x gnome-shell -u "$USER" | head -1) || exit 0
+[ -n "$PID" ] || exit 0
+CLK=$(getconf CLK_TCK)
+a=$(awk '{print $14+$15}' "/proc/$PID/stat" 2>/dev/null) || exit 0
+sleep 5
+b=$(awk '{print $14+$15}' "/proc/$PID/stat" 2>/dev/null) || exit 0
+cpu=$(( (b - a) * 100 / (5 * CLK) ))
+rss=$(( $(awk '/^VmRSS/{print $2}' "/proc/$PID/status") / 1024 ))
+cum=$(awk '{print int(($14+$15)/'"$CLK"')}' "/proc/$PID/stat")   # cumulative CPU seconds
+up=$(ps -o etimes= -p "$PID" | tr -d ' ')                        # shell uptime seconds
+ext=$(gnome-extensions list --enabled 2>/dev/null | wc -l)
+[ -s "$LOG" ] || echo "timestamp,pid,cpu_pct,rss_mb,cum_cpu_s,shell_uptime_s,extensions_enabled" >> "$LOG"
+echo "$(date -Is),$PID,$cpu,$rss,$cum,$up,$ext" >> "$LOG"
