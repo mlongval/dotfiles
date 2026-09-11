@@ -112,9 +112,25 @@ Run it before wiping a machine, or periodically to keep the repo current. Then c
 | `vim/` | Vim (plugins managed by vim-plug, not tracked) |
 | `ranger/` | ranger file manager |
 | `claude/` | Claude Code — statusline, settings, skills, commands, hooks |
+| `themes/` | Status themes — zsh prompt + tmux bar + Claude statusline, switched with `statustheme` |
 | `tmux/plugins/tpm` | Tmux Plugin Manager (submodule) |
 | `bin/install-ghostty.sh` | Installs Ghostty + chafa/poppler-utils for ranger previews |
 | `snapshots/<hostname>/` | Per-machine Brewfile / flatpaks.txt / dconf-backup.ini / native package lists (auto-generated) |
+
+---
+
+## Status themes
+
+The zsh prompt, tmux status bar and Claude Code statusline are styled together
+by a theme in `themes/<Name>.theme/`. Each machine picks its own:
+
+```sh
+statustheme                      # list themes (* = active)
+statustheme use September_2026   # switch this machine
+statustheme new Autumn_2026      # copy the active theme to start a new one
+```
+
+Details in [`themes/README.md`](themes/README.md).
 
 ---
 

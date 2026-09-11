@@ -62,6 +62,10 @@ link "$DOTFILES/tmux"           "$HOME/.tmux"
 link "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
 link "$DOTFILES/tmux"           "$HOME/.config/tmux"
 
+# Status theme — point ~/.config/statusthemes/active at the default theme
+# unless this machine already picked one (see themes/README.md)
+"$DOTFILES/bin/statustheme" init
+
 # Editors
 link "$DOTFILES/vim"  "$HOME/.vim"
 link "$DOTFILES/nvim" "$HOME/.config/nvim"

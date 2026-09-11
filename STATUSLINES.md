@@ -4,6 +4,9 @@ Hand-built statuslines across **nvim**, **tmux**, **zsh**, and the **Claude
 Code statusline**. Goal: usable in a portrait-mode terminal where horizontal
 space is the binding constraint.
 
+These files are the **Summer_2026** status theme (`themes/Summer_2026.theme/`);
+see `themes/README.md` for switching themes.
+
 No Powerlevel10k, no Airline, no Lualine presets. Each surface is a small,
 config-driven script we control end-to-end.
 

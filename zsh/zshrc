@@ -1,3 +1,9 @@
+# Status theme — see ~/dotfiles/themes/README.md (switch with `statustheme`).
+# Some themes need a hook this early (e.g. p10k instant prompt).
+_statustheme=~/.config/statusthemes/active
+[[ -e $_statustheme/zsh.zsh ]] || _statustheme=~/dotfiles/themes/default
+[[ -r $_statustheme/zsh-early.zsh ]] && source $_statustheme/zsh-early.zsh
+
 source $HOME/.profile
 source $HOME/.functions
 source $HOME/.bash_aliases
@@ -29,9 +35,9 @@ compinit
 zstyle ':completion:*' menu select
 fpath+=~/.zfunc
 
-# Prompt — hand-built, shares visual language with tmux + claude statuslines.
-# See ~/dotfiles/STATUSLINES.md.
-source ~/dotfiles/zsh/prompt.zsh
+# Prompt — comes from the active status theme.
+source $_statustheme/zsh.zsh
+unset _statustheme
 
 # Bun
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"

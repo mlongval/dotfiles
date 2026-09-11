@@ -2,3 +2,5 @@ vim/plugged/
 vim/undodir/
 claude/settings.local.json
 __pycache__/
+powerlevel10k/
+tmux/plugins/catppuccin-tmux/

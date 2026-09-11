@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+# statustheme — switch the zsh prompt, tmux status bar and Claude Code
+# statusline together. Themes live in ~/dotfiles/themes/<Name>.theme/;
+# the per-machine choice is the symlink ~/.config/statusthemes/active.
+# See ~/dotfiles/themes/README.md.
+set -euo pipefail
+
+DOTFILES="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
+THEMES="$DOTFILES/themes"
+ACTIVE="${XDG_CONFIG_HOME:-$HOME/.config}/statusthemes/active"
+
+die() { echo "statustheme: $*" >&2; exit 1; }
+
+usage() {
+    cat <<USAGE
+usage: statustheme [command]
+  list              list themes (* = active)          [default]
+  current           print the active theme
+  use <Name>        switch this machine to <Name>
+  new <Name> [From] copy a theme (default: active) to start a new one
+  path [Name]       print a theme's directory
+  init              point 'active' at the default theme if unset
+USAGE
+}
+
+theme_dir() {
+    local d="$THEMES/${1%.theme}.theme"
+    [ -d "$d" ] || die "no theme '${1%.theme}' (see: statustheme list)"
+    echo "$d"
+}
+
+active_name() {
+    if [ -e "$ACTIVE" ]; then
+        basename "$(readlink -f "$ACTIVE")" .theme
+    else
+        basename "$(readlink -f "$THEMES/default")" .theme
+    fi
+}
+
+meta() { sed -n "s/^$2=//p" "$1/meta" 2>/dev/null; }
+
+cmd_list() {
+    local cur d name
+    cur=$(active_name)
+    for d in "$THEMES"/*.theme; do
+        name=$(basename "$d" .theme)
+        if [ "$name" = "$cur" ]; then printf '* '; else printf '  '; fi
+        printf '%-18s %s\n' "$name" "$(meta "$d" description)"
+    done
+}
+
+cmd_current() {
+    if [ -e "$ACTIVE" ]; then active_name; else echo "$(active_name) (default)"; fi
+}
+
+reload_tmux() {
+    command -v tmux >/dev/null 2>&1 || return 0
+    tmux list-sessions >/dev/null 2>&1 || return 0
+    tmux source-file "$HOME/.tmux.conf" && echo "  tmux reloaded"
+}
+
+cmd_use() {
+    [ $# -eq 1 ] || die "usage: statustheme use <Name>"
+    local d
+    d=$(theme_dir "$1")
+    [ -x "$d/setup.sh" ] && "$d/setup.sh"
+    mkdir -p "$(dirname "$ACTIVE")"
+    ln -sfn "$d" "$ACTIVE"
+    echo "Active theme: $(basename "$d" .theme)"
+    reload_tmux
+    echo "  claude: updates on its next statusline refresh"
+    echo "  zsh:    new shells (or 'exec zsh' in open ones)"
+}
+
+cmd_new() {
+    [ $# -ge 1 ] || die "usage: statustheme new <Name> [From]"
+    local name="${1%.theme}" src dst
+    src=$(theme_dir "${2:-$(active_name)}")
+    dst="$THEMES/$name.theme"
+    [ -e "$dst" ] && die "theme '$name' already exists"
+    cp -r "$src" "$dst"
+    sed -i "s/^origin=.*/origin=copied from $(basename "$src" .theme) on $(hostname -s)/; s/^captured=.*/captured=$(date +%F)/" "$dst/meta"
+    echo "Created $dst — edit its files, then: statustheme use $name"
+}
+
+cmd_init() {
+    [ -e "$ACTIVE" ] && return 0
+    mkdir -p "$(dirname "$ACTIVE")"
+    ln -sfn "$(readlink -f "$THEMES/default")" "$ACTIVE"
+}
+
+case "${1:-list}" in
+    list)    cmd_list ;;
+    current) cmd_current ;;
+    use)     shift; cmd_use "$@" ;;
+    new)     shift; cmd_new "$@" ;;
+    path)    shift; if [ $# -gt 0 ]; then theme_dir "$1"; else readlink -f "$ACTIVE" 2>/dev/null || readlink -f "$THEMES/default"; fi ;;
+    init)    cmd_init ;;
+    -h|--help|help) usage ;;
+    *)       usage; exit 1 ;;
+esac
