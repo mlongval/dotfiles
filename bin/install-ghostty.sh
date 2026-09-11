@@ -11,6 +11,9 @@ install_linux_native() {
     . /etc/os-release
     case "$ID" in
         fedora)
+            # Ghostty isn't in Fedora's official repos — it ships via COPR.
+            dnf copr list 2>/dev/null | grep -q 'scottames/ghostty' \
+                || sudo dnf copr enable -y scottames/ghostty
             sudo dnf install -y ghostty chafa poppler-utils
             ;;
         ubuntu|debian|pop)
