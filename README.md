@@ -99,6 +99,12 @@ This updates, depending on what's present on the machine:
 
 Run it before wiping a machine, or periodically to keep the repo current. Then commit the results.
 
+### Machine-specific system files
+
+Hand-installed files under `/etc` that aren't captured by the snapshot script are kept in `snapshots/<host>/` for reinstalling:
+
+- **hdieu** — `snapshots/hdieu/udev/50-tplink-bt-no-autosuspend.rules` → `/etc/udev/rules.d/`. Disables USB autosuspend for the TP-Link UB500 Bluetooth dongle (RTL8761BU, `2357:0604`), which otherwise wedges while the screen is locked and only recovers when GNOME Settings forces a USB reset.
+
 ---
 
 ## Contents
