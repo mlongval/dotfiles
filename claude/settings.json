@@ -879,7 +879,6 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "opus[1m]",
   "hooks": {
     "PostToolUse": [
       {
@@ -919,6 +918,7 @@
   "theme": "dark-daltonized",
   "editorMode": "vim",
   "verbose": true,
+  "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
   "autoMode": {
     "allow": [
@@ -971,6 +971,5 @@
       ],
       "type": "stdio"
     }
-  },
-  "agentPushNotifEnabled": true
+  }
 }
