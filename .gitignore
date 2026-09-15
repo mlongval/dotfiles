@@ -4,3 +4,6 @@ claude/settings.local.json
 __pycache__/
 powerlevel10k/
 tmux/plugins/catppuccin-tmux/
+
+# Proprietary ScanSnap S1300 firmware — keep local, repo is public
+ScanSnapFirmware/
