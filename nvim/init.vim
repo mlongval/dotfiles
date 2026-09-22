@@ -232,9 +232,16 @@ nnoremap <leader>nw  :set numberwidth=12<CR>
 nnoremap <BS>        :call ExitAtBufferStart()<CR>
 nnoremap <Tab>       :call EndOfLineTab()<CR>
 nmap     <F2>        :ZEN<CR>
-nmap     <F7>        :set spell!<CR>
 nmap     zf          [s1z=$
 imap     zf          <esc>[s1z=$a
+" Spelling motions on z, like n/N for search: zn = next
+" misspelling, zN = previous. Replaces the fold toggles
+" zn/zN (zi still toggles folding).
+noremap  zn          ]s
+noremap  zN          [s
+" zl = popup to pick the spell language (fr/en/de/es);
+" replaces the nowrap-only scroll-right.
+nnoremap zl          <cmd>lua require('spelllang').pick()<CR>
 nmap     gF          <leader>bb<c-^><cr>
 
 " Disable q (use Q for macros if needed)
