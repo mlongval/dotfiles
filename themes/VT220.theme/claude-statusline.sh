@@ -10,7 +10,7 @@ input=$(cat)
 
 SEP=' | '
 _first=1
-# emit <ansi colour 30-37> <text>
+# emit <SGR, e.g. 32 or 1;7> <text>
 emit() {
   [ "$_first" -eq 1 ] && _first=0 || printf '%s' "$SEP"
   printf '\e[%sm%s\e[0m' "$1" "$2"
@@ -42,9 +42,9 @@ emit 36 "$LABEL"
 used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 if [ -n "$used" ]; then
   used_int=$(printf "%.0f" "$used")
-  if   [ "$used_int" -ge 75 ]; then c=31
+  if   [ "$used_int" -ge 75 ]; then c='1;7'   # reverse, not red: see zsh.zsh
   elif [ "$used_int" -ge 50 ]; then c=33
-  else                               c=34
+  else                               c=0
   fi
   emit "$c" "ctx ${used_int}%"
 fi

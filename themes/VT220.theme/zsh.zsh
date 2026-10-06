@@ -6,7 +6,8 @@
 #   $
 #
 # Flags as in the other themes: `*` dirty tree, [n] the last exit code
-# when it was not 0, `$` red after a failure.
+# when it was not 0.  A failure shows in reverse video, not red: red on the
+# K4510's blue is 1.3:1, and a muddy brown to protan eyes (Doc's).
 
 setopt PROMPT_SUBST
 
@@ -26,6 +27,6 @@ _vt_venv() {
 
 # Line 1: host, cwd (.../ and the last three parts when deeper), git, venv,
 #         exit code.  Line 2: the prompt character.
-PROMPT='%B%F{green}%m%f%b %F{cyan}%(4~|.../%3~|%~)%f$(_vt_git)$(_vt_venv)%(?.. %F{red}[%?]%f)
-%(?..%F{red})%B%(!.#.$)%b%f '
+PROMPT='%B%F{green}%m%f%b %F{cyan}%(4~|.../%3~|%~)%f$(_vt_git)$(_vt_venv)%(?.. %B%S[%?]%s%b)
+%B%(!.#.$)%b '
 RPROMPT=''
