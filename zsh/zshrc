@@ -1,8 +1,8 @@
 # Status theme — see ~/dotfiles/themes/README.md (switch with `statustheme`).
+# Picks this shell's theme ($_st_dir); a K4510 terminal always gets VT220.
+source ~/dotfiles/zsh/statustheme.zsh
 # Some themes need a hook this early (e.g. p10k instant prompt).
-_statustheme=~/.config/statusthemes/active
-[[ -e $_statustheme/zsh.zsh ]] || _statustheme=~/dotfiles/themes/default
-[[ -r $_statustheme/zsh-early.zsh ]] && source $_statustheme/zsh-early.zsh
+[[ -r $_st_dir/zsh-early.zsh ]] && source $_st_dir/zsh-early.zsh
 
 source $HOME/.profile
 source $HOME/.functions
@@ -35,9 +35,9 @@ compinit
 zstyle ':completion:*' menu select
 fpath+=~/.zfunc
 
-# Prompt — comes from the active status theme.
-source $_statustheme/zsh.zsh
-unset _statustheme
+# Prompt — comes from the status theme; open shells follow `statustheme use`.
+_st_load $_st_dir
+precmd_functions=(_st_follow $precmd_functions)
 
 # Bun
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"

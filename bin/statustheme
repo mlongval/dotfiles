@@ -8,6 +8,7 @@ set -euo pipefail
 DOTFILES="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
 THEMES="$DOTFILES/themes"
 ACTIVE="${XDG_CONFIG_HOME:-$HOME/.config}/statusthemes/active"
+PREVIOUS="$(dirname "$ACTIVE")/previous"   # the theme before the last 'use', for 'toggle'
 
 die() { echo "statustheme: $*" >&2; exit 1; }
 
@@ -17,6 +18,7 @@ usage: statustheme [command]
   list              list themes (* = active)          [default]
   current           print the active theme
   use <Name>        switch this machine to <Name>
+  toggle [Name]     switch to <Name> (default VT220), or back if already on it
   new <Name> [From] copy a theme (default: active) to start a new one
   path [Name]       print a theme's directory
   init              point 'active' at the default theme if unset
@@ -61,15 +63,31 @@ reload_tmux() {
 
 cmd_use() {
     [ $# -eq 1 ] || die "usage: statustheme use <Name>"
-    local d
+    local d cur
     d=$(theme_dir "$1")
+    cur=$(active_name)
     [ -x "$d/setup.sh" ] && "$d/setup.sh"
     mkdir -p "$(dirname "$ACTIVE")"
+    [ "$cur" != "$(basename "$d" .theme)" ] && echo "$cur" > "$PREVIOUS"
     ln -sfn "$d" "$ACTIVE"
     echo "Active theme: $(basename "$d" .theme)"
     reload_tmux
     echo "  claude: updates on its next statusline refresh"
-    echo "  zsh:    new shells (or 'exec zsh' in open ones)"
+    echo "  zsh:    open shells at their next prompt (a K4510 terminal always shows VT220)"
+}
+
+cmd_toggle() {
+    local name="${1:-VT220}" back
+    name="${name%.theme}"
+    theme_dir "$name" >/dev/null
+    if [ "$(active_name)" != "$name" ]; then
+        cmd_use "$name"
+        return
+    fi
+    back=$(cat "$PREVIOUS" 2>/dev/null || true)
+    [ -n "$back" ] && [ "$back" != "$name" ] && [ -d "$THEMES/$back.theme" ] \
+        || back=$(basename "$(readlink -f "$THEMES/default")" .theme)
+    cmd_use "$back"
 }
 
 cmd_new() {
@@ -93,6 +111,7 @@ case "${1:-list}" in
     list)    cmd_list ;;
     current) cmd_current ;;
     use)     shift; cmd_use "$@" ;;
+    toggle)  shift; cmd_toggle "$@" ;;
     new)     shift; cmd_new "$@" ;;
     path)    shift; if [ $# -gt 0 ]; then theme_dir "$1"; else readlink -f "$ACTIVE" 2>/dev/null || readlink -f "$THEMES/default"; fi ;;
     init)    cmd_init ;;

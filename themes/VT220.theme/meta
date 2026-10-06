@@ -1,0 +1,3 @@
+description=ASCII only, 8 ANSI colours: for a VT220 / the K4510 (no UTF-8, no Nerd Font); one-row tmux bar
+origin=ubuntu-s1, written for the K4510
+captured=2026-10-06

@@ -456,3 +456,6 @@ worker() {
     /usr/bin/rm -f "$f" 2>/dev/null   # absolute path: bypasses any alias/function/PATH shadow
     return $rc
 }
+
+# Status theme: flip to the ASCII VT220 theme (for the K4510) and back.
+alias vt='statustheme toggle'
