@@ -59,6 +59,9 @@ Plug 'catppuccin/vim', { 'as': 'catppuccin' }
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'https://github.com/pseewald/vim-anyfold'
 Plug 'bullets-vim/bullets.vim'
+" Modern successor to tpope/vim-surround (lua, actively maintained):
+"   ysiw~  yss~  S~ (visual)  ds~  cs~*  ...
+Plug 'kylechui/nvim-surround'
 
 " Prettification
 Plug 'stevearc/dressing.nvim'
@@ -292,6 +295,23 @@ EOF
 
   " dressing.nvim — prettier vim.ui.select and vim.ui.input
   lua require('dressing').setup({})
+
+  " nvim-surround — add/change/delete surrounding pairs.
+  " Custom '~' pair gives markdown strikethrough: ysiw~ -> ~~word~~
+  lua << SURROUNDEOF
+  local ok, surround = pcall(require, 'nvim-surround')
+  if ok then
+    surround.setup({
+      surrounds = {
+        ['~'] = {
+          add    = { '~~', '~~' },
+          find   = '~~.-~~',
+          delete = '^(~~)().-(~~)()$',
+        },
+      },
+    })
+  end
+SURROUNDEOF
 
   " which-key — leader hint popup (only if installed)
   lua << EOF

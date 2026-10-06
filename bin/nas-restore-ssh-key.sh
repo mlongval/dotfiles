@@ -13,7 +13,14 @@ set -euo pipefail
 
 NAS_HOST="192.168.2.175"
 NAS_USER="sshd"
-NAS_PASS="zgna3_@jvgxpRzce!XHYx"
+# Password lives outside ~/bin and ~/dotfiles: both are synced into the
+# ubuntu-s1-config git repo by backup_config.sh. ~/.config is not synced.
+NAS_CRED_FILE="${NAS_CRED_FILE:-$HOME/.config/nas-credentials.env}"
+if [ -r "$NAS_CRED_FILE" ]; then
+  # shellcheck source=/dev/null
+  . "$NAS_CRED_FILE"
+fi
+NAS_PASS="${NAS_PASS:-}"
 PUB_KEY_FILE="$HOME/.ssh/id_ed25519.pub"
 LOG_FILE="$HOME/logs/nas-restore-ssh-key.log"
 FORCE="${1:-}"
@@ -39,6 +46,12 @@ if [ "$FORCE" != "--force" ]; then
 fi
 
 log "SSH key auth failed — re-adding key via password auth..."
+
+if [ -z "$NAS_PASS" ]; then
+  log "ERROR: NAS password not available. Expected NAS_PASS in $NAS_CRED_FILE (mode 600)."
+  log "       Key auth is down and there is no way to re-install the key without it."
+  exit 1
+fi
 
 if ! command -v sshpass &>/dev/null; then
   log "ERROR: sshpass not installed. Run: sudo apt install sshpass"

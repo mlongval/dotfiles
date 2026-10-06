@@ -909,9 +909,15 @@
   },
   "enabledPlugins": {
     "telegram@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true
+    "frontend-design@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true
   },
   "effortLevel": "medium",
+  "modelSettings": {
+    "claude-fable-5": {
+      "effortLevel": "medium"
+    }
+  },
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
