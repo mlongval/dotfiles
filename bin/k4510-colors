@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
-# k4510-colors -- one line in each of the K4510's sixteen colours, as the
-# palette in use has them (CLEAR, C64, AMBER...).  ESC [ ? 4510 h makes
-# 38;5;n / 48;5;n with n < 16 the palette's own entry n (core/term.c).
-# The swatch on the left is the exact colour; the text is what JIM draws,
-# which lifts a colour too dim to read on the background (2026-10-06).
-names=(black white red cyan purple green blue yellow orange brown
-       "light red" "dark grey" grey "light green" "light blue" "light grey")
-printf '\e[?4510h'
-for i in {0..15}; do
-    printf '\e[48;5;%dm    \e[0m %X \e[38;5;%dm%-11s The quick brown fox jumps over the lazy dog\e[0m\n' \
-        "$i" "$i" "$i" "${names[$i]}"
+# k4510-colors -- one line in each colour a Linux program can show on the
+# K4510, named as the K4510 shows it.  A program asks for an ANSI colour
+# (30-37, 90-97); JIM turns it into one of the machine's sixteen
+# (core/term.c: apal, apalb), from whatever palette is loaded (CLEAR, C64...).
+# The swatch is the exact colour, as a background; the text is what JIM
+# draws, which lifts a colour too dim to read on the background.
+#
+# Orange (8), brown (9), grey (C) and light grey (F) have no ANSI code, so
+# no Linux program reaches them.  (ESC [ ? 4510 h would, but tmux drops it.)
+rows=(
+    "30 0 black"      "37 1 white"       "31 2 red"         "36 3 cyan"
+    "35 4 purple"     "32 5 green"       "34 6 blue"        "33 7 yellow"
+    "91 A light red"  "90 B dark grey"   "92 D light green" "94 E light blue"
+)
+for r in "${rows[@]}"; do
+    read -r code idx name <<<"$r"
+    printf '\e[%dm    \e[0m %s \e[%dm%-11s The quick brown fox jumps over the lazy dog\e[0m\n' \
+        $((code + 10)) "$idx" "$code" "$name"
 done
-printf '\e[?4510l'
+echo "not reachable from Linux: 8 orange, 9 brown, C grey, F light grey"
