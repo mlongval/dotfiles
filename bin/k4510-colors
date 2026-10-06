@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# k4510-colors -- one line in each of the K4510's sixteen colours, as the
+# palette in use has them (CLEAR, C64, AMBER...).  ESC [ ? 4510 h makes
+# 38;5;n / 48;5;n with n < 16 the palette's own entry n (core/term.c).
+# The swatch on the left is the exact colour; the text is what JIM draws,
+# which lifts a colour too dim to read on the background (2026-10-06).
+names=(black white red cyan purple green blue yellow orange brown
+       "light red" "dark grey" grey "light green" "light blue" "light grey")
+printf '\e[?4510h'
+for i in {0..15}; do
+    printf '\e[48;5;%dm    \e[0m %X \e[38;5;%dm%-11s The quick brown fox jumps over the lazy dog\e[0m\n' \
+        "$i" "$i" "$i" "${names[$i]}"
+done
+printf '\e[?4510l'
