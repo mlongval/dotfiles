@@ -10,7 +10,7 @@ source $HOME/.bash_aliases
 
 # Disable passwordless sudo if it was left enabled
 if [ -f /etc/sudoers.d/doc-nopasswd ]; then
-    sudo toggle-sudo disable 2>/dev/null || true
+    sudo "$HOME/bin/toggle-sudo" disable 2>/dev/null || true   # by path: not on sudo's secure_path
 fi
 
 command -v fastfetch >/dev/null 2>&1 && fastfetch -l none
