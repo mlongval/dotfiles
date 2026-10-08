@@ -12,12 +12,20 @@ typeset -g _st_k4510=0 _st_dir=
 typeset -ga _st_precmd _st_preexec    # the hooks the loaded theme added
 
 # The names the K4510 gives a host: TELNET offers XTERM-COLOR first, the `!`
-# shell (and SSH through it) sets xterm-color.  Inside tmux TERM is tmux's
-# own, so ask tmux what the attaching client is.
-_st_term=$TERM
-[[ -n $TMUX ]] && _st_term=$(tmux display-message -p -t "$TMUX_PANE" '#{client_termname}' 2>/dev/null)
-[[ $_st_term == (xterm-color|vt100|vt220|ansi) ]] && _st_k4510=1
-unset _st_term
+# shell (and SSH through it) sets xterm-color.  Through mosh every terminal is
+# xterm-256color, so k4510-connect also sets K4510_CLIENT=1 (2026-10-07).
+# Inside tmux TERM is tmux's own, so ask tmux what the attaching client is,
+# and look in that client's environment.
+_st_term=$TERM _st_k4510c=$K4510_CLIENT
+if [[ -n $TMUX ]]; then
+  _st_term=$(tmux display-message -p -t "$TMUX_PANE" '#{client_termname}' 2>/dev/null)
+  _st_k4510c=
+  _st_pid=$(tmux display-message -p -t "$TMUX_PANE" '#{client_pid}' 2>/dev/null)
+  [[ -n $_st_pid && -r /proc/$_st_pid/environ ]] && [[ ${(ps:\0:)"$(</proc/$_st_pid/environ)"} == *K4510_CLIENT=1* ]] && _st_k4510c=1
+  unset _st_pid
+fi
+[[ $_st_term == (xterm-color|vt100|vt220|ansi) || $_st_k4510c == 1 ]] && _st_k4510=1
+unset _st_term _st_k4510c
 
 # The theme this shell should show, in REPLY.
 _st_resolve() {
