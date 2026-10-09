@@ -13,6 +13,12 @@ if [ -f /etc/sudoers.d/doc-nopasswd ]; then
     sudo "$HOME/bin/toggle-sudo" disable 2>/dev/null || true   # by path: not on sudo's secure_path
 fi
 
+# A K4510 coming in by mosh (k4510-connect or its mosh set K4510_CLIENT=1)
+# goes straight into the last-used tmux session; detaching leaves this shell.
+if [[ -o interactive && -z $TMUX && $K4510_CLIENT == 1 ]]; then
+    ~/bin/tmux --latest
+fi
+
 command -v fastfetch >/dev/null 2>&1 && fastfetch -l none
 [ -x ~/bin/clinic_days.py ] && python3 ~/bin/clinic_days.py
 

@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # Wrapper around /usr/bin/tmux:
 #   no args -> pick/create a session interactively
+#   --latest -> no questions: the most recently used session (zshrc runs
+#               this for a K4510 coming in by mosh), or a new one if none
 #   any args -> pass straight through to real tmux
 set -euo pipefail
 
 REAL_TMUX=/usr/bin/tmux
 
-if [ $# -gt 0 ]; then
+if [ $# -gt 0 ] && [ "$1" != --latest ]; then
     exec "$REAL_TMUX" "$@"
 fi
 
@@ -36,6 +38,16 @@ new_named_session() {
         exec "$REAL_TMUX" new-session -s "$name"
     fi
 }
+
+if [ "${1:-}" = --latest ]; then
+    # the session last used; a linked one stands for its group, so terminals
+    # join the group's root instead of chaining links off a link
+    latest=$("$REAL_TMUX" list-sessions \
+        -F '#{session_activity}	#{?session_grouped,#{session_group},#{session_name}}' 2>/dev/null \
+        | sort -rn | head -1 | cut -f2)
+    [ -n "$latest" ] || exec "$REAL_TMUX" new-session
+    attach_or_link "$latest"
+fi
 
 mapfile -t sessions < <("$REAL_TMUX" list-sessions -F '#{session_name}' 2>/dev/null || true)
 n=${#sessions[@]}
