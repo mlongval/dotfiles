@@ -120,6 +120,7 @@ Hand-installed files under `/etc` that aren't captured by the snapshot script ar
 | `claude/` | Claude Code — statusline, settings, skills, commands, hooks |
 | `themes/` | Status themes — zsh prompt + tmux bar + Claude statusline, switched with `statustheme` |
 | `tmux/plugins/tpm` | Tmux Plugin Manager (submodule) |
+| `bin/tmux` | tmux wrapper — session picker; `--latest` for K4510 logins |
 | `bin/install-ghostty.sh` | Installs Ghostty + chafa/poppler-utils for ranger previews |
 | `snapshots/<hostname>/` | Per-machine Brewfile / flatpaks.txt / dconf-backup.ini / native package lists (auto-generated) |
 
@@ -143,6 +144,23 @@ Details in [`themes/README.md`](themes/README.md).
 ## Tmux plugins
 
 Managed by [TPM](https://github.com/tmux-plugins/tpm), tracked as git submodules. After `install.sh` runs they are already present — no manual install needed. To update plugins inside a tmux session: `prefix + U`.
+
+## Tmux sessions
+
+`bin/tmux` (on the PATH as `~/bin/tmux`) wraps `/usr/bin/tmux`:
+
+- `tmux` with no arguments opens an fzf picker of the sessions (or `new`).
+  A session that already has a terminal attached is joined as a *linked*
+  session, so each terminal moves between windows on its own; the link is
+  removed when that terminal detaches.
+- `tmux --latest` asks nothing: it joins the most recently used session
+  (a linked session counts as its group), or starts one if there is none.
+- With any other arguments it is plain tmux.
+
+A K4510 logging in by mosh (`k4510-connect` or the K4510's `mosh` set
+`K4510_CLIENT=1`) is put straight into `tmux --latest` by `zsh/zshrc`.
+Detaching leaves an ordinary shell; `exit` closes the connection. The
+K4510 also gets the one-row VT220 status bar (`tmux/k4510-clients.sh`).
 
 ## Vim plugins
 
