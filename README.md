@@ -158,7 +158,7 @@ Managed by [TPM](https://github.com/tmux-plugins/tpm), tracked as git submodules
 - With any other arguments it is plain tmux.
 
 A K4510 logging in by mosh (`k4510-connect` or the K4510's `mosh` set
-`K4510_CLIENT=1`) is put straight into `tmux --latest` by `zsh/zshrc`.
+`K4510_CLIENT=1`) is put straight into `tmux --latest` by `bash/bashrc` (the login shell) and `zsh/zshrc`.
 Detaching leaves an ordinary shell; `exit` closes the connection. The
 K4510 also gets the one-row VT220 status bar (`tmux/k4510-clients.sh`).
 
