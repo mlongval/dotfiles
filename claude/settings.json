@@ -921,7 +921,7 @@
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
-  "theme": "dark-daltonized",
+  "theme": "dark-ansi",
   "editorMode": "vim",
   "verbose": true,
   "agentPushNotifEnabled": true,
