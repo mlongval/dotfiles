@@ -977,5 +977,6 @@
       ],
       "type": "stdio"
     }
-  }
+  },
+  "remoteControlAtStartup": true
 }
